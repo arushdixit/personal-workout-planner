@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { X, SkipForward } from "lucide-react";
+import { SkipForward, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface RestTimerProps {
@@ -10,6 +10,7 @@ interface RestTimerProps {
 
 const RestTimer = ({ duration, onComplete, onSkip }: RestTimerProps) => {
   const [timeLeft, setTimeLeft] = useState(duration);
+  const [currentDuration, setCurrentDuration] = useState(duration);
   
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -23,8 +24,13 @@ const RestTimer = ({ duration, onComplete, onSkip }: RestTimerProps) => {
     
     return () => clearInterval(timer);
   }, [timeLeft, onComplete]);
+
+  const adjustTime = (delta: number) => {
+    setTimeLeft((prev) => Math.max(0, prev + delta));
+    setCurrentDuration((prev) => Math.max(15, prev + delta));
+  };
   
-  const progress = ((duration - timeLeft) / duration) * 100;
+  const progress = ((currentDuration - timeLeft) / currentDuration) * 100;
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   
@@ -73,10 +79,18 @@ const RestTimer = ({ duration, onComplete, onSkip }: RestTimerProps) => {
           </div>
         </div>
         
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center gap-3">
+          <Button variant="glass" size="lg" onClick={() => adjustTime(-15)} className="px-4">
+            <Minus className="w-4 h-4 mr-1" />
+            15s
+          </Button>
           <Button variant="glass" size="lg" onClick={onSkip}>
             <SkipForward className="w-5 h-5 mr-2" />
-            Skip Rest
+            Skip
+          </Button>
+          <Button variant="glass" size="lg" onClick={() => adjustTime(15)} className="px-4">
+            <Plus className="w-4 h-4 mr-1" />
+            15s
           </Button>
         </div>
       </div>
