@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Check, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 interface Set {
@@ -69,9 +70,14 @@ const SetLogger = ({ sets, onSetComplete, unit = "kg" }: SetLoggerProps) => {
                 >
                   <Minus className="w-4 h-4" />
                 </button>
-                <span className="w-14 text-center font-semibold">
-                  {tempWeight}{unit}
-                </span>
+                <Input
+                  type="number"
+                  value={tempWeight}
+                  onChange={(e) => setTempWeight(Math.max(0, parseFloat(e.target.value) || 0))}
+                  className="w-16 text-center font-semibold h-8 px-1 bg-background/50"
+                  step="0.5"
+                />
+                <span className="text-xs text-muted-foreground">{unit}</span>
                 <button
                   onClick={() => adjustValue("weight", 2.5)}
                   className="p-1 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
@@ -87,7 +93,13 @@ const SetLogger = ({ sets, onSetComplete, unit = "kg" }: SetLoggerProps) => {
                 >
                   <Minus className="w-4 h-4" />
                 </button>
-                <span className="w-8 text-center font-semibold">{tempReps}</span>
+                <Input
+                  type="number"
+                  value={tempReps}
+                  onChange={(e) => setTempReps(Math.max(0, parseInt(e.target.value) || 0))}
+                  className="w-14 text-center font-semibold h-8 px-1 bg-background/50"
+                  step="1"
+                />
                 <button
                   onClick={() => adjustValue("reps", 1)}
                   className="p-1 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
