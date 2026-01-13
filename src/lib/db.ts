@@ -15,15 +15,21 @@ export interface UserProfile {
     createdAt: string;
 }
 
+export type EquipmentType = 'Barbell' | 'Dumbbell' | 'Cable' | 'Machine' | 'Bodyweight' | 'EZ Bar' | 'Kettlebell' | 'Other';
+
 export interface Exercise {
     id?: number;
     name: string;
     primaryMuscles: string[];
     secondaryMuscles: string[];
-    equipment: string;
-    notes?: string;
+    equipment: EquipmentType;
+    repRange?: string; // e.g., "8-12"
+    formCues?: string; // e.g., "Elbows at 45°, chest up"
     tutorialUrl?: string;
+    mastered?: boolean;
     isStarter?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface WorkoutSet {
@@ -42,13 +48,46 @@ export interface WorkoutExercise {
 
 export interface Workout {
     id?: number;
-    oderId: number;
+    userId: number;
     date: string;
     splitType: string;
     exercises: WorkoutExercise[];
     completed: boolean;
     duration?: number;
 }
+
+// --- Muscle Groups (for anatomy diagram) ---
+export const MUSCLE_GROUPS = [
+    'chest',
+    'shoulders',
+    'biceps',
+    'triceps',
+    'forearms',
+    'abs',
+    'obliques',
+    'quads',
+    'calves',
+    'traps',
+    'lats',
+    'rhomboids',
+    'rear_delts',
+    'lower_back',
+    'glutes',
+    'hamstrings',
+] as const;
+
+export type MuscleGroup = typeof MUSCLE_GROUPS[number];
+
+export const EQUIPMENT_TYPES: EquipmentType[] = [
+    'Barbell',
+    'Dumbbell',
+    'Cable',
+    'Machine',
+    'Bodyweight',
+    'EZ Bar',
+    'Kettlebell',
+    'Other',
+];
 
 // --- Database Definition ---
 
@@ -58,10 +97,10 @@ const db = new Dexie('ProLiftsDB') as Dexie & {
     workouts: EntityTable<Workout, 'id'>;
 };
 
-db.version(1).stores({
+db.version(2).stores({
     users: '++id, name',
-    exercises: '++id, name, isStarter',
-    workouts: '++id, oderId, date, splitType',
+    exercises: '++id, name, *primaryMuscles, equipment, mastered',
+    workouts: '++id, userId, date, splitType',
 });
 
 export { db };

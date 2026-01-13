@@ -1,4 +1,4 @@
-import { Exercise } from './db';
+import { EquipmentType, Exercise } from './db';
 
 export const starterExercises: Omit<Exercise, 'id'>[] = [
     // --- COMPOUND LIFTS (10) ---
@@ -7,41 +7,47 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['chest'],
         secondaryMuscles: ['triceps', 'shoulders'],
         equipment: 'Barbell',
+        repRange: '6-10',
         isStarter: true,
     },
     {
         name: 'Barbell Back Squat',
         primaryMuscles: ['quads', 'glutes'],
-        secondaryMuscles: ['hamstrings', 'core'],
+        secondaryMuscles: ['hamstrings', 'abs'],
         equipment: 'Barbell',
+        repRange: '6-10',
         isStarter: true,
     },
     {
         name: 'Conventional Deadlift',
-        primaryMuscles: ['back', 'hamstrings'],
-        secondaryMuscles: ['glutes', 'traps', 'forearms'],
+        primaryMuscles: ['hamstrings', 'glutes', 'lower_back'],
+        secondaryMuscles: ['traps', 'forearms', 'lats'],
         equipment: 'Barbell',
+        repRange: '5-8',
         isStarter: true,
     },
     {
         name: 'Overhead Press',
         primaryMuscles: ['shoulders'],
-        secondaryMuscles: ['triceps', 'core'],
+        secondaryMuscles: ['triceps', 'abs'],
         equipment: 'Barbell',
+        repRange: '6-10',
         isStarter: true,
     },
     {
         name: 'Barbell Row',
-        primaryMuscles: ['back'],
-        secondaryMuscles: ['biceps', 'rear_delts'],
+        primaryMuscles: ['lats', 'rhomboids'],
+        secondaryMuscles: ['biceps', 'rear_delts', 'traps'],
         equipment: 'Barbell',
+        repRange: '6-10',
         isStarter: true,
     },
     {
         name: 'Pull-ups',
-        primaryMuscles: ['lats', 'back'],
-        secondaryMuscles: ['biceps', 'forearms'],
+        primaryMuscles: ['lats'],
+        secondaryMuscles: ['biceps', 'forearms', 'rhomboids'],
         equipment: 'Bodyweight',
+        repRange: '6-12',
         isStarter: true,
     },
     {
@@ -49,13 +55,15 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['chest', 'triceps'],
         secondaryMuscles: ['shoulders'],
         equipment: 'Bodyweight',
+        repRange: '8-12',
         isStarter: true,
     },
     {
         name: 'Romanian Deadlift',
         primaryMuscles: ['hamstrings', 'glutes'],
-        secondaryMuscles: ['back'],
+        secondaryMuscles: ['lower_back'],
         equipment: 'Barbell',
+        repRange: '8-12',
         isStarter: true,
     },
     {
@@ -63,6 +71,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['chest'],
         secondaryMuscles: ['shoulders', 'triceps'],
         equipment: 'Barbell',
+        repRange: '6-10',
         isStarter: true,
     },
     {
@@ -70,6 +79,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['quads', 'glutes'],
         secondaryMuscles: ['hamstrings'],
         equipment: 'Machine',
+        repRange: '8-12',
         isStarter: true,
     },
 
@@ -77,8 +87,9 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
     {
         name: 'Lat Pulldown',
         primaryMuscles: ['lats'],
-        secondaryMuscles: ['biceps'],
+        secondaryMuscles: ['biceps', 'rhomboids'],
         equipment: 'Cable',
+        repRange: '8-12',
         isStarter: true,
     },
     {
@@ -86,6 +97,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['chest'],
         secondaryMuscles: [],
         equipment: 'Cable',
+        repRange: '10-15',
         isStarter: true,
     },
     {
@@ -93,6 +105,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['triceps'],
         secondaryMuscles: [],
         equipment: 'Cable',
+        repRange: '10-15',
         isStarter: true,
     },
     {
@@ -100,6 +113,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['biceps'],
         secondaryMuscles: ['forearms'],
         equipment: 'Dumbbell',
+        repRange: '10-15',
         isStarter: true,
     },
     {
@@ -107,13 +121,15 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['shoulders'],
         secondaryMuscles: [],
         equipment: 'Dumbbell',
+        repRange: '12-15',
         isStarter: true,
     },
     {
         name: 'Face Pull',
         primaryMuscles: ['rear_delts', 'traps'],
-        secondaryMuscles: [],
+        secondaryMuscles: ['rhomboids'],
         equipment: 'Cable',
+        repRange: '12-15',
         isStarter: true,
     },
     {
@@ -121,6 +137,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['hamstrings'],
         secondaryMuscles: [],
         equipment: 'Machine',
+        repRange: '10-15',
         isStarter: true,
     },
     {
@@ -128,6 +145,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['quads'],
         secondaryMuscles: [],
         equipment: 'Machine',
+        repRange: '10-15',
         isStarter: true,
     },
     {
@@ -135,13 +153,15 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['calves'],
         secondaryMuscles: [],
         equipment: 'Machine',
+        repRange: '12-20',
         isStarter: true,
     },
     {
         name: 'Cable Row',
-        primaryMuscles: ['back'],
-        secondaryMuscles: ['biceps'],
+        primaryMuscles: ['lats', 'rhomboids'],
+        secondaryMuscles: ['biceps', 'rear_delts'],
         equipment: 'Cable',
+        repRange: '8-12',
         isStarter: true,
     },
     {
@@ -149,6 +169,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['chest'],
         secondaryMuscles: ['triceps', 'shoulders'],
         equipment: 'Machine',
+        repRange: '8-12',
         isStarter: true,
     },
     {
@@ -156,6 +177,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['shoulders'],
         secondaryMuscles: ['triceps'],
         equipment: 'Machine',
+        repRange: '8-12',
         isStarter: true,
     },
     {
@@ -163,6 +185,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['biceps', 'forearms'],
         secondaryMuscles: [],
         equipment: 'Dumbbell',
+        repRange: '10-12',
         isStarter: true,
     },
     {
@@ -170,6 +193,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['triceps'],
         secondaryMuscles: [],
         equipment: 'EZ Bar',
+        repRange: '8-12',
         isStarter: true,
     },
     {
@@ -177,6 +201,7 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['glutes'],
         secondaryMuscles: ['hamstrings'],
         equipment: 'Barbell',
+        repRange: '8-12',
         isStarter: true,
     },
 
@@ -184,15 +209,17 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
     {
         name: 'Push-ups',
         primaryMuscles: ['chest'],
-        secondaryMuscles: ['triceps', 'shoulders', 'core'],
+        secondaryMuscles: ['triceps', 'shoulders', 'abs'],
         equipment: 'Bodyweight',
+        repRange: '10-20',
         isStarter: true,
     },
     {
         name: 'Plank',
-        primaryMuscles: ['core'],
-        secondaryMuscles: ['shoulders'],
+        primaryMuscles: ['abs'],
+        secondaryMuscles: ['shoulders', 'obliques'],
         equipment: 'Bodyweight',
+        repRange: '30-60s',
         isStarter: true,
     },
     {
@@ -200,20 +227,23 @@ export const starterExercises: Omit<Exercise, 'id'>[] = [
         primaryMuscles: ['quads', 'glutes'],
         secondaryMuscles: ['hamstrings'],
         equipment: 'Bodyweight',
+        repRange: '10-15',
         isStarter: true,
     },
     {
         name: 'Chin-ups',
         primaryMuscles: ['biceps', 'lats'],
-        secondaryMuscles: ['forearms'],
+        secondaryMuscles: ['forearms', 'rhomboids'],
         equipment: 'Bodyweight',
+        repRange: '6-10',
         isStarter: true,
     },
     {
         name: 'Hanging Leg Raise',
-        primaryMuscles: ['core'],
-        secondaryMuscles: ['hip_flexors'],
+        primaryMuscles: ['abs'],
+        secondaryMuscles: ['obliques'],
         equipment: 'Bodyweight',
+        repRange: '10-15',
         isStarter: true,
     },
 ];

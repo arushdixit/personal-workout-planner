@@ -1,4 +1,4 @@
-import { Home, Calendar, TrendingUp, User } from "lucide-react";
+import { Home, Dumbbell, TrendingUp, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItemProps {
@@ -32,7 +32,7 @@ interface BottomNavProps {
 const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
   const tabs = [
     { id: "today", icon: Home, label: "Today" },
-    { id: "plans", icon: Calendar, label: "Plans" },
+    { id: "library", icon: Dumbbell, label: "Library" },
     { id: "progress", icon: TrendingUp, label: "Progress" },
     { id: "profile", icon: User, label: "Profile" },
   ];

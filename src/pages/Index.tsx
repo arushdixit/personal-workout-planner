@@ -3,9 +3,9 @@ import BottomNav from '@/components/BottomNav';
 import WorkoutHero from '@/components/WorkoutHero';
 import ExercisePreviewCard from '@/components/ExercisePreviewCard';
 import ProgressChart from '@/components/ProgressChart';
+import Library from '@/pages/Library';
 import { User, Trophy, Target, LogOut, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useUser } from '@/context/UserContext';
 import { db, Exercise } from '@/lib/db';
@@ -122,33 +122,7 @@ const Index = () => {
           </>
         )}
 
-        {activeTab === 'plans' && (
-          <div className="space-y-6 animate-slide-up">
-            <h2 className="text-xl font-bold">Training Splits</h2>
-            <div className="grid gap-4">
-              {['PPL', 'UpperLower', 'FullBody'].map((split) => (
-                <Card
-                  key={split}
-                  className={`glass p-5 border-white/10 ${currentUser?.activeSplit === split ? 'border-primary/50' : ''}`}
-                >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="font-bold text-lg">{split}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {SPLITS[split].join(' → ')}
-                      </p>
-                    </div>
-                    {currentUser?.activeSplit === split ? (
-                      <span className="text-xs font-bold text-primary uppercase">Active</span>
-                    ) : (
-                      <Button variant="glass" size="sm">Select</Button>
-                    )}
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+        {activeTab === 'library' && <Library />}
 
         {activeTab === 'progress' && (
           <div className="space-y-6 animate-slide-up">

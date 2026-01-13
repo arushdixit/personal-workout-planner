@@ -1,244 +1,141 @@
-import { cn } from "@/lib/utils";
+import { useState } from 'react';
+import { MuscleGroup } from '@/lib/db';
+import { cn } from '@/lib/utils';
 
 interface AnatomyDiagramProps {
-  primaryMuscles?: string[];
-  secondaryMuscles?: string[];
-  className?: string;
-  view?: "front" | "back";
+  selectedPrimary: string[];
+  selectedSecondary: string[];
+  onTogglePrimary: (muscle: string) => void;
+  onToggleSecondary: (muscle: string) => void;
+  mode: 'primary' | 'secondary';
 }
 
+// Muscle positions for front and back views (percentage-based for responsiveness)
+const FRONT_MUSCLES: Record<string, { x: number; y: number; w: number; h: number }> = {
+  chest: { x: 35, y: 22, w: 30, h: 12 },
+  shoulders: { x: 22, y: 18, w: 56, h: 8 },
+  biceps: { x: 18, y: 30, w: 12, h: 14 },
+  triceps: { x: 70, y: 30, w: 12, h: 14 },
+  forearms: { x: 14, y: 46, w: 10, h: 14 },
+  abs: { x: 40, y: 36, w: 20, h: 18 },
+  obliques: { x: 30, y: 40, w: 8, h: 12 },
+  quads: { x: 30, y: 58, w: 40, h: 22 },
+  calves: { x: 32, y: 82, w: 36, h: 14 },
+};
+
+const BACK_MUSCLES: Record<string, { x: number; y: number; w: number; h: number }> = {
+  traps: { x: 35, y: 12, w: 30, h: 10 },
+  rear_delts: { x: 22, y: 18, w: 56, h: 6 },
+  lats: { x: 28, y: 26, w: 44, h: 16 },
+  rhomboids: { x: 38, y: 22, w: 24, h: 10 },
+  lower_back: { x: 38, y: 44, w: 24, h: 10 },
+  glutes: { x: 32, y: 54, w: 36, h: 12 },
+  hamstrings: { x: 30, y: 68, w: 40, h: 16 },
+};
+
 const AnatomyDiagram = ({
-  primaryMuscles = [],
-  secondaryMuscles = [],
-  className,
-  view = "front",
+  selectedPrimary,
+  selectedSecondary,
+  onTogglePrimary,
+  onToggleSecondary,
+  mode,
 }: AnatomyDiagramProps) => {
-  const getMuscleColor = (muscleId: string) => {
-    if (primaryMuscles.includes(muscleId)) {
-      return "fill-primary drop-shadow-[0_0_8px_hsl(var(--primary))]";
+  const [view, setView] = useState<'front' | 'back'>('front');
+  const muscles = view === 'front' ? FRONT_MUSCLES : BACK_MUSCLES;
+
+  const getMuscleColor = (muscle: string) => {
+    if (selectedPrimary.includes(muscle)) return 'bg-red-500/80 border-red-400';
+    if (selectedSecondary.includes(muscle)) return 'bg-orange-400/60 border-orange-300';
+    return 'bg-white/10 border-white/20 hover:bg-white/20';
+  };
+
+  const handleClick = (muscle: string) => {
+    if (mode === 'primary') {
+      onTogglePrimary(muscle);
+    } else {
+      onToggleSecondary(muscle);
     }
-    if (secondaryMuscles.includes(muscleId)) {
-      return "fill-salmon drop-shadow-[0_0_6px_hsl(var(--salmon))]";
-    }
-    return "fill-muted/30";
   };
 
   return (
-    <div className={cn("relative", className)}>
-      <svg
-        viewBox="0 0 200 400"
-        className="w-full h-full"
-        style={{ maxHeight: "300px" }}
-      >
-        {/* Body outline */}
-        <ellipse cx="100" cy="35" rx="25" ry="30" className="fill-muted/20 stroke-muted-foreground/30" strokeWidth="1" />
-        
-        {/* Neck */}
-        <rect x="90" y="60" width="20" height="15" rx="5" className="fill-muted/20" />
-        
-        {view === "front" ? (
-          <>
-            {/* Chest */}
-            <path
-              id="chest_left"
-              d="M55 85 Q45 100 50 130 Q60 135 75 125 Q85 110 85 95 Q80 80 55 85"
-              className={cn("transition-all duration-300", getMuscleColor("chest_left"))}
-            />
-            <path
-              id="chest_right"
-              d="M145 85 Q155 100 150 130 Q140 135 125 125 Q115 110 115 95 Q120 80 145 85"
-              className={cn("transition-all duration-300", getMuscleColor("chest_right"))}
-            />
-            
-            {/* Shoulders */}
-            <ellipse
-              id="shoulder_left"
-              cx="45" cy="95"
-              rx="15" ry="20"
-              className={cn("transition-all duration-300", getMuscleColor("shoulder_left"))}
-            />
-            <ellipse
-              id="shoulder_right"
-              cx="155" cy="95"
-              rx="15" ry="20"
-              className={cn("transition-all duration-300", getMuscleColor("shoulder_right"))}
-            />
-            
-            {/* Biceps */}
-            <ellipse
-              id="bicep_left"
-              cx="35" cy="135"
-              rx="12" ry="25"
-              className={cn("transition-all duration-300", getMuscleColor("bicep_left"))}
-            />
-            <ellipse
-              id="bicep_right"
-              cx="165" cy="135"
-              rx="12" ry="25"
-              className={cn("transition-all duration-300", getMuscleColor("bicep_right"))}
-            />
-            
-            {/* Forearms */}
-            <ellipse
-              id="forearm_left"
-              cx="30" cy="185"
-              rx="10" ry="30"
-              className={cn("transition-all duration-300", getMuscleColor("forearm_left"))}
-            />
-            <ellipse
-              id="forearm_right"
-              cx="170" cy="185"
-              rx="10" ry="30"
-              className={cn("transition-all duration-300", getMuscleColor("forearm_right"))}
-            />
-            
-            {/* Abs */}
-            <rect
-              id="abs"
-              x="75" y="130"
-              width="50" height="70"
-              rx="8"
-              className={cn("transition-all duration-300", getMuscleColor("abs"))}
-            />
-            
-            {/* Obliques */}
-            <path
-              id="oblique_left"
-              d="M55 130 Q50 165 55 200 Q65 200 70 165 Q70 130 55 130"
-              className={cn("transition-all duration-300", getMuscleColor("oblique_left"))}
-            />
-            <path
-              id="oblique_right"
-              d="M145 130 Q150 165 145 200 Q135 200 130 165 Q130 130 145 130"
-              className={cn("transition-all duration-300", getMuscleColor("oblique_right"))}
-            />
-            
-            {/* Quads */}
-            <ellipse
-              id="quad_left"
-              cx="75" cy="260"
-              rx="22" ry="50"
-              className={cn("transition-all duration-300", getMuscleColor("quad_left"))}
-            />
-            <ellipse
-              id="quad_right"
-              cx="125" cy="260"
-              rx="22" ry="50"
-              className={cn("transition-all duration-300", getMuscleColor("quad_right"))}
-            />
-            
-            {/* Calves */}
-            <ellipse
-              id="calf_left"
-              cx="70" cy="355"
-              rx="12" ry="30"
-              className={cn("transition-all duration-300", getMuscleColor("calf_left"))}
-            />
-            <ellipse
-              id="calf_right"
-              cx="130" cy="355"
-              rx="12" ry="30"
-              className={cn("transition-all duration-300", getMuscleColor("calf_right"))}
-            />
-          </>
-        ) : (
-          <>
-            {/* Back muscles */}
-            <path
-              id="trap"
-              d="M70 75 Q100 65 130 75 Q125 95 100 100 Q75 95 70 75"
-              className={cn("transition-all duration-300", getMuscleColor("trap"))}
-            />
-            
-            {/* Lats */}
-            <path
-              id="lat_left"
-              d="M55 100 Q45 140 50 180 Q70 175 80 130 Q75 100 55 100"
-              className={cn("transition-all duration-300", getMuscleColor("lat_left"))}
-            />
-            <path
-              id="lat_right"
-              d="M145 100 Q155 140 150 180 Q130 175 120 130 Q125 100 145 100"
-              className={cn("transition-all duration-300", getMuscleColor("lat_right"))}
-            />
-            
-            {/* Triceps */}
-            <ellipse
-              id="tricep_left"
-              cx="40" cy="130"
-              rx="10" ry="25"
-              className={cn("transition-all duration-300", getMuscleColor("tricep_left"))}
-            />
-            <ellipse
-              id="tricep_right"
-              cx="160" cy="130"
-              rx="10" ry="25"
-              className={cn("transition-all duration-300", getMuscleColor("tricep_right"))}
-            />
-            
-            {/* Lower back */}
-            <rect
-              id="lower_back"
-              x="80" y="140"
-              width="40" height="50"
-              rx="6"
-              className={cn("transition-all duration-300", getMuscleColor("lower_back"))}
-            />
-            
-            {/* Glutes */}
-            <ellipse
-              id="glute_left"
-              cx="75" cy="215"
-              rx="25" ry="20"
-              className={cn("transition-all duration-300", getMuscleColor("glute_left"))}
-            />
-            <ellipse
-              id="glute_right"
-              cx="125" cy="215"
-              rx="25" ry="20"
-              className={cn("transition-all duration-300", getMuscleColor("glute_right"))}
-            />
-            
-            {/* Hamstrings */}
-            <ellipse
-              id="hamstring_left"
-              cx="75" cy="280"
-              rx="18" ry="40"
-              className={cn("transition-all duration-300", getMuscleColor("hamstring_left"))}
-            />
-            <ellipse
-              id="hamstring_right"
-              cx="125" cy="280"
-              rx="18" ry="40"
-              className={cn("transition-all duration-300", getMuscleColor("hamstring_right"))}
-            />
-            
-            {/* Calves back */}
-            <ellipse
-              id="calf_back_left"
-              cx="70" cy="355"
-              rx="12" ry="30"
-              className={cn("transition-all duration-300", getMuscleColor("calf_back_left"))}
-            />
-            <ellipse
-              id="calf_back_right"
-              cx="130" cy="355"
-              rx="12" ry="30"
-              className={cn("transition-all duration-300", getMuscleColor("calf_back_right"))}
-            />
-          </>
-        )}
-      </svg>
-      
+    <div className="space-y-4">
+      {/* View Toggle */}
+      <div className="flex justify-center gap-2">
+        <button
+          onClick={() => setView('front')}
+          className={cn(
+            'px-4 py-2 rounded-lg text-sm font-semibold transition-all',
+            view === 'front' ? 'gradient-red text-white' : 'glass text-muted-foreground'
+          )}
+        >
+          Front
+        </button>
+        <button
+          onClick={() => setView('back')}
+          className={cn(
+            'px-4 py-2 rounded-lg text-sm font-semibold transition-all',
+            view === 'back' ? 'gradient-red text-white' : 'glass text-muted-foreground'
+          )}
+        >
+          Back
+        </button>
+      </div>
+
+      {/* Mode Indicator */}
+      <p className="text-center text-sm text-muted-foreground">
+        Selecting: <span className={mode === 'primary' ? 'text-red-400 font-bold' : 'text-orange-400 font-bold'}>
+          {mode === 'primary' ? 'Primary Muscles' : 'Secondary Muscles'}
+        </span>
+      </p>
+
+      {/* Anatomy Container */}
+      <div className="relative w-full aspect-[3/4] max-w-xs mx-auto bg-white/5 rounded-2xl overflow-hidden">
+        {/* Body Outline (simplified) */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <svg viewBox="0 0 100 130" className="w-full h-full opacity-20">
+            {/* Head */}
+            <circle cx="50" cy="10" r="8" fill="currentColor" />
+            {/* Torso */}
+            <rect x="30" y="20" width="40" height="40" rx="5" fill="currentColor" />
+            {/* Arms */}
+            <rect x="15" y="22" width="12" height="35" rx="4" fill="currentColor" />
+            <rect x="73" y="22" width="12" height="35" rx="4" fill="currentColor" />
+            {/* Legs */}
+            <rect x="32" y="62" width="15" height="45" rx="5" fill="currentColor" />
+            <rect x="53" y="62" width="15" height="45" rx="5" fill="currentColor" />
+          </svg>
+        </div>
+
+        {/* Clickable Muscle Regions */}
+        {Object.entries(muscles).map(([muscle, pos]) => (
+          <button
+            key={muscle}
+            onClick={() => handleClick(muscle)}
+            className={cn(
+              'absolute rounded-lg border-2 transition-all duration-200 flex items-center justify-center text-xs font-bold capitalize',
+              getMuscleColor(muscle)
+            )}
+            style={{
+              left: `${pos.x}%`,
+              top: `${pos.y}%`,
+              width: `${pos.w}%`,
+              height: `${pos.h}%`,
+            }}
+          >
+            {muscle.replace('_', ' ')}
+          </button>
+        ))}
+      </div>
+
       {/* Legend */}
-      <div className="flex items-center justify-center gap-6 mt-4 text-xs">
+      <div className="flex justify-center gap-6 text-xs">
         <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full gradient-red" />
-          <span className="text-muted-foreground">Primary</span>
+          <div className="w-4 h-4 rounded bg-red-500/80 border border-red-400" />
+          <span>Primary</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-salmon" />
-          <span className="text-muted-foreground">Secondary</span>
+          <div className="w-4 h-4 rounded bg-orange-400/60 border border-orange-300" />
+          <span>Secondary</span>
         </div>
       </div>
     </div>

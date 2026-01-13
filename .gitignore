@@ -30,3 +30,6 @@ exercises/
 workouts/
 settings/
 _pouch_*
+
+#ENV
+.env
