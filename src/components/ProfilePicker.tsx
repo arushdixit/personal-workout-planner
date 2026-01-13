@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { User, Plus } from 'lucide-react';
 import { UserProfile } from '@/lib/db';
 
 interface ProfilePickerProps {
     users: UserProfile[];
-    onSelect: (userId: string) => void;
+    onSelect: (userId: number) => void;
     onNew: () => void;
 }
 
@@ -21,9 +21,9 @@ const ProfilePicker = ({ users, onSelect, onNew }: ProfilePickerProps) => {
                 <div className="grid gap-4">
                     {users.map((user) => (
                         <Card
-                            key={user._id}
+                            key={user.id}
                             className="glass hover:bg-white/10 transition-all cursor-pointer border-white/10 group"
-                            onClick={() => onSelect(user._id)}
+                            onClick={() => user.id && onSelect(user.id)}
                         >
                             <CardContent className="flex items-center p-6 gap-4">
                                 <div className="w-16 h-16 rounded-full gradient-red flex items-center justify-center glow-red group-hover:scale-105 transition-transform">

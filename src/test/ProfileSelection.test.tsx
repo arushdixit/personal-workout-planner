@@ -1,38 +1,36 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { UserProvider, useUser } from '../context/UserContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, fireEvent } from '@testing-library/react';
 import ProfilePicker from '../components/ProfilePicker';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { UserProfile } from '../lib/db';
 
 const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: { retry: false },
-    },
+    defaultOptions: { queries: { retry: false } },
 });
 
-const mockUsers = [
+const mockUsers: UserProfile[] = [
     {
-        _id: 'user_1',
-        name: 'User 1',
-        gender: 'male' as const,
+        id: 1,
+        name: 'User One',
+        gender: 'male',
         age: 30,
         height: 180,
         weight: 80,
         onboarded: true,
-        activeSplit: 'PPL' as const,
+        activeSplit: 'PPL',
         createdAt: new Date().toISOString(),
     },
     {
-        _id: 'user_2',
-        name: 'User 2',
-        gender: 'female' as const,
+        id: 2,
+        name: 'User Two',
+        gender: 'female',
         age: 28,
         height: 165,
         weight: 60,
         onboarded: true,
-        activeSplit: 'UpperLower' as const,
+        activeSplit: 'UpperLower',
         createdAt: new Date().toISOString(),
-    }
+    },
 ];
 
 describe('Profile Selection Flow', () => {
@@ -46,11 +44,11 @@ describe('Profile Selection Flow', () => {
             </QueryClientProvider>
         );
 
-        expect(screen.getByText('User 1')).toBeInTheDocument();
-        expect(screen.getByText('User 2')).toBeInTheDocument();
+        expect(screen.getByText('User One')).toBeInTheDocument();
+        expect(screen.getByText('User Two')).toBeInTheDocument();
 
-        fireEvent.click(screen.getByText('User 1'));
-        expect(onSelect).toHaveBeenCalledWith('user_1');
+        fireEvent.click(screen.getByText('User One'));
+        expect(onSelect).toHaveBeenCalledWith(1);
     });
 
     it('shows add profile button when less than 2 users', async () => {

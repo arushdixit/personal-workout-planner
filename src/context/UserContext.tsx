@@ -1,43 +1,37 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { usersDb, UserProfile } from '@/lib/db';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { db, UserProfile } from '@/lib/db';
 
 interface UserContextType {
     currentUser: UserProfile | null;
     allUsers: UserProfile[];
     loading: boolean;
-    switchUser: (userId: string) => void;
+    switchUser: (userId: number) => void;
     refreshUsers: () => Promise<void>;
     logout: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
     const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
     const [loading, setLoading] = useState(true);
 
     const refreshUsers = async () => {
+        setLoading(true);
         try {
-            const result = await usersDb.allDocs({ include_docs: true });
-            const users = result.rows.map((row: any) => row.doc as UserProfile);
+            const users = await db.users.toArray();
             setAllUsers(users);
 
-            // Restore session if available
-            const lastUserId = localStorage.getItem('lastUserId');
+            const lastUserId = localStorage.getItem('prolifts_active_user');
             if (lastUserId) {
-                const user = users.find(u => u._id === lastUserId);
-                if (user) setCurrentUser(user);
-            } else if (users.length > 0 && !currentUser) {
-                // Just pick one if none selected but users exist
-                // Setting it to null instead to trigger profile picker if multiple
-                if (users.length === 1) {
-                    setCurrentUser(users[0]);
-                    localStorage.setItem('lastUserId', users[0]._id);
+                const foundUser = users.find(u => u.id === parseInt(lastUserId, 10));
+                if (foundUser) {
+                    setCurrentUser(foundUser);
                 }
             }
-        } catch (error) {
-            console.error('Failed to load users:', error);
+        } catch (err) {
+            console.error('Failed to load users:', err);
         } finally {
             setLoading(false);
         }
@@ -47,17 +41,17 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         refreshUsers();
     }, []);
 
-    const switchUser = (userId: string) => {
-        const user = allUsers.find(u => u._id === userId);
+    const switchUser = (userId: number) => {
+        const user = allUsers.find(u => u.id === userId);
         if (user) {
             setCurrentUser(user);
-            localStorage.setItem('lastUserId', userId);
+            localStorage.setItem('prolifts_active_user', String(userId));
         }
     };
 
     const logout = () => {
         setCurrentUser(null);
-        localStorage.removeItem('lastUserId');
+        localStorage.removeItem('prolifts_active_user');
     };
 
     return (
@@ -69,7 +63,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useUser = () => {
     const context = useContext(UserContext);
-    if (context === undefined) {
+    if (!context) {
         throw new Error('useUser must be used within a UserProvider');
     }
     return context;

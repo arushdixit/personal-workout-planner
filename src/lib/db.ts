@@ -1,29 +1,9 @@
-import PouchDB from 'pouchdb';
-import PouchDBFind from 'pouchdb-find';
+import Dexie, { type EntityTable } from 'dexie';
 
-if (typeof PouchDB.plugin === 'function') {
-    PouchDB.plugin(PouchDBFind);
-}
-
-// Initialize databases
-export const usersDb = new PouchDB('users');
-export const exercisesDb = new PouchDB('exercises');
-export const workoutsDb = new PouchDB('workouts');
-export const settingsDb = new PouchDB('settings');
-
-// Optional: Enable remote sync if CouchDB URL is provided
-export const syncWithRemote = (dbName: string, remoteUrl: string) => {
-    const localDb = new PouchDB(dbName);
-    const remoteDb = new PouchDB(`${remoteUrl}/${dbName}`);
-
-    return localDb.sync(remoteDb, {
-        live: true,
-        retry: true,
-    });
-};
+// --- Type Definitions ---
 
 export interface UserProfile {
-    _id: string; // 'user_1' or 'user_2'
+    id?: number;
     name: string;
     gender: 'male' | 'female';
     age: number;
@@ -36,7 +16,7 @@ export interface UserProfile {
 }
 
 export interface Exercise {
-    _id: string;
+    id?: number;
     name: string;
     primaryMuscles: string[];
     secondaryMuscles: string[];
@@ -44,29 +24,44 @@ export interface Exercise {
     notes?: string;
     tutorialUrl?: string;
     isStarter?: boolean;
-    mastered?: boolean;
 }
 
 export interface WorkoutSet {
     reps: number;
     weight: number;
-    unit: 'kg' | 'lbs' | 'custom';
+    unit: 'kg' | 'lbs';
     completed: boolean;
 }
 
 export interface WorkoutExercise {
-    exerciseId: string;
+    exerciseId: number;
     name: string;
     sets: WorkoutSet[];
     feedback?: string;
 }
 
 export interface Workout {
-    _id: string;
-    userId: string;
+    id?: number;
+    oderId: number;
     date: string;
     splitType: string;
     exercises: WorkoutExercise[];
     completed: boolean;
     duration?: number;
 }
+
+// --- Database Definition ---
+
+const db = new Dexie('ProLiftsDB') as Dexie & {
+    users: EntityTable<UserProfile, 'id'>;
+    exercises: EntityTable<Exercise, 'id'>;
+    workouts: EntityTable<Workout, 'id'>;
+};
+
+db.version(1).stores({
+    users: '++id, name',
+    exercises: '++id, name, isStarter',
+    workouts: '++id, oderId, date, splitType',
+});
+
+export { db };
