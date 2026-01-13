@@ -1,73 +1,56 @@
-# Welcome to your Lovable project
+# Pro-Lifts Fitness PWA 🏎️🏋️
 
-## Project info
+A premium, offline-first progressive web app for elite-level workout tracking. Built for users who demand high performance, data ownership, and science-based progression.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🚀 Key Features
 
-## How can I edit this code?
+- **Pro-Athlete Aesthetic:** Sleek dark mode with "Racing Red" glassmorphic UI.
+- **Offline-First:** Track your workouts at the gym with zero internet. Powered by **PouchDB**.
+- **Self-Hosted Sync:** Sync data to your own home server via **CouchDB** (Zero cloud costs).
+- **Dual Profile System:** Seamlessly toggle between two independent user profiles.
+- **Science-Based Progression:** Automated weight suggestions based on the "2-Week Consistency" rule.
+- **Interactive Anatomy:** High-fidelity SVG muscle highlighting for every exercise.
+- **AI Insights:** Form correction and superset generation powered by **OpenRouter**.
 
-There are several ways of editing your application.
+## 🛠️ Tech Stack
 
-**Use Lovable**
+- **Frontend:** React + TypeScript + Vite
+- **Styling:** Tailwind CSS + Vanilla CSS (Glassmorphism)
+- **Database:** PouchDB (Local) & CouchDB (Sync)
+- **Testing:** Vitest + React Testing Library
+- **PWA:** Vite PWA Plugin
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🏃 Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
+- Node.js (v18+)
+- npm or bun
 
-**Use your preferred IDE**
+### Local Development
+```bash
+# 1. Clone the repo
+# 2. Install dependencies
+npm install
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 3. Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Running Tests
+```bash
+# Run the automated test suite
+npm run test
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+# Run tests in watch mode
+npm run test:watch
+```
 
-**Use GitHub Codespaces**
+## 📜 Documentation
+- [Product Requirements Document (PRD v2.1)](./PRD.md)
+- [Frontend UI/UX Specification](./lovable_frontend_spec.md)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🐳 Self-Hosting (Optional Sync)
+Detailed setup instructions for Docker-based CouchDB synchronization will be available in Phase 2 of the roadmap.
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+*Created by Arush Dixit*

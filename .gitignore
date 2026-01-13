@@ -23,3 +23,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# PouchDB / Local Databases
+users/
+exercises/
+workouts/
+settings/
+_pouch_*
