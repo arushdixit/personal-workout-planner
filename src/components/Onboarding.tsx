@@ -7,6 +7,7 @@ import { Slider } from '@/components/ui/slider';
 import { ChevronLeft, ChevronRight, Dumbbell, User } from 'lucide-react';
 import { db, UserProfile } from '@/lib/db';
 import { starterExercises } from '@/lib/starter-exercises';
+import { importExercemusData } from '@/lib/exercemus';
 
 interface OnboardingProps {
     onComplete: () => void;
@@ -44,6 +45,9 @@ const Onboarding = ({ onComplete }: OnboardingProps) => {
             if (count === 0) {
                 await db.exercises.bulkAdd(starterExercises);
             }
+
+            // Always try to import Exercemus data (it will check if already done)
+            await importExercemusData();
 
             onComplete();
         } catch (err) {

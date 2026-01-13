@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,9 +13,10 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Plus, Search, Dumbbell, Edit, Trash2, Filter, CheckCircle } from 'lucide-react';
+import { Plus, Search, Dumbbell, Edit, Trash2, Filter, CheckCircle, Globe, User } from 'lucide-react';
 import { db, Exercise, MUSCLE_GROUPS, EQUIPMENT_TYPES } from '@/lib/db';
 import ExerciseWizard from '@/components/ExerciseWizard';
+import { cn } from '@/lib/utils';
 
 const Library = () => {
     const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -23,6 +24,7 @@ const Library = () => {
     const [search, setSearch] = useState('');
     const [filterMuscle, setFilterMuscle] = useState<string>('all');
     const [filterEquipment, setFilterEquipment] = useState<string>('all');
+    const [view, setView] = useState<'my' | 'global'>('my');
     const [showWizard, setShowWizard] = useState(false);
     const [editingExercise, setEditingExercise] = useState<Exercise | undefined>();
     const [deleteTarget, setDeleteTarget] = useState<Exercise | null>(null);
@@ -30,6 +32,8 @@ const Library = () => {
     const loadExercises = async () => {
         setLoading(true);
         try {
+            // In a real app with 1k+ exercises, we would use pagination
+            // For now we'll load them all but prioritize filtering in memory
             const all = await db.exercises.toArray();
             setExercises(all);
         } catch (err) {
@@ -43,12 +47,19 @@ const Library = () => {
         loadExercises();
     }, []);
 
-    const filteredExercises = exercises.filter(ex => {
-        const matchesSearch = ex.name.toLowerCase().includes(search.toLowerCase());
-        const matchesMuscle = filterMuscle === 'all' || ex.primaryMuscles.includes(filterMuscle);
-        const matchesEquipment = filterEquipment === 'all' || ex.equipment === filterEquipment;
-        return matchesSearch && matchesMuscle && matchesEquipment;
-    });
+    const filteredExercises = useMemo(() => {
+        return exercises.filter(ex => {
+            const matchesView = view === 'my'
+                ? (ex.source !== 'exercemus' || ex.mastered)
+                : (ex.source === 'exercemus');
+
+            const matchesSearch = ex.name.toLowerCase().includes(search.toLowerCase());
+            const matchesMuscle = filterMuscle === 'all' || ex.primaryMuscles.includes(filterMuscle);
+            const matchesEquipment = filterEquipment === 'all' || ex.equipment === filterEquipment;
+
+            return matchesView && matchesSearch && matchesMuscle && matchesEquipment;
+        }).slice(0, 100); // Limit to 100 for performance
+    }, [exercises, view, search, filterMuscle, filterEquipment]);
 
     const handleEdit = (exercise: Exercise) => {
         setEditingExercise(exercise);
@@ -82,11 +93,39 @@ const Library = () => {
 
     return (
         <div className="space-y-6 animate-slide-up">
+            {/* View Switcher */}
+            <div className="flex p-1 bg-white/5 rounded-xl border border-white/10">
+                <button
+                    onClick={() => setView('my')}
+                    className={cn(
+                        "flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all",
+                        view === 'my' ? "glass gradient-red-text shadow-xl" : "text-muted-foreground hover:text-foreground"
+                    )}
+                >
+                    <User className="w-4 h-4" />
+                    My Exercises
+                </button>
+                <button
+                    onClick={() => setView('global')}
+                    className={cn(
+                        "flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all",
+                        view === 'global' ? "glass gradient-red-text shadow-xl" : "text-muted-foreground hover:text-foreground"
+                    )}
+                >
+                    <Globe className="w-4 h-4" />
+                    Global Library
+                </button>
+            </div>
+
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold">Exercise Library</h1>
-                    <p className="text-muted-foreground text-sm">{exercises.length} exercises</p>
+                    <h1 className="text-2xl font-bold">
+                        {view === 'my' ? 'My Exercises' : 'Exercemus Library'}
+                    </h1>
+                    <p className="text-muted-foreground text-sm">
+                        {view === 'global' ? 'Choose from 800+ professional exercises' : `${exercises.filter(e => e.source !== 'exercemus').length} custom exercises`}
+                    </p>
                 </div>
                 <Button
                     variant="default"
@@ -102,7 +141,7 @@ const Library = () => {
             <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                    placeholder="Search exercises..."
+                    placeholder="Search name or muscle..."
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     className="pl-10 bg-white/5 border-white/10"
@@ -141,12 +180,12 @@ const Library = () => {
             </div>
 
             {/* Exercise List */}
-            <div className="space-y-3">
+            <div className="space-y-3 pb-20">
                 {filteredExercises.length === 0 ? (
                     <div className="text-center py-12 text-muted-foreground">
                         <Dumbbell className="w-12 h-12 mx-auto mb-4 opacity-50" />
                         <p>No exercises found.</p>
-                        <p className="text-sm">Try adjusting your filters or add a new exercise.</p>
+                        <p className="text-sm">Try adjusting your filters or search terms.</p>
                     </div>
                 ) : (
                     filteredExercises.map((ex, index) => (
@@ -162,6 +201,11 @@ const Library = () => {
                                             <h3 className="font-semibold">{ex.name}</h3>
                                             {ex.mastered && (
                                                 <CheckCircle className="w-4 h-4 text-green-500" />
+                                            )}
+                                            {ex.source === 'exercemus' && (
+                                                <span className="text-[10px] bg-blue-500/10 text-blue-400 px-1.5 py-0.5 rounded border border-blue-500/20 uppercase font-bold tracking-tighter">
+                                                    Exercemus
+                                                </span>
                                             )}
                                         </div>
                                         <div className="flex flex-wrap gap-1 mb-2">
@@ -200,6 +244,11 @@ const Library = () => {
                             </CardContent>
                         </Card>
                     ))
+                )}
+                {view === 'global' && filteredExercises.length === 100 && (
+                    <p className="text-center text-xs text-muted-foreground">
+                        Showing first 100 results. Use search/filters to find others.
+                    </p>
                 )}
             </div>
 

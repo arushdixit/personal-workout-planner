@@ -2,7 +2,7 @@
 
 A premium, offline-first progressive web app for elite-level workout tracking. Built for users who demand high performance, data ownership, and science-based progression.
 
-## 🚀 Key Features
+## Key Features
 
 - **Pro-Athlete Aesthetic:** Sleek dark mode with "Racing Red" glassmorphic UI.
 - **Offline-First:** Track your workouts at the gym with zero internet. Powered by **PouchDB**.
@@ -12,7 +12,7 @@ A premium, offline-first progressive web app for elite-level workout tracking. B
 - **Interactive Anatomy:** High-fidelity SVG muscle highlighting for every exercise.
 - **AI Insights:** Form correction and superset generation powered by **OpenRouter**.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend:** React + TypeScript + Vite
 - **Styling:** Tailwind CSS + Vanilla CSS (Glassmorphism)
@@ -45,12 +45,14 @@ npm run test
 npm run test:watch
 ```
 
-## 📜 Documentation
+## Documentation
 - [Product Requirements Document (PRD v2.1)](./PRD.md)
 - [Frontend UI/UX Specification](./lovable_frontend_spec.md)
 
 ## 🐳 Self-Hosting (Optional Sync)
 Detailed setup instructions for Docker-based CouchDB synchronization will be available in Phase 2 of the roadmap.
 
----
-*Created by Arush Dixit*
+## Acknowledgments
+
+- **Exercise Data:** Massive thanks to [Exercemus](https://github.com/exercemus/exercises) for their open-source exercise library.
+- **Anatomy Diagrams:** Anatomical SVG path data adapted from [react-native-body-highlighter](https://github.com/HoussemBahri/react-native-body-highlighter) by Houssem Bahri.

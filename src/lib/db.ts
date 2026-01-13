@@ -28,6 +28,12 @@ export interface Exercise {
     tutorialUrl?: string;
     mastered?: boolean;
     isStarter?: boolean;
+    source?: 'exercemus' | 'local';
+    category?: string;
+    description?: string;
+    instructions?: string[];
+    tips?: string[];
+    aliases?: string[];
     createdAt?: string;
     updatedAt?: string;
 }
@@ -98,9 +104,9 @@ const db = new Dexie('ProLiftsDB') as Dexie & {
     workouts: EntityTable<Workout, 'id'>;
 };
 
-db.version(2).stores({
+db.version(3).stores({
     users: '++id, name',
-    exercises: '++id, name, *primaryMuscles, equipment, mastered',
+    exercises: '++id, name, *primaryMuscles, equipment, mastered, source, category',
     workouts: '++id, userId, date, splitType',
 });
 

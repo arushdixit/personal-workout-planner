@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { ChevronLeft, ChevronRight, Sparkles, Loader2, Check, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, Loader2, Check, X, Search } from 'lucide-react';
 import { db, Exercise, EquipmentType, EQUIPMENT_TYPES } from '@/lib/db';
 import { lookupExercise } from '@/lib/openrouter';
 import AnatomyDiagram from './AnatomyDiagram';
@@ -24,6 +24,8 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
     const [loading, setLoading] = useState(false);
     const [aiLoading, setAiLoading] = useState(false);
     const [muscleMode, setMuscleMode] = useState<'primary' | 'secondary'>('primary');
+    const [suggestions, setSuggestions] = useState<Exercise[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const gender = currentUser?.gender || 'male';
 
     const [formData, setFormData] = useState({
@@ -36,6 +38,39 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
         tutorialUrl: exercise?.tutorialUrl || '',
         mastered: exercise?.mastered || false,
     });
+
+    useEffect(() => {
+        const searchLocal = async () => {
+            if (formData.name.length < 2 || isEditMode) {
+                setSuggestions([]);
+                return;
+            }
+            const results = await db.exercises
+                .where('name')
+                .startsWithIgnoreCase(formData.name)
+                .limit(5)
+                .toArray();
+            setSuggestions(results);
+            setShowSuggestions(results.length > 0);
+        };
+
+        const timer = setTimeout(searchLocal, 300);
+        return () => clearTimeout(timer);
+    }, [formData.name, isEditMode]);
+
+    const handleSelectSuggestion = (suggested: Exercise) => {
+        setFormData(prev => ({
+            ...prev,
+            name: suggested.name,
+            primaryMuscles: suggested.primaryMuscles,
+            secondaryMuscles: suggested.secondaryMuscles,
+            equipment: suggested.equipment,
+            // Combine description and instructions for formCues if it's from Exercemus
+            formCues: suggested.formCues || (suggested.description ? suggested.description + '. ' : '') + (suggested.instructions?.join(' ') || ''),
+            tutorialUrl: suggested.tutorialUrl || '',
+        }));
+        setShowSuggestions(false);
+    };
 
     const handleNext = () => setStep(s => Math.min(s + 1, 4));
     const handleBack = () => setStep(s => Math.max(s - 1, 1));
@@ -63,7 +98,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
     const toggleMuscle = (muscle: string, type: 'primary' | 'secondary') => {
         setFormData(prev => {
             const key = type === 'primary' ? 'primaryMuscles' : 'secondaryMuscles';
-            const current = prev[key];
+            const current = (prev[key] || []) as string[];
             const updated = current.includes(muscle)
                 ? current.filter(m => m !== muscle)
                 : [...current, muscle];
@@ -121,19 +156,38 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                     </div>
 
                     <div className="glass-card p-6 space-y-6">
-                        {/* Step 1: Name + AI */}
+                        {/* Step 1: Name + Suggestions + AI */}
                         {step === 1 && (
                             <div className="space-y-4">
-                                <div className="space-y-2">
+                                <div className="space-y-2 relative">
                                     <Label htmlFor="name">Exercise Name</Label>
                                     <div className="flex gap-2">
-                                        <Input
-                                            id="name"
-                                            placeholder="e.g., Incline Dumbbell Press"
-                                            value={formData.name}
-                                            onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                            className="bg-white/5 border-white/10 flex-1"
-                                        />
+                                        <div className="relative flex-1">
+                                            <Input
+                                                id="name"
+                                                placeholder="e.g., Incline Dumbbell Press"
+                                                value={formData.name}
+                                                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                                onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+                                                className="bg-white/5 border-white/10 w-full"
+                                            />
+                                            {showSuggestions && (
+                                                <div className="absolute z-50 w-full mt-1 glass rounded-xl border border-white/10 shadow-2xl overflow-hidden animate-slide-up">
+                                                    {suggestions.map(s => (
+                                                        <button
+                                                            key={s.id}
+                                                            onClick={() => handleSelectSuggestion(s)}
+                                                            className="w-full px-4 py-3 text-left hover:bg-white/10 flex flex-col transition-colors border-b border-white/5 last:border-none"
+                                                        >
+                                                            <span className="font-medium text-sm">{s.name}</span>
+                                                            <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
+                                                                {s.equipment} • {s.primaryMuscles.join(', ')}
+                                                            </span>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
                                         <Button
                                             variant="glass"
                                             size="icon"
@@ -148,8 +202,8 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                             )}
                                         </Button>
                                     </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Enter the exercise name and click the sparkle icon to auto-fill with AI.
+                                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                        <Search className="w-3 h-3" /> Search from database or use AI.
                                     </p>
                                 </div>
 
@@ -183,7 +237,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                         onClick={() => setMuscleMode('primary')}
                                         className={muscleMode === 'primary' ? 'gradient-red border-none' : ''}
                                     >
-                                        Primary ({formData.primaryMuscles.length})
+                                        Primary ({formData.primaryMuscles?.length || 0})
                                     </Button>
                                     <Button
                                         variant={muscleMode === 'secondary' ? 'default' : 'glass'}
@@ -191,7 +245,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                         onClick={() => setMuscleMode('secondary')}
                                         className={muscleMode === 'secondary' ? 'bg-orange-500 border-none' : ''}
                                     >
-                                        Secondary ({formData.secondaryMuscles.length})
+                                        Secondary ({formData.secondaryMuscles?.length || 0})
                                     </Button>
                                 </div>
 
@@ -300,8 +354,8 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                 </div>
 
                                 {formData.formCues && (
-                                    <div className="glass p-3 rounded-xl">
-                                        <p className="text-muted-foreground text-xs mb-1">Form Cues</p>
+                                    <div className="glass p-3 rounded-xl max-h-[150px] overflow-y-auto">
+                                        <p className="text-muted-foreground text-xs mb-1">Form Cues & Instructions</p>
                                         <p className="text-sm">{formData.formCues}</p>
                                     </div>
                                 )}
@@ -345,6 +399,13 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                     </div>
                 </div>
             </div>
+            {/* Click outside to close suggestions */}
+            {showSuggestions && (
+                <div
+                    className="fixed inset-0 z-40 bg-transparent"
+                    onClick={() => setShowSuggestions(false)}
+                />
+            )}
         </div>
     );
 };
