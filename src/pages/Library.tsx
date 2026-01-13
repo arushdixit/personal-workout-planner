@@ -120,7 +120,7 @@ const Library = () => {
                         <SelectItem value="all">All Muscles</SelectItem>
                         {MUSCLE_GROUPS.map(m => (
                             <SelectItem key={m} value={m} className="capitalize">
-                                {m.replace('_', ' ')}
+                                {m.replace(/[_-]/g, ' ')}
                             </SelectItem>
                         ))}
                     </SelectContent>
@@ -170,7 +170,7 @@ const Library = () => {
                                                     key={m}
                                                     className="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs capitalize"
                                                 >
-                                                    {m.replace('_', ' ')}
+                                                    {m.replace(/[_-]/g, ' ')}
                                                 </span>
                                             ))}
                                             {ex.primaryMuscles.length > 3 && (

@@ -29,7 +29,7 @@ Return ONLY a valid JSON object with no markdown or extra text, using this exact
   "formCues": "key form tips, max 100 characters"
 }
 
-Valid muscle groups: chest, shoulders, biceps, triceps, forearms, abs, obliques, quads, calves, traps, lats, rhomboids, rear_delts, lower_back, glutes, hamstrings`;
+Valid muscle groups: abs, adductors, biceps, calves, chest, deltoids, forearm, gluteal, hamstring, lower-back, neck, obliques, quadriceps, trapezius, triceps, upper-back, tibialis`;
 
     try {
         const response = await fetch(OPENROUTER_API_URL, {

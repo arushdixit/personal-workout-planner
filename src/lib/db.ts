@@ -56,24 +56,25 @@ export interface Workout {
     duration?: number;
 }
 
-// --- Muscle Groups (for anatomy diagram) ---
+// --- Muscle Groups (matching body highlighter slugs) ---
 export const MUSCLE_GROUPS = [
-    'chest',
-    'shoulders',
-    'biceps',
-    'triceps',
-    'forearms',
     'abs',
-    'obliques',
-    'quads',
+    'adductors',
+    'biceps',
     'calves',
-    'traps',
-    'lats',
-    'rhomboids',
-    'rear_delts',
-    'lower_back',
-    'glutes',
-    'hamstrings',
+    'chest',
+    'deltoids',
+    'forearm',
+    'gluteal',
+    'hamstring',
+    'lower-back',
+    'neck',
+    'obliques',
+    'quadriceps',
+    'trapezius',
+    'triceps',
+    'upper-back',
+    'tibialis',
 ] as const;
 
 export type MuscleGroup = typeof MUSCLE_GROUPS[number];

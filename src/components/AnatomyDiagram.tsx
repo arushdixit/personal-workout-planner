@@ -1,61 +1,74 @@
 import { useState } from 'react';
 import { MuscleGroup } from '@/lib/db';
 import { cn } from '@/lib/utils';
+import { bodyFront } from './anatomy/bodyFront';
+import { bodyBack } from './anatomy/bodyBack';
+import { bodyFemaleFront } from './anatomy/bodyFemaleFront';
+import { bodyFemaleBack } from './anatomy/bodyFemaleBack';
 
 interface AnatomyDiagramProps {
-  selectedPrimary: string[];
-  selectedSecondary: string[];
-  onTogglePrimary: (muscle: string) => void;
-  onToggleSecondary: (muscle: string) => void;
-  mode: 'primary' | 'secondary';
+  selectedPrimary?: string[];
+  selectedSecondary?: string[];
+  primaryMuscles?: string[]; // Alternative name
+  secondaryMuscles?: string[]; // Alternative name
+  onTogglePrimary?: (muscle: string) => void;
+  onToggleSecondary?: (muscle: string) => void;
+  mode?: 'primary' | 'secondary' | 'read-only';
+  gender?: 'male' | 'female';
+  view?: 'front' | 'back';
 }
 
-// Muscle positions for front and back views (percentage-based for responsiveness)
-const FRONT_MUSCLES: Record<string, { x: number; y: number; w: number; h: number }> = {
-  chest: { x: 35, y: 22, w: 30, h: 12 },
-  shoulders: { x: 22, y: 18, w: 56, h: 8 },
-  biceps: { x: 18, y: 30, w: 12, h: 14 },
-  triceps: { x: 70, y: 30, w: 12, h: 14 },
-  forearms: { x: 14, y: 46, w: 10, h: 14 },
-  abs: { x: 40, y: 36, w: 20, h: 18 },
-  obliques: { x: 30, y: 40, w: 8, h: 12 },
-  quads: { x: 30, y: 58, w: 40, h: 22 },
-  calves: { x: 32, y: 82, w: 36, h: 14 },
-};
-
-const BACK_MUSCLES: Record<string, { x: number; y: number; w: number; h: number }> = {
-  traps: { x: 35, y: 12, w: 30, h: 10 },
-  rear_delts: { x: 22, y: 18, w: 56, h: 6 },
-  lats: { x: 28, y: 26, w: 44, h: 16 },
-  rhomboids: { x: 38, y: 22, w: 24, h: 10 },
-  lower_back: { x: 38, y: 44, w: 24, h: 10 },
-  glutes: { x: 32, y: 54, w: 36, h: 12 },
-  hamstrings: { x: 30, y: 68, w: 40, h: 16 },
-};
-
 const AnatomyDiagram = ({
-  selectedPrimary,
-  selectedSecondary,
+  selectedPrimary = [],
+  selectedSecondary = [],
+  primaryMuscles = [],
+  secondaryMuscles = [],
   onTogglePrimary,
   onToggleSecondary,
-  mode,
+  mode = 'read-only',
+  gender = 'male',
+  view: initialView = 'front',
 }: AnatomyDiagramProps) => {
-  const [view, setView] = useState<'front' | 'back'>('front');
-  const muscles = view === 'front' ? FRONT_MUSCLES : BACK_MUSCLES;
+  const [view, setView] = useState<'front' | 'back'>(initialView);
+
+  // Combine prop names for flexibility
+  const activePrimary = [...selectedPrimary, ...primaryMuscles];
+  const activeSecondary = [...selectedSecondary, ...secondaryMuscles];
+
+  const dataSource = view === 'front'
+    ? (gender === 'female' ? bodyFemaleFront : bodyFront)
+    : (gender === 'female' ? bodyFemaleBack : bodyBack);
 
   const getMuscleColor = (muscle: string) => {
-    if (selectedPrimary.includes(muscle)) return 'bg-red-500/80 border-red-400';
-    if (selectedSecondary.includes(muscle)) return 'bg-orange-400/60 border-orange-300';
-    return 'bg-white/10 border-white/20 hover:bg-white/20';
+    if (activePrimary.includes(muscle)) return '#ec4899'; // Pink-500
+    if (activeSecondary.includes(muscle)) return '#f97316'; // Orange-500
+    return '#3f3f3f'; // Muted dark gray
+  };
+
+  const getMuscleOpacity = (muscle: string) => {
+    if (activePrimary.includes(muscle)) return 1;
+    if (activeSecondary.includes(muscle)) return 1;
+    return 0.5;
   };
 
   const handleClick = (muscle: string) => {
-    if (mode === 'primary') {
+    if (mode === 'primary' && onTogglePrimary) {
       onTogglePrimary(muscle);
-    } else {
+    } else if (mode === 'secondary' && onToggleSecondary) {
       onToggleSecondary(muscle);
     }
   };
+
+  const renderPath = (path: string, muscle: string, side?: 'left' | 'right') => (
+    <path
+      key={`${muscle}-${side || 'common'}-${path.substring(0, 10)}`}
+      d={path}
+      fill={getMuscleColor(muscle)}
+      opacity={getMuscleOpacity(muscle)}
+      className="cursor-pointer transition-all duration-200 hover:brightness-125"
+      onClick={() => handleClick(muscle)}
+    />
+  );
 
   return (
     <div className="space-y-4">
@@ -64,7 +77,7 @@ const AnatomyDiagram = ({
         <button
           onClick={() => setView('front')}
           className={cn(
-            'px-4 py-2 rounded-lg text-sm font-semibold transition-all',
+            'px-4 py-2 rounded-xl text-sm font-semibold transition-all',
             view === 'front' ? 'gradient-red text-white' : 'glass text-muted-foreground'
           )}
         >
@@ -73,7 +86,7 @@ const AnatomyDiagram = ({
         <button
           onClick={() => setView('back')}
           className={cn(
-            'px-4 py-2 rounded-lg text-sm font-semibold transition-all',
+            'px-4 py-2 rounded-xl text-sm font-semibold transition-all',
             view === 'back' ? 'gradient-red text-white' : 'glass text-muted-foreground'
           )}
         >
@@ -82,60 +95,53 @@ const AnatomyDiagram = ({
       </div>
 
       {/* Mode Indicator */}
-      <p className="text-center text-sm text-muted-foreground">
-        Selecting: <span className={mode === 'primary' ? 'text-red-400 font-bold' : 'text-orange-400 font-bold'}>
-          {mode === 'primary' ? 'Primary Muscles' : 'Secondary Muscles'}
-        </span>
-      </p>
+      {mode !== 'read-only' && (
+        <p className="text-center text-sm text-muted-foreground">
+          Selecting: <span className={mode === 'primary' ? 'text-pink-400 font-bold' : 'text-orange-400 font-bold'}>
+            {mode === 'primary' ? 'Primary Muscles' : 'Secondary Muscles'}
+          </span>
+        </p>
+      )}
 
       {/* Anatomy Container */}
-      <div className="relative w-full aspect-[3/4] max-w-xs mx-auto bg-white/5 rounded-2xl overflow-hidden">
-        {/* Body Outline (simplified) */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <svg viewBox="0 0 100 130" className="w-full h-full opacity-20">
-            {/* Head */}
-            <circle cx="50" cy="10" r="8" fill="currentColor" />
-            {/* Torso */}
-            <rect x="30" y="20" width="40" height="40" rx="5" fill="currentColor" />
-            {/* Arms */}
-            <rect x="15" y="22" width="12" height="35" rx="4" fill="currentColor" />
-            <rect x="73" y="22" width="12" height="35" rx="4" fill="currentColor" />
-            {/* Legs */}
-            <rect x="32" y="62" width="15" height="45" rx="5" fill="currentColor" />
-            <rect x="53" y="62" width="15" height="45" rx="5" fill="currentColor" />
-          </svg>
-        </div>
+      <div className="relative w-full aspect-[1/2] max-w-[280px] mx-auto bg-slate-950/50 rounded-3xl overflow-hidden p-4 border border-white/5">
+        <svg
+          viewBox={view === 'front' ? "0 0 724 1448" : "724 0 724 1448"}
+          className="w-full h-full"
+        >
+          {/* Base Body Outline (Simplified background) */}
+          <g fill="#1a1a1a" stroke="#ffffff10" strokeWidth="2">
+            {/* The library doesn't provide a clean outline as a single path in the assets, 
+                so we render all muscles with the base color first to form the silhouette */}
+            {dataSource.map((part: any) => (
+              <g key={`base-${part.slug}`}>
+                {part.path.common?.map((p: string) => <path key={p} d={p} />)}
+                {part.path.left?.map((p: string) => <path key={p} d={p} />)}
+                {part.path.right?.map((p: string) => <path key={p} d={p} />)}
+              </g>
+            ))}
+          </g>
 
-        {/* Clickable Muscle Regions */}
-        {Object.entries(muscles).map(([muscle, pos]) => (
-          <button
-            key={muscle}
-            onClick={() => handleClick(muscle)}
-            className={cn(
-              'absolute rounded-lg border-2 transition-all duration-200 flex items-center justify-center text-xs font-bold capitalize',
-              getMuscleColor(muscle)
-            )}
-            style={{
-              left: `${pos.x}%`,
-              top: `${pos.y}%`,
-              width: `${pos.w}%`,
-              height: `${pos.h}%`,
-            }}
-          >
-            {muscle.replace('_', ' ')}
-          </button>
-        ))}
+          {/* Active Muscle Paths */}
+          {dataSource.map((part: any) => (
+            <g key={`active-${part.slug}`}>
+              {part.path.common?.map((p: string) => renderPath(p, part.slug))}
+              {part.path.left?.map((p: string) => renderPath(p, part.slug, 'left'))}
+              {part.path.right?.map((p: string) => renderPath(p, part.slug, 'right'))}
+            </g>
+          ))}
+        </svg>
       </div>
 
       {/* Legend */}
-      <div className="flex justify-center gap-6 text-xs">
+      <div className="flex justify-center gap-6 text-xs bg-white/5 p-3 rounded-2xl border border-white/5 max-w-[280px] mx-auto">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-red-500/80 border border-red-400" />
-          <span>Primary</span>
+          <div className="w-3 h-3 rounded-full bg-pink-500" />
+          <span className="text-muted-foreground">Primary</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-orange-400/60 border border-orange-300" />
-          <span>Secondary</span>
+          <div className="w-3 h-3 rounded-full bg-orange-500" />
+          <span className="text-muted-foreground">Secondary</span>
         </div>
       </div>
     </div>

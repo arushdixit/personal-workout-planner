@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +9,7 @@ import { ChevronLeft, ChevronRight, Sparkles, Loader2, Check, X } from 'lucide-r
 import { db, Exercise, EquipmentType, EQUIPMENT_TYPES } from '@/lib/db';
 import { lookupExercise } from '@/lib/openrouter';
 import AnatomyDiagram from './AnatomyDiagram';
+import { useUser } from '@/context/UserContext';
 
 interface ExerciseWizardProps {
     exercise?: Exercise; // If provided, we're in edit mode
@@ -17,11 +18,13 @@ interface ExerciseWizardProps {
 }
 
 const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps) => {
+    const { currentUser } = useUser();
     const isEditMode = !!exercise;
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const [aiLoading, setAiLoading] = useState(false);
     const [muscleMode, setMuscleMode] = useState<'primary' | 'secondary'>('primary');
+    const gender = currentUser?.gender || 'male';
 
     const [formData, setFormData] = useState({
         name: exercise?.name || '',
@@ -198,6 +201,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                     onTogglePrimary={m => toggleMuscle(m, 'primary')}
                                     onToggleSecondary={m => toggleMuscle(m, 'secondary')}
                                     mode={muscleMode}
+                                    gender={gender}
                                 />
                             </div>
                         )}
@@ -271,7 +275,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                         {formData.primaryMuscles.length > 0 ? (
                                             formData.primaryMuscles.map(m => (
                                                 <span key={m} className="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs capitalize">
-                                                    {m.replace('_', ' ')}
+                                                    {m.replace(/[_-]/g, ' ')}
                                                 </span>
                                             ))
                                         ) : (
@@ -286,7 +290,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                         {formData.secondaryMuscles.length > 0 ? (
                                             formData.secondaryMuscles.map(m => (
                                                 <span key={m} className="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs capitalize">
-                                                    {m.replace('_', ' ')}
+                                                    {m.replace(/[_-]/g, ' ')}
                                                 </span>
                                             ))
                                         ) : (
