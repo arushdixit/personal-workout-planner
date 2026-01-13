@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MuscleGroup } from '@/lib/db';
 import { cn } from '@/lib/utils';
+import { BodyPart } from './anatomy/types';
 import { bodyFront } from './anatomy/bodyFront';
 import { bodyBack } from './anatomy/bodyBack';
 import { bodyFemaleFront } from './anatomy/bodyFemaleFront';
@@ -113,7 +114,7 @@ const AnatomyDiagram = ({
           <g fill="#1a1a1a" stroke="#ffffff10" strokeWidth="2">
             {/* The library doesn't provide a clean outline as a single path in the assets, 
                 so we render all muscles with the base color first to form the silhouette */}
-            {dataSource.map((part: any) => (
+            {dataSource.map((part: BodyPart) => (
               <g key={`base-${part.slug}`}>
                 {part.path.common?.map((p: string) => <path key={p} d={p} />)}
                 {part.path.left?.map((p: string) => <path key={p} d={p} />)}
@@ -123,7 +124,7 @@ const AnatomyDiagram = ({
           </g>
 
           {/* Active Muscle Paths */}
-          {dataSource.map((part: any) => (
+          {dataSource.map((part: BodyPart) => (
             <g key={`active-${part.slug}`}>
               {part.path.common?.map((p: string) => renderPath(p, part.slug))}
               {part.path.left?.map((p: string) => renderPath(p, part.slug, 'left'))}

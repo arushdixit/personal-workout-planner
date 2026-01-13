@@ -181,7 +181,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                                         >
                                                             <span className="font-medium text-sm">{s.name}</span>
                                                             <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
-                                                                {s.equipment} • {s.primaryMuscles.join(', ')}
+                                                                {s.equipment} • {Array.from(new Set(s.primaryMuscles)).join(', ')}
                                                             </span>
                                                         </button>
                                                     ))}

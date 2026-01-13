@@ -1,4 +1,4 @@
-import { BodyPart } from "..";
+import { BodyPart } from "./types";
 
 export const bodyFront: BodyPart[] = [
   // Chest

@@ -55,4 +55,4 @@ Detailed setup instructions for Docker-based CouchDB synchronization will be ava
 ## Acknowledgments
 
 - **Exercise Data:** Massive thanks to [Exercemus](https://github.com/exercemus/exercises) for their open-source exercise library.
-- **Anatomy Diagrams:** Anatomical SVG path data adapted from [react-native-body-highlighter](https://github.com/HoussemBahri/react-native-body-highlighter) by Houssem Bahri.
+- **Anatomy Diagrams:** Anatomical SVG path data adapted from [react-native-body-highlighter](https://github.com/HichamELBSI/react-native-body-highlighter).

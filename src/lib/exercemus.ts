@@ -36,9 +36,10 @@ const EXERCEMUS_EQUIPMENT_MAP: Record<string, EquipmentType> = {
 };
 
 function mapMuscles(muscles: string[]): MuscleGroup[] {
-    return muscles
+    const mapped = muscles
         .map(m => EXERCEMUS_MUSCLE_MAP[m.toLowerCase()] || 'Other')
         .filter(m => m !== 'Other') as MuscleGroup[];
+    return Array.from(new Set(mapped));
 }
 
 function mapEquipment(exercemusEquip: string[]): EquipmentType {

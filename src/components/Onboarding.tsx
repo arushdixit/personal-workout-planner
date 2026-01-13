@@ -122,7 +122,7 @@ const Onboarding = ({ onComplete }: OnboardingProps) => {
                                     value={[formData.height]}
                                     onValueChange={v => setFormData({ ...formData, height: v[0] })}
                                     min={120}
-                                    max={220}
+                                    max={200}
                                     step={1}
                                 />
                             </div>
@@ -132,7 +132,7 @@ const Onboarding = ({ onComplete }: OnboardingProps) => {
                                     value={[formData.weight]}
                                     onValueChange={v => setFormData({ ...formData, weight: v[0] })}
                                     min={30}
-                                    max={200}
+                                    max={100}
                                     step={1}
                                 />
                             </div>

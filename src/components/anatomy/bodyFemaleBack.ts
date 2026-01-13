@@ -1,5 +1,6 @@
+import { BodyPart } from "./types";
 
-export const bodyFemaleBack = [
+export const bodyFemaleBack: BodyPart[] = [
   {
     slug: "hair",
     color: "#595959",

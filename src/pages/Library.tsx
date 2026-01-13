@@ -209,7 +209,7 @@ const Library = () => {
                                             )}
                                         </div>
                                         <div className="flex flex-wrap gap-1 mb-2">
-                                            {ex.primaryMuscles.slice(0, 3).map(m => (
+                                            {Array.from(new Set(ex.primaryMuscles)).slice(0, 3).map(m => (
                                                 <span
                                                     key={m}
                                                     className="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs capitalize"
@@ -217,9 +217,9 @@ const Library = () => {
                                                     {m.replace(/[_-]/g, ' ')}
                                                 </span>
                                             ))}
-                                            {ex.primaryMuscles.length > 3 && (
+                                            {Array.from(new Set(ex.primaryMuscles)).length > 3 && (
                                                 <span className="px-2 py-0.5 bg-white/10 rounded text-xs">
-                                                    +{ex.primaryMuscles.length - 3}
+                                                    +{Array.from(new Set(ex.primaryMuscles)).length - 3}
                                                 </span>
                                             )}
                                         </div>
