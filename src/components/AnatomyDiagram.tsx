@@ -17,6 +17,7 @@ interface AnatomyDiagramProps {
   mode?: 'primary' | 'secondary' | 'read-only';
   gender?: 'male' | 'female';
   view?: 'front' | 'back';
+  disabled?: boolean;
 }
 
 const AnatomyDiagram = ({
@@ -29,6 +30,7 @@ const AnatomyDiagram = ({
   mode = 'read-only',
   gender = 'male',
   view: initialView = 'front',
+  disabled = false,
 }: AnatomyDiagramProps) => {
   const [view, setView] = useState<'front' | 'back'>(initialView);
 
@@ -53,6 +55,7 @@ const AnatomyDiagram = ({
   };
 
   const handleClick = (muscle: string) => {
+    if (disabled) return;
     if (mode === 'primary' && onTogglePrimary) {
       onTogglePrimary(muscle);
     } else if (mode === 'secondary' && onToggleSecondary) {
@@ -66,7 +69,10 @@ const AnatomyDiagram = ({
       d={path}
       fill={getMuscleColor(muscle)}
       opacity={getMuscleOpacity(muscle)}
-      className="cursor-pointer transition-all duration-200 hover:brightness-125"
+      className={cn(
+        "transition-all duration-200",
+        disabled ? "cursor-default" : "cursor-pointer hover:brightness-125"
+      )}
       onClick={() => handleClick(muscle)}
     />
   );

@@ -53,9 +53,19 @@ function mapEquipment(exercemusEquip: string[]): EquipmentType {
 export async function importExercemusData() {
     console.log('Checking for Exercemus data...');
     const existingCount = await db.exercises.where('source').equals('exercemus').count();
-    if (existingCount > 0) {
-        console.log('Exercemus data already imported.');
+
+    // Check if we need to refresh data (if tempo is missing from an exercemus exercise)
+    const sample = await db.exercises.where('source').equals('exercemus').first();
+    const needsRefresh = sample && sample.tempo === undefined;
+
+    if (existingCount > 0 && !needsRefresh) {
+        console.log('Exercemus data already imported and up to date.');
         return;
+    }
+
+    if (needsRefresh) {
+        console.log('Exercemus data is outdated, clearing for refresh...');
+        await db.exercises.where('source').equals('exercemus').delete();
     }
 
     try {
@@ -80,6 +90,8 @@ export async function importExercemusData() {
             instructions: ex.instructions || [],
             tips: ex.tips || [],
             aliases: ex.aliases || [],
+            tempo: ex.tempo || '',
+            variationOf: ex.variation_on || ex.variations_on || [],
             tutorialUrl: ex.video || '',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),

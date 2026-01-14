@@ -17,6 +17,7 @@ import { Plus, Search, Dumbbell, Edit, Trash2, Filter, CheckCircle, Globe, User,
 import { toast } from 'sonner';
 import { db, Exercise, MUSCLE_GROUPS, EQUIPMENT_TYPES } from '@/lib/db';
 import ExerciseWizard from '@/components/ExerciseWizard';
+import ExerciseDetail from '@/components/ExerciseDetail';
 import { cn } from '@/lib/utils';
 import { importExercemusData } from '@/lib/exercemus';
 
@@ -29,7 +30,9 @@ const Library = () => {
     const [view, setView] = useState<'my' | 'global'>('my');
     const [showWizard, setShowWizard] = useState(false);
     const [editingExercise, setEditingExercise] = useState<Exercise | undefined>();
+    const [viewingExercise, setViewingExercise] = useState<Exercise | undefined>();
     const [deleteTarget, setDeleteTarget] = useState<Exercise | null>(null);
+    const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
 
     const loadExercises = async () => {
         setLoading(true);
@@ -57,7 +60,7 @@ const Library = () => {
     const filteredExercises = useMemo(() => {
         return exercises.filter(ex => {
             const matchesView = view === 'my'
-                ? (ex.source !== 'exercemus' || ex.mastered)
+                ? (ex.source !== 'exercemus' || ex.inLibrary)
                 : (ex.source === 'exercemus');
 
             const matchesSearch = ex.name.toLowerCase().includes(search.toLowerCase());
@@ -93,7 +96,7 @@ const Library = () => {
     const handleAddToMy = async (ex: Exercise) => {
         if (!ex.id) return;
         try {
-            await db.exercises.update(ex.id, { mastered: true });
+            await db.exercises.update(ex.id, { inLibrary: true });
             toast.success(`${ex.name} added to your exercises!`);
             loadExercises();
         } catch (err) {
@@ -105,11 +108,24 @@ const Library = () => {
     const handleRemoveFromMy = async (ex: Exercise) => {
         if (!ex.id) return;
         try {
-            await db.exercises.update(ex.id, { mastered: false });
+            await db.exercises.update(ex.id, { inLibrary: false });
             toast.success(`${ex.name} removed from your exercises`);
             loadExercises();
         } catch (err) {
             console.error('Failed to remove exercise:', err);
+        }
+    };
+
+    const handleClearMyLibrary = async () => {
+        try {
+            await db.exercises.where('source').notEqual('exercemus').delete();
+            await db.exercises.where('source').equals('exercemus').modify({ inLibrary: false });
+            setClearConfirmOpen(false);
+            toast.success('Your library has been cleared');
+            loadExercises();
+        } catch (err) {
+            console.error('Failed to clear library:', err);
+            toast.error('Failed to clear library');
         }
     };
 
@@ -157,14 +173,26 @@ const Library = () => {
                         {view === 'global' ? 'Choose from 800+ professional exercises' : `${exercises.filter(e => e.source !== 'exercemus').length} custom exercises`}
                     </p>
                 </div>
-                <Button
-                    variant="default"
-                    size="sm"
-                    onClick={() => setShowWizard(true)}
-                    className="gradient-red glow-red border-none"
-                >
-                    <Plus className="w-4 h-4 mr-2" /> Add
-                </Button>
+                <div className="flex gap-2">
+                    {view === 'my' && exercises.some(ex => (ex.source !== 'exercemus' || ex.inLibrary)) && (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setClearConfirmOpen(true)}
+                            className="text-muted-foreground hover:text-red-400"
+                        >
+                            <Trash2 className="w-4 h-4 mr-2" /> Clear All
+                        </Button>
+                    )}
+                    <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => setShowWizard(true)}
+                        className="gradient-red glow-red border-none"
+                    >
+                        <Plus className="w-4 h-4 mr-2" /> Add
+                    </Button>
+                </div>
             </div>
 
             {/* Search */}
@@ -221,22 +249,15 @@ const Library = () => {
                     filteredExercises.map((ex, index) => (
                         <Card
                             key={ex.id}
-                            className="glass border-white/10 animate-slide-up"
+                            className="glass border-white/10 animate-slide-up hover:border-primary/50 transition-all duration-300 group cursor-pointer"
                             style={{ animationDelay: `${index * 0.03}s` }}
+                            onClick={() => setViewingExercise(ex)}
                         >
                             <CardContent className="p-4">
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2 mb-1">
                                             <h3 className="font-semibold">{ex.name}</h3>
-                                            {ex.mastered && (
-                                                <CheckCircle className="w-4 h-4 text-green-500" />
-                                            )}
-                                            {ex.source === 'exercemus' && (
-                                                <span className="text-[10px] bg-blue-500/10 text-blue-400 px-1.5 py-0.5 rounded border border-blue-500/20 uppercase font-bold tracking-tighter">
-                                                    Exercemus
-                                                </span>
-                                            )}
                                         </div>
                                         <div className="flex flex-wrap gap-1 mb-2">
                                             {Array.from(new Set(ex.primaryMuscles)).slice(0, 3).map(m => (
@@ -257,36 +278,50 @@ const Library = () => {
                                             {ex.equipment} {ex.repRange && `· ${ex.repRange} reps`}
                                         </p>
                                     </div>
-                                    <div className="flex gap-1">
+                                    <div className="flex gap-1" onClick={e => e.stopPropagation()}>
                                         {view === 'global' ? (
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => handleAddToMy(ex)}
-                                                aria-label={ex.mastered ? "Added" : "Add to My Exercises"}
-                                                className={cn(ex.mastered && "text-green-500 opacity-100")}
+                                                aria-label={ex.inLibrary ? "Added" : "Add to My Exercises"}
+                                                className={cn(ex.inLibrary && "text-green-500 opacity-100")}
                                             >
-                                                {ex.mastered ? <CheckCircle className="w-4 h-4" /> : <PlusCircle className="w-4 h-4" />}
+                                                {ex.inLibrary ? <CheckCircle className="w-4 h-4" /> : <PlusCircle className="w-4 h-4" />}
                                             </Button>
                                         ) : (
                                             <>
                                                 {ex.source === 'exercemus' ? (
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => handleRemoveFromMy(ex)}
-                                                        className="text-muted-foreground hover:text-red-400"
-                                                        aria-label="Remove from My Exercises"
-                                                        title="Remove from My Exercises"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
+                                                    <div className="flex gap-1">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => handleEdit(ex)}
+                                                            aria-label="Edit Note / Video"
+                                                            title="Edit Note / Video"
+                                                        >
+                                                            <Edit className="w-4 h-4" />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => handleRemoveFromMy(ex)}
+                                                            className="text-muted-foreground hover:text-red-400"
+                                                            aria-label="Remove from My Exercises"
+                                                            title="Remove from My Exercises"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </div>
                                                 ) : (
                                                     <>
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
-                                                            onClick={() => handleEdit(ex)}
+                                                            onClick={e => {
+                                                                e.stopPropagation();
+                                                                handleEdit(ex);
+                                                            }}
                                                             aria-label="Edit Exercise"
                                                         >
                                                             <Edit className="w-4 h-4" />
@@ -294,7 +329,10 @@ const Library = () => {
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
-                                                            onClick={() => setDeleteTarget(ex)}
+                                                            onClick={e => {
+                                                                e.stopPropagation();
+                                                                setDeleteTarget(ex);
+                                                            }}
                                                             className="text-red-500 hover:text-red-400"
                                                             aria-label="Delete Exercise"
                                                         >
@@ -329,6 +367,18 @@ const Library = () => {
                 />
             )}
 
+            {viewingExercise && (
+                <ExerciseDetail
+                    exercise={viewingExercise}
+                    onClose={() => setViewingExercise(undefined)}
+                    onEdit={viewingExercise.source === 'exercemus' && view === 'my' ? () => {
+                        setEditingExercise(viewingExercise);
+                        setViewingExercise(undefined);
+                        setShowWizard(true);
+                    } : undefined}
+                />
+            )}
+
             {/* Delete Confirmation */}
             <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
                 <AlertDialogContent className="glass border-white/10">
@@ -345,6 +395,27 @@ const Library = () => {
                             className="bg-red-600 hover:bg-red-700"
                         >
                             Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Clear All Confirmation */}
+            <AlertDialog open={clearConfirmOpen} onOpenChange={setClearConfirmOpen}>
+                <AlertDialogContent className="glass border-white/10">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Clear Your Library?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This will delete all your custom exercises and remove all global exercises from your personal list. This cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="glass">Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleClearMyLibrary}
+                            className="bg-red-600 hover:bg-red-700"
+                        >
+                            Clear Everything
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

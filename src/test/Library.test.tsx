@@ -19,7 +19,7 @@ describe('Library Page', () => {
             secondaryMuscles: ['triceps'],
             equipment: 'Barbell',
             source: 'local',
-            mastered: true
+            inLibrary: true
         });
         await db.exercises.add({
             id: 2,
@@ -28,7 +28,7 @@ describe('Library Page', () => {
             secondaryMuscles: ['triceps'],
             equipment: 'Bodyweight',
             source: 'exercemus',
-            mastered: false
+            inLibrary: false
         });
     });
 
@@ -42,7 +42,7 @@ describe('Library Page', () => {
         expect(screen.getByLabelText('Edit Exercise')).toBeInTheDocument();
         expect(screen.getByLabelText('Delete Exercise')).toBeInTheDocument();
 
-        // Global Pushup should NOT be in "My Exercises" because mastered is false
+        // Global Pushup should NOT be in "My Exercises" because inLibrary is false
         expect(screen.queryByText('Global Pushup')).not.toBeInTheDocument();
     });
 
@@ -73,10 +73,10 @@ describe('Library Page', () => {
         const addButton = screen.getByLabelText('Add to My Exercises');
         fireEvent.click(addButton);
 
-        // Verify it was added (mastered) in our DB
+        // Verify it was added (inLibrary) in our DB
         await waitFor(async () => {
             const ex = await db.exercises.get(2);
-            expect(ex?.mastered).toBe(true);
+            expect(ex?.inLibrary).toBe(true);
         });
 
         // Should now show "Added" label
@@ -90,10 +90,10 @@ describe('Library Page', () => {
         const removeButton = screen.getByLabelText('Remove from My Exercises');
         fireEvent.click(removeButton);
 
-        // Verify it was removed (un-mastered)
+        // Verify it was removed (un-inLibrary)
         await waitFor(async () => {
             const ex = await db.exercises.get(2);
-            expect(ex?.mastered).toBe(false);
+            expect(ex?.inLibrary).toBe(false);
         });
 
         expect(screen.queryByText('Global Pushup')).not.toBeInTheDocument();

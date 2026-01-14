@@ -36,7 +36,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
         repRange: exercise?.repRange || '',
         formCues: exercise?.formCues || '',
         tutorialUrl: exercise?.tutorialUrl || '',
-        mastered: exercise?.mastered || false,
+        inLibrary: exercise?.inLibrary || false,
     });
 
     useEffect(() => {
@@ -167,9 +167,10 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                                 id="name"
                                                 placeholder="e.g., Incline Dumbbell Press"
                                                 value={formData.name}
+                                                disabled={isEditMode && exercise?.source === 'exercemus'}
                                                 onChange={e => setFormData({ ...formData, name: e.target.value })}
                                                 onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-                                                className="bg-white/5 border-white/10 w-full"
+                                                className="bg-white/5 border-white/10 w-full disabled:opacity-80 disabled:bg-white/5"
                                             />
                                             {showSuggestions && (
                                                 <div className="absolute z-50 w-full mt-1 glass rounded-xl border border-white/10 shadow-2xl overflow-hidden animate-slide-up">
@@ -192,7 +193,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                             variant="glass"
                                             size="icon"
                                             onClick={handleAiLookup}
-                                            disabled={!formData.name.trim() || aiLoading}
+                                            disabled={!formData.name.trim() || aiLoading || (isEditMode && exercise?.source === 'exercemus')}
                                             title="Lookup with AI"
                                         >
                                             {aiLoading ? (
@@ -212,6 +213,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                     <Label>Equipment</Label>
                                     <Select
                                         value={formData.equipment}
+                                        disabled={isEditMode && exercise?.source === 'exercemus'}
                                         onValueChange={v => setFormData({ ...formData, equipment: v as EquipmentType })}
                                     >
                                         <SelectTrigger className="bg-white/5 border-white/10">
@@ -256,6 +258,7 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                                     onToggleSecondary={m => toggleMuscle(m, 'secondary')}
                                     mode={muscleMode}
                                     gender={gender}
+                                    disabled={isEditMode && exercise?.source === 'exercemus'}
                                 />
                             </div>
                         )}
@@ -264,44 +267,33 @@ const ExerciseWizard = ({ exercise, onComplete, onCancel }: ExerciseWizardProps)
                         {step === 3 && (
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="repRange">Rep Range (optional)</Label>
+                                    <Label htmlFor="repRange">Target Rep Range</Label>
                                     <Input
                                         id="repRange"
-                                        placeholder="e.g., 8-12"
+                                        placeholder="e.g. 8-12"
                                         value={formData.repRange}
                                         onChange={e => setFormData({ ...formData, repRange: e.target.value })}
                                         className="bg-white/5 border-white/10"
                                     />
                                 </div>
-
                                 <div className="space-y-2">
-                                    <Label htmlFor="formCues">Form Cues (optional)</Label>
+                                    <Label htmlFor="formCues">Form Cues / Notes</Label>
                                     <Textarea
                                         id="formCues"
-                                        placeholder="e.g., Keep elbows at 45°, chest up, squeeze at top"
+                                        placeholder="e.g. Elbows at 45°, feel it in your chest"
                                         value={formData.formCues}
                                         onChange={e => setFormData({ ...formData, formCues: e.target.value })}
-                                        className="bg-white/5 border-white/10 min-h-[80px]"
+                                        className="bg-white/5 border-white/10 h-24"
                                     />
                                 </div>
-
                                 <div className="space-y-2">
-                                    <Label htmlFor="tutorialUrl">Tutorial Video URL (optional)</Label>
+                                    <Label htmlFor="tutorialUrl">Video Link (YouTube/Website)</Label>
                                     <Input
                                         id="tutorialUrl"
-                                        placeholder="https://youtube.com/watch?v=..."
+                                        placeholder="https://..."
                                         value={formData.tutorialUrl}
                                         onChange={e => setFormData({ ...formData, tutorialUrl: e.target.value })}
                                         className="bg-white/5 border-white/10"
-                                    />
-                                </div>
-
-                                <div className="flex items-center justify-between py-2">
-                                    <Label htmlFor="mastered">Mark as Mastered</Label>
-                                    <Switch
-                                        id="mastered"
-                                        checked={formData.mastered}
-                                        onCheckedChange={v => setFormData({ ...formData, mastered: v })}
                                     />
                                 </div>
                             </div>
