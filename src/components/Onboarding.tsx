@@ -58,7 +58,7 @@ const Onboarding = ({ onComplete }: OnboardingProps) => {
     };
 
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="min-h-[100dvh] bg-background flex items-center justify-center p-4">
             <div className="w-full max-w-md space-y-8 animate-scale-in">
                 <div className="text-center">
                     <h1 className="text-4xl font-black gradient-red-text tracking-tighter mb-2">PRO-LIFTS</h1>

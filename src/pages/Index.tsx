@@ -63,29 +63,16 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
         <div className="w-8 h-8 gradient-red rounded-full animate-pulse-glow" />
       </div>
     );
   }
 
   return (
-    <div className="dark min-h-screen bg-background pb-24">
-      <header className="sticky top-0 z-40 glass border-b border-white/10">
-        <div className="flex items-center justify-between px-4 py-4">
-          <h1 className="text-xl font-bold gradient-red-text tracking-tighter">PRO-LIFTS</h1>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-muted-foreground bg-white/5 px-2 py-1 rounded-full uppercase tracking-wider">
-              {currentUser?.name}
-            </span>
-            <Button variant="ghost" size="icon" onClick={() => setActiveTab('profile')}>
-              <UserCircle className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="dark min-h-[100dvh] bg-background flex flex-col overflow-hidden">
 
-      <main className="px-4 py-6 space-y-6">
+      <main className="flex-1 overflow-y-auto custom-scrollbar px-4 pt-6 pb-32 space-y-6">
         {activeTab === 'today' && (
           <>
             <WorkoutHero
@@ -155,7 +142,7 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 pb-24">
               <Label className="text-xs uppercase text-muted-foreground px-1">Switch Profile</Label>
               {allUsers.map((u) => (
                 <button
@@ -184,7 +171,9 @@ const Index = () => {
         )}
       </main>
 
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <div className="flex-shrink-0">
+        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
     </div>
   );
 };

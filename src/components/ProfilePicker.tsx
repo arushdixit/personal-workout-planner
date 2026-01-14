@@ -11,7 +11,7 @@ interface ProfilePickerProps {
 
 const ProfilePicker = ({ users, onSelect, onNew }: ProfilePickerProps) => {
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+        <div className="min-h-[100dvh] flex items-center justify-center p-4 bg-background">
             <div className="w-full max-w-md space-y-8 animate-scale-in">
                 <div className="text-center">
                     <h1 className="text-4xl font-black gradient-red-text tracking-tighter mb-2">PRO-LIFTS</h1>

@@ -43,9 +43,9 @@ const AnatomyDiagram = ({
     : (gender === 'female' ? bodyFemaleBack : bodyBack);
 
   const getMuscleColor = (muscle: string) => {
-    if (activePrimary.includes(muscle)) return '#ec4899'; // Pink-500
-    if (activeSecondary.includes(muscle)) return '#f97316'; // Orange-500
-    return '#3f3f3f'; // Muted dark gray
+    if (activePrimary.includes(muscle)) return '#9f1239'; // Rose-800 (Dark Red)
+    if (activeSecondary.includes(muscle)) return '#fda4af'; // Rose-300 (Salmon/Light Red)
+    return '#1e1e1e'; // Darker gray for base
   };
 
   const getMuscleOpacity = (muscle: string) => {
@@ -143,11 +143,11 @@ const AnatomyDiagram = ({
       {/* Legend */}
       <div className="flex justify-center gap-6 text-xs bg-white/5 p-3 rounded-2xl border border-white/5 max-w-[280px] mx-auto">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-pink-500" />
+          <div className="w-3 h-3 rounded-full bg-[#9f1239]" />
           <span className="text-muted-foreground">Primary</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-orange-500" />
+          <div className="w-3 h-3 rounded-full bg-[#fda4af]" />
           <span className="text-muted-foreground">Secondary</span>
         </div>
       </div>

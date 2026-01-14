@@ -19,7 +19,7 @@ const AppContent = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
         <div className="gradient-red w-12 h-12 rounded-full animate-pulse-glow" />
       </div>
     );

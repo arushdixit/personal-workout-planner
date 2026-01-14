@@ -13,7 +13,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Plus, Search, Dumbbell, Edit, Trash2, Filter, CheckCircle, Globe, User, PlusCircle } from 'lucide-react';
+import { Plus, Search, Dumbbell, Edit, Trash2, Filter, CheckCircle, Globe, User, PlusCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { db, Exercise, MUSCLE_GROUPS, EQUIPMENT_TYPES } from '@/lib/db';
 import ExerciseWizard from '@/components/ExerciseWizard';
@@ -32,7 +32,7 @@ const Library = () => {
     const [editingExercise, setEditingExercise] = useState<Exercise | undefined>();
     const [viewingExercise, setViewingExercise] = useState<Exercise | undefined>();
     const [deleteTarget, setDeleteTarget] = useState<Exercise | null>(null);
-    const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
+    const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
     const loadExercises = async () => {
         setLoading(true);
@@ -68,8 +68,46 @@ const Library = () => {
             const matchesEquipment = filterEquipment === 'all' || ex.equipment === filterEquipment;
 
             return matchesView && matchesSearch && matchesMuscle && matchesEquipment;
-        }).slice(0, 100); // Limit to 100 for performance
+        });
     }, [exercises, view, search, filterMuscle, filterEquipment]);
+
+    const displayExercises = useMemo(() => {
+        if (view === 'my') return filteredExercises.slice(0, 100);
+
+        // For global library, we group them
+        const groups: Record<string, Exercise[]> = {};
+        filteredExercises.forEach(ex => {
+            const primary = ex.primaryMuscles[0] || 'Other';
+            if (!groups[primary]) groups[primary] = [];
+            groups[primary].push(ex);
+        });
+
+        // Sort groups by MUSCLE_GROUPS order
+        const sortedGroups: Record<string, Exercise[]> = {};
+        MUSCLE_GROUPS.forEach(muscle => {
+            if (groups[muscle]) {
+                sortedGroups[muscle] = groups[muscle];
+            }
+        });
+
+        // Add any muscles that aren't in MUSCLE_GROUPS (if any)
+        Object.keys(groups).forEach(muscle => {
+            if (!sortedGroups[muscle]) {
+                sortedGroups[muscle] = groups[muscle];
+            }
+        });
+
+        return sortedGroups;
+    }, [filteredExercises, view]);
+
+    const toggleGroup = (muscle: string) => {
+        setExpandedGroups(prev => {
+            const next = new Set(prev);
+            if (next.has(muscle)) next.delete(muscle);
+            else next.add(muscle);
+            return next;
+        });
+    };
 
     const handleEdit = (exercise: Exercise) => {
         setEditingExercise(exercise);
@@ -116,22 +154,10 @@ const Library = () => {
         }
     };
 
-    const handleClearMyLibrary = async () => {
-        try {
-            await db.exercises.where('source').notEqual('exercemus').delete();
-            await db.exercises.where('source').equals('exercemus').modify({ inLibrary: false });
-            setClearConfirmOpen(false);
-            toast.success('Your library has been cleared');
-            loadExercises();
-        } catch (err) {
-            console.error('Failed to clear library:', err);
-            toast.error('Failed to clear library');
-        }
-    };
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
+            <div className="min-h-[100dvh] bg-background flex items-center justify-center">
                 <div className="w-8 h-8 gradient-red rounded-full animate-pulse-glow" />
             </div>
         );
@@ -174,16 +200,7 @@ const Library = () => {
                     </p>
                 </div>
                 <div className="flex gap-2">
-                    {view === 'my' && exercises.some(ex => (ex.source !== 'exercemus' || ex.inLibrary)) && (
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setClearConfirmOpen(true)}
-                            className="text-muted-foreground hover:text-red-400"
-                        >
-                            <Trash2 className="w-4 h-4 mr-2" /> Clear All
-                        </Button>
-                    )}
+
                     <Button
                         variant="default"
                         size="sm"
@@ -238,15 +255,15 @@ const Library = () => {
             </div>
 
             {/* Exercise List */}
-            <div className="space-y-3 pb-20">
+            <div className="space-y-4 pb-20">
                 {filteredExercises.length === 0 ? (
                     <div className="text-center py-12 text-muted-foreground">
                         <Dumbbell className="w-12 h-12 mx-auto mb-4 opacity-50" />
                         <p>No exercises found.</p>
                         <p className="text-sm">Try adjusting your filters or search terms.</p>
                     </div>
-                ) : (
-                    filteredExercises.map((ex, index) => (
+                ) : view === 'my' ? (
+                    (displayExercises as Exercise[]).map((ex, index) => (
                         <Card
                             key={ex.id}
                             className="glass border-white/10 animate-slide-up hover:border-primary/50 transition-all duration-300 group cursor-pointer"
@@ -279,78 +296,127 @@ const Library = () => {
                                         </p>
                                     </div>
                                     <div className="flex gap-1" onClick={e => e.stopPropagation()}>
-                                        {view === 'global' ? (
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handleAddToMy(ex)}
-                                                aria-label={ex.inLibrary ? "Added" : "Add to My Exercises"}
-                                                className={cn(ex.inLibrary && "text-green-500 opacity-100")}
-                                            >
-                                                {ex.inLibrary ? <CheckCircle className="w-4 h-4" /> : <PlusCircle className="w-4 h-4" />}
-                                            </Button>
-                                        ) : (
-                                            <>
-                                                {ex.source === 'exercemus' ? (
-                                                    <div className="flex gap-1">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={() => handleEdit(ex)}
-                                                            aria-label="Edit Note / Video"
-                                                            title="Edit Note / Video"
-                                                        >
-                                                            <Edit className="w-4 h-4" />
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={() => handleRemoveFromMy(ex)}
-                                                            className="text-muted-foreground hover:text-red-400"
-                                                            aria-label="Remove from My Exercises"
-                                                            title="Remove from My Exercises"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </Button>
-                                                    </div>
-                                                ) : (
-                                                    <>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={e => {
-                                                                e.stopPropagation();
-                                                                handleEdit(ex);
-                                                            }}
-                                                            aria-label="Edit Exercise"
-                                                        >
-                                                            <Edit className="w-4 h-4" />
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={e => {
-                                                                e.stopPropagation();
-                                                                setDeleteTarget(ex);
-                                                            }}
-                                                            className="text-red-500 hover:text-red-400"
-                                                            aria-label="Delete Exercise"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </Button>
-                                                    </>
-                                                )}
-                                            </>
-                                        )}
+                                        <div className="flex gap-1">
+                                            {ex.source === 'exercemus' ? (
+                                                <>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => handleEdit(ex)}
+                                                        aria-label="Edit Note / Video"
+                                                        title="Edit Note / Video"
+                                                    >
+                                                        <Edit className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => handleRemoveFromMy(ex)}
+                                                        className="text-muted-foreground hover:text-red-400"
+                                                        aria-label="Remove from My Exercises"
+                                                        title="Remove from My Exercises"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={e => {
+                                                            e.stopPropagation();
+                                                            handleEdit(ex);
+                                                        }}
+                                                        aria-label="Edit Exercise"
+                                                    >
+                                                        <Edit className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={e => {
+                                                            e.stopPropagation();
+                                                            setDeleteTarget(ex);
+                                                        }}
+                                                        className="text-red-500 hover:text-red-400"
+                                                        aria-label="Delete Exercise"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </CardContent>
                         </Card>
                     ))
+                ) : (
+                    Object.entries(displayExercises as Record<string, Exercise[]>).map(([muscle, muscleExercises], gIndex) => (
+                        <div key={muscle} className="space-y-2">
+                            <button
+                                onClick={() => toggleGroup(muscle)}
+                                className="w-full flex items-center justify-between p-3 glass-card hover:bg-white/10 transition-all group"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg gradient-red flex items-center justify-center">
+                                        <Dumbbell className="w-4 h-4 text-white" />
+                                    </div>
+                                    <div className="text-left">
+                                        <h3 className="font-semibold capitalize">{muscle.replace(/[_-]/g, ' ')}</h3>
+                                        <p className="text-xs text-muted-foreground">{muscleExercises.length} exercises</p>
+                                    </div>
+                                </div>
+                                {expandedGroups.has(muscle) ? (
+                                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                                ) : (
+                                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                                )}
+                            </button>
+
+                            {expandedGroups.has(muscle) && (
+                                <div className="pl-2 space-y-2 animate-slide-up">
+                                    {muscleExercises.map((ex, index) => (
+                                        <Card
+                                            key={ex.id}
+                                            className="glass border-white/10 hover:border-primary/50 transition-all duration-300 cursor-pointer"
+                                            onClick={() => setViewingExercise(ex)}
+                                        >
+                                            <CardContent className="p-4">
+                                                <div className="flex items-start justify-between">
+                                                    <div className="flex-1">
+                                                        <h3 className="font-semibold mb-1">{ex.name}</h3>
+                                                        <p className="text-xs text-muted-foreground">
+                                                            {ex.equipment} {ex.repRange && `· ${ex.repRange} reps`}
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex gap-1" onClick={e => e.stopPropagation()}>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => handleAddToMy(ex)}
+                                                            className={cn(ex.inLibrary && "text-green-500")}
+                                                        >
+                                                            {ex.inLibrary ? <CheckCircle className="w-4 h-4" /> : <PlusCircle className="w-4 h-4" />}
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))
                 )}
-                {view === 'global' && filteredExercises.length === 100 && (
-                    <p className="text-center text-xs text-muted-foreground">
-                        Showing first 100 results. Use search/filters to find others.
+                {view === 'global' ? (
+                    <p className="text-center text-xs text-muted-foreground py-4">
+                        Showing all {filteredExercises.length} exercises.
+                    </p>
+                ) : filteredExercises.length > 100 && (
+                    <p className="text-center text-xs text-muted-foreground py-4">
+                        Showing first 100 of {filteredExercises.length} results.
                     </p>
                 )}
             </div>
@@ -400,26 +466,6 @@ const Library = () => {
                 </AlertDialogContent>
             </AlertDialog>
 
-            {/* Clear All Confirmation */}
-            <AlertDialog open={clearConfirmOpen} onOpenChange={setClearConfirmOpen}>
-                <AlertDialogContent className="glass border-white/10">
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Clear Your Library?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This will delete all your custom exercises and remove all global exercises from your personal list. This cannot be undone.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel className="glass">Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={handleClearMyLibrary}
-                            className="bg-red-600 hover:bg-red-700"
-                        >
-                            Clear Everything
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
         </div>
     );
 };
