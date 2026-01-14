@@ -43,7 +43,28 @@
       "variations_on": [
         "sit-up"
       ],
-      "video": "https://www.youtube.com/watch?v=wm47Swzn_98"
+      "video": "https://www.youtube.com/watch?v=wm47Swzn_98",
+      "beginner_friendly_instructions": [
+        "Lie on your back with knees bent and feet flat on the floor.",
+        "Place your hands lightly behind your head or across your chest.",
+        "Engage your abs to lift your shoulders and upper back off the floor.",
+        "Lower yourself back down with control, stopping before your lower back lifts off the floor."
+      ],
+      "form_cues": [
+        "Lead with your chest, not your head.",
+        "Keep your chin slightly tucked.",
+        "Exhale as you lift up."
+      ],
+      "common_mistakes": [
+        "Pulling on your neck with your hands.",
+        "Using momentum instead of abdominal control.",
+        "Letting your lower back arch off the floor too much on the descent."
+      ],
+      "injury_prevention_tips": [
+        "If you feel any strain in your lower back, reduce your range of motion or place your hands behind you for support."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -64,7 +85,28 @@
       "secondary_muscles": [
         "calves"
       ],
-      "video": "https://www.youtube.com/watch?v=h_yZV27H684"
+      "video": "https://www.youtube.com/watch?v=h_yZV27H684",
+      "beginner_friendly_instructions": [
+        "Lie flat on your back with one leg extended straight on the floor.",
+        "Lift your other leg up, keeping the knee bent at 90 degrees.",
+        "Gently straighten the lifted leg towards the ceiling until you feel a stretch in the hamstring.",
+        "Return to the bent position and repeat."
+      ],
+      "form_cues": [
+        "Keep your lower back pressed into the floor.",
+        "Move slowly and with control.",
+        "Stop at the point of a comfortable stretch, not pain."
+      ],
+      "common_mistakes": [
+        "Lifting your hips off the floor to chase the stretch.",
+        "Jerking the leg straight instead of moving smoothly.",
+        "Bending the extended leg on the floor."
+      ],
+      "injury_prevention_tips": [
+        "Never force a stretch; if you feel sharp pain, stop immediately."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -86,7 +128,28 @@
       "variation_on": [
         "crunch"
       ],
-      "video": "https://www.youtube.com/watch?v=zDSvdyyxH4w"
+      "video": "https://www.youtube.com/watch?v=zDSvdyyxH4w",
+      "beginner_friendly_instructions": [
+        "Sit on the machine and place your feet under the pads.",
+        "Grab the handles and rest your triceps on the pads.",
+        "Crunch down by bringing your elbows toward your knees.",
+        "Return to the starting position slowly."
+      ],
+      "form_cues": [
+        "Focus on contracting your abs.",
+        "Keep your chest up.",
+        "Exhale as you crunch down."
+      ],
+      "common_mistakes": [
+        "Using your arms to pull instead of your abs to crunch.",
+        "Using too much weight, causing you to jerk.",
+        "Not controlling the negative (return) portion of the lift."
+      ],
+      "injury_prevention_tips": [
+        "Start with a very light weight to master the form first."
+      ],
+      "tempo_recommendation": "1-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -125,7 +188,28 @@
         "adductors"
       ],
       "secondary_muscles": [],
-      "video": "https://www.youtube.com/watch?v=h1xQabdHdes"
+      "video": "https://www.youtube.com/watch?v=h1xQabdHdes",
+      "beginner_friendly_instructions": [
+        "Lie face down and place a foam roller under one inner thigh.",
+        "Support your weight with your hands and knees.",
+        "Slowly roll from your hip down to just above your knee.",
+        "Pause for 10-30 seconds on any tight spots."
+      ],
+      "form_cues": [
+        "Keep your breathing steady.",
+        "Apply moderate pressure.",
+        "Avoid rolling directly over bony areas."
+      ],
+      "common_mistakes": [
+        "Rolling too fast without pausing on tension spots.",
+        "Putting too much weight and causing bruising.",
+        "Rolling over the knee joint itself."
+      ],
+      "injury_prevention_tips": [
+        "If you feel sharp nerve pain, adjust your position or reduce pressure."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -144,7 +228,28 @@
         "adductors"
       ],
       "secondary_muscles": [],
-      "video": "https://www.youtube.com/watch?v=ScGo0VV85qA"
+      "video": "https://www.youtube.com/watch?v=ScGo0VV85qA",
+      "beginner_friendly_instructions": [
+        "Lie on your back and bring the soles of your feet together, letting your knees fall out to the sides.",
+        "If you have a partner, have them gently hold your feet.",
+        "Try to squeeze your knees together while your partner resists for 10 seconds.",
+        "Relax and let your partner gently push your knees further apart to stretch."
+      ],
+      "form_cues": [
+        "Keep your back flat on the floor.",
+        "Communicate with your partner about intensity.",
+        "Relax your hips."
+      ],
+      "common_mistakes": [
+        "Letting your partner push too hard, causing pain.",
+        "Lifting your hips off the floor.",
+        "Holding your breath during the contraction."
+      ],
+      "injury_prevention_tips": [
+        "Only perform this with a trusted partner who understands how to apply gradual pressure."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -184,7 +289,28 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your back with hands lightly behind your head.",
+        "Lift your knees to a 90-degree angle and lift your shoulders off the floor.",
+        "Bring your right elbow toward your left knee while extending the right leg.",
+        "Switch sides in a smooth pedaling motion."
+      ],
+      "form_cues": [
+        "Keep your lower back pressed to the floor.",
+        "Don't pull on your neck.",
+        "Exhale as you twist to bring elbow to knee."
+      ],
+      "common_mistakes": [
+        "Rushing the movement and losing form.",
+        "Pulling on the head/neck.",
+        "Letting the lower back arch off the floor."
+      ],
+      "injury_prevention_tips": [
+        "If your neck gets tired, place one hand behind your head and the other on your stomach."
+      ],
+      "tempo_recommendation": "1-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -202,7 +328,28 @@
       ],
       "secondary_muscles": [
         "quads"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Start on your hands and knees on a comfortable surface.",
+        "Shift your weight to one side and grab your opposite foot with your hand.",
+        "Gently pull your heel toward your glute.",
+        "Hold for 10-20 seconds and switch sides."
+      ],
+      "form_cues": [
+        "Keep your knee pointing down.",
+        "Squeeze your glute to intensify the stretch.",
+        "Keep your hips square."
+      ],
+      "common_mistakes": [
+        "Arching your lower back.",
+        "Pulling the heel too aggressively.",
+        "Letting the knee flare out to the side."
+      ],
+      "injury_prevention_tips": [
+        "Place a mat under your knees for comfort."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -229,7 +376,28 @@
       "variation_on": [
         "curl"
       ],
-      "video": "https://www.youtube.com/watch?v=zC3nLlEvin4"
+      "video": "https://www.youtube.com/watch?v=zC3nLlEvin4",
+      "beginner_friendly_instructions": [
+        "Stand holding a dumbbell in each hand with palms facing your body.",
+        "Curl one dumbbell up toward your shoulder without moving your upper arm.",
+        "Lower it down with control.",
+        "Repeat with the other arm, alternating sides."
+      ],
+      "form_cues": [
+        "Keep your elbows tucked by your sides.",
+        "Keep your wrists straight.",
+        "Squeeze at the top of the movement."
+      ],
+      "common_mistakes": [
+        "Swinging your body to lift the weight.",
+        "Moving your elbows forward or backward.",
+        "Dropping the weight quickly on the way down."
+      ],
+      "injury_prevention_tips": [
+        "Choose a weight that allows you to maintain strict form."
+      ],
+      "tempo_recommendation": "1-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -247,7 +415,28 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your back with knees bent and feet flat.",
+        "Crunch your upper body up slightly.",
+        "Reach your right hand to touch your right heel.",
+        "Return to center and repeat on the left side."
+      ],
+      "form_cues": [
+        "Keep your head in line with your spine.",
+        "Exhale as you crunch up.",
+        "Keep your shoulders lifted throughout the set."
+      ],
+      "common_mistakes": [
+        "Lifting your hips off the floor.",
+        "Flaring your ribs out.",
+        "Rushing the movement."
+      ],
+      "injury_prevention_tips": [
+        "If you can't reach your heel comfortably, just reach as far as your range of motion allows."
+      ],
+      "tempo_recommendation": "1-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -304,7 +493,28 @@
       "primary_muscles": [
         "shoulders"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Stand holding light dumbbells at your sides.",
+        "Raise one arm to the front to shoulder height.",
+        "Lower it and then raise the other arm out to the side to shoulder height.",
+        "Continue alternating between front and side raises."
+      ],
+      "form_cues": [
+        "Keep a slight bend in the elbow.",
+        "Avoid swinging the weight.",
+        "Keep your core tight."
+      ],
+      "common_mistakes": [
+        "Using momentum (swinging).",
+        "Lifting too high (past shoulder level).",
+        "Shrugging your shoulders up to your ears."
+      ],
+      "injury_prevention_tips": [
+        "Start with very light weights (1-3 lbs) to learn the movement."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -325,7 +535,28 @@
         "abs",
         "shoulders",
         "triceps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Lie on your back with knees bent.",
+        "Hold a kettlebell or dumbbell in each hand at chest level.",
+        "Press one weight up until your arm is straight.",
+        "Lower it back down and press the other side."
+      ],
+      "form_cues": [
+        "Keep your wrists straight.",
+        "Press straight up, not forward.",
+        "Keep your elbows at a 45-degree angle to your body."
+      ],
+      "common_mistakes": [
+        "Flaring elbows out too wide.",
+        "Arching your lower back excessively.",
+        "Banging the weight down on your chest."
+      ],
+      "injury_prevention_tips": [
+        "Keep your feet flat on the floor to stabilize your spine."
+      ],
+      "tempo_recommendation": "1-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -423,7 +654,28 @@
       "primary_muscles": [
         "calves"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Stand holding onto a stable object for balance.",
+        "Lift one foot slightly off the ground.",
+        "Rotate your ankle in a circle, drawing it with your big toe.",
+        "Complete the reps on one side before switching."
+      ],
+      "form_cues": [
+        "Keep your leg relatively still.",
+        "Make the circles controlled.",
+        "Keep your balance by holding on tight."
+      ],
+      "common_mistakes": [
+        "Moving the entire leg instead of just the ankle.",
+        "Going too fast and losing control.",
+        "Not holding onto something stable."
+      ],
+      "injury_prevention_tips": [
+        "Do this near a wall or sturdy chair to prevent falling."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -439,7 +691,28 @@
       "primary_muscles": [
         "glutes"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your back with knees bent and feet on the floor.",
+        "Cross your right ankle over your left knee.",
+        "Grab the back of your left thigh and gently pull both legs toward your chest.",
+        "Hold for 10-20 seconds and switch sides."
+      ],
+      "form_cues": [
+        "Keep your head and shoulders relaxed.",
+        "Keep your back flat on the floor.",
+        "Pull gently until you feel a stretch."
+      ],
+      "common_mistakes": [
+        "Pulling too hard and causing knee pain.",
+        "Lifting your hips off the floor.",
+        "Forcing the knee down aggressively."
+      ],
+      "injury_prevention_tips": [
+        "If you feel knee pain, stop immediately."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -454,7 +727,28 @@
       "primary_muscles": [
         "calves"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Sit on the floor with your legs bent.",
+        "Place a foam roller or rolling pin on the muscle outside your shin.",
+        "Gently roll from just below the knee to above the ankle.",
+        "Pause on any tight spots for 10-30 seconds."
+      ],
+      "form_cues": [
+        "Keep your foot relaxed.",
+        "Use your hands to support your weight.",
+        "Breathe through the discomfort."
+      ],
+      "common_mistakes": [
+        "Rolling directly on a bone.",
+        "Rolling too fast.",
+        "Putting too much body weight on the roller."
+      ],
+      "injury_prevention_tips": [
+        "This area is sensitive; use light pressure to start."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -493,7 +787,28 @@
       ],
       "secondary_muscles": [
         "traps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand with your arms extended straight out to your sides.",
+        "Make small circles with your arms for 10 seconds.",
+        "Reverse the direction of the circles.",
+        "Keep your core engaged throughout."
+      ],
+      "form_cues": [
+        "Keep arms parallel to the floor.",
+        "Keep shoulders down (away from ears).",
+        "Keep a slight bend in the elbows."
+      ],
+      "common_mistakes": [
+        "Shrugging shoulders.",
+        "Making circles that are too large and losing control.",
+        "Holding your breath."
+      ],
+      "injury_prevention_tips": [
+        "If you have shoulder pain, reduce the size of the circles."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -553,7 +868,28 @@
       "secondary_muscles": [
         "middle back",
         "triceps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Anchor a resistance band to a sturdy post.",
+        "Stand facing away from the post, holding the band handles.",
+        "Start with arms extended in front of you.",
+        "Pull your arms out to the sides and back, squeezing your shoulder blades."
+      ],
+      "form_cues": [
+        "Keep arms straight but not locked.",
+        "Keep shoulders down.",
+        "Squeeze your back muscles at the end of the movement."
+      ],
+      "common_mistakes": [
+        "Shrugging shoulders up.",
+        "Bending elbows too much.",
+        "Using too heavy a band and losing form."
+      ],
+      "injury_prevention_tips": [
+        "Ensure the band is securely anchored before starting."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -593,7 +929,28 @@
       "secondary_muscles": [
         "calves",
         "glutes"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Lie on your back with your heels on top of a stability ball.",
+        "Lift your hips off the ground.",
+        "Roll the ball toward you by bending your knees.",
+        "Roll it back out to the starting position."
+      ],
+      "form_cues": [
+        "Keep your hips high throughout.",
+        "Keep your core tight.",
+        "Don't let your hips sag."
+      ],
+      "common_mistakes": [
+        "Letting hips drop to the floor.",
+        "Lifting hips with your glutes instead of hamstrings.",
+        "Moving too fast and losing control."
+      ],
+      "injury_prevention_tips": [
+        "Ensure the ball is the correct size so your knees are at 90 degrees at the top."
+      ],
+      "tempo_recommendation": "1-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -671,7 +1028,28 @@
       "primary_muscles": [
         "adductors"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Anchor a band to a sturdy post.",
+        "Stand sideways to the post with the band around your far ankle.",
+        "Keep your leg straight and pull it across your body.",
+        "Return to the start slowly."
+      ],
+      "form_cues": [
+        "Keep your torso upright.",
+        "Keep the working leg straight.",
+        "Control the movement on the way back."
+      ],
+      "common_mistakes": [
+        "Rotating your hips or torso.",
+        "Using momentum to swing the leg.",
+        "Bending the knee too much."
+      ],
+      "injury_prevention_tips": [
+        "Start with a light band to avoid losing balance."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -691,7 +1069,28 @@
       "secondary_muscles": [
         "middle back",
         "traps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand holding a resistance band with both hands, arms straight out in front.",
+        "Pull the band apart by moving your hands out to the sides.",
+        "Squeeze your shoulder blades together.",
+        "Return to the start with control."
+      ],
+      "form_cues": [
+        "Keep arms straight.",
+        "Keep shoulders down.",
+        "Pull to chest level."
+      ],
+      "common_mistakes": [
+        "Shrugging shoulders.",
+        "Bending elbows.",
+        "Using a band that is too heavy, causing you to round your shoulders forward."
+      ],
+      "injury_prevention_tips": [
+        "Focus on posture; this is a great exercise to counteract slouching."
+      ],
+      "tempo_recommendation": "1-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -714,7 +1113,28 @@
       "variation_on": [
         "skullcrusher"
       ],
-      "video": "https://www.youtube.com/watch?v=xtb-gltsmMU"
+      "video": "https://www.youtube.com/watch?v=xtb-gltsmMU",
+      "beginner_friendly_instructions": [
+        "Anchor a band behind you (e.g., under a bench or rack).",
+        "Lie down and hold the band ends with hands near your forehead.",
+        "Keep elbows pointing to the ceiling and tucked in.",
+        "Extend your arms straight up, then lower back down slowly."
+      ],
+      "form_cues": [
+        "Keep elbows pointing up, not flaring out.",
+        "Keep upper arms vertical.",
+        "Exhale as you extend."
+      ],
+      "common_mistakes": [
+        "Flaring elbows out to the sides.",
+        "Moving elbows backward or forward.",
+        "Using too much weight, causing elbow pain."
+      ],
+      "injury_prevention_tips": [
+        "If you feel elbow pain, switch to a lighter band or try a different tricep exercise."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "aliases": [
@@ -844,7 +1264,28 @@
       "variation_on": [
         "curl"
       ],
-      "video": "https://www.youtube.com/watch?v=LY1V6UbRHFM"
+      "video": "https://www.youtube.com/watch?v=LY1V6UbRHFM",
+      "beginner_friendly_instructions": [
+        "Stand holding a barbell with an underhand grip, hands shoulder-width apart.",
+        "Keep your elbows pinned to your sides.",
+        "Curl the bar up toward your shoulders.",
+        "Lower it back down slowly."
+      ],
+      "form_cues": [
+        "Keep your elbows still.",
+        "Squeeze your biceps at the top.",
+        "Keep your chest up."
+      ],
+      "common_mistakes": [
+        "Swinging your body to lift the weight.",
+        "Letting elbows drift forward or backward.",
+        "Using a grip that is too wide or too narrow."
+      ],
+      "injury_prevention_tips": [
+        "Avoid swinging to protect your lower back and bicep tendons."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -934,7 +1375,28 @@
       "secondary_muscles": [
         "calves",
         "hamstrings"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on the floor with a padded barbell across your hips.",
+        "Lie back with knees bent and feet flat on the floor.",
+        "Drive through your heels to lift your hips toward the ceiling.",
+        "Lower your hips back down with control."
+      ],
+      "form_cues": [
+        "Keep your chin tucked.",
+        "Squeeze your glutes hard at the top.",
+        "Keep feet hip-width apart."
+      ],
+      "common_mistakes": [
+        "Overextending your lower back (arching too much).",
+        "Pushing through toes instead of heels.",
+        "Letting knees cave inward."
+      ],
+      "injury_prevention_tips": [
+        "Use a thick pad or towel under the bar to prevent bruising on your hips."
+      ],
+      "tempo_recommendation": "1-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1135,7 +1597,28 @@
       ],
       "variation_on": [
         "calf raise"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on a bench with the balls of your feet on a block or step.",
+        "Place a barbell across your upper thighs (near the knees).",
+        "Hold the bar in place with your hands.",
+        "Raise your heels up as high as possible, then lower slowly."
+      ],
+      "form_cues": [
+        "Keep your feet straight.",
+        "Pause at the top for a squeeze.",
+        "Keep your knees still."
+      ],
+      "common_mistakes": [
+        "Bouncing at the bottom of the movement.",
+        "Moving your knees up and down.",
+        "Letting the bar roll off your legs."
+      ],
+      "injury_prevention_tips": [
+        "Ensure the bar is secure and balanced before starting."
+      ],
+      "tempo_recommendation": "1-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1173,7 +1656,28 @@
       "primary_muscles": [
         "traps"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Stand holding a barbell in front of your thighs with an overhand grip.",
+        "Keep your arms straight and relaxed.",
+        "Shrug your shoulders up toward your ears.",
+        "Lower them back down slowly."
+      ],
+      "form_cues": [
+        "Keep your arms straight.",
+        "Squeeze at the top.",
+        "Keep your neck in a neutral position."
+      ],
+      "common_mistakes": [
+        "Rolling your shoulders forward or backward.",
+        "Bending your elbows.",
+        "Tilting your head back."
+      ],
+      "injury_prevention_tips": [
+        "Avoid heavy weights initially to prevent neck strain."
+      ],
+      "tempo_recommendation": "1-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1212,7 +1716,28 @@
       ],
       "secondary_muscles": [
         "lower back"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand holding a barbell behind your neck or resting on your shoulders.",
+        "Keep your torso straight.",
+        "Bend sideways to the right as far as you can.",
+        "Return to center and repeat on the left side."
+      ],
+      "form_cues": [
+        "Keep your hips facing forward.",
+        "Don't twist your torso.",
+        "Breathe normally."
+      ],
+      "common_mistakes": [
+        "Twisting your hips or torso.",
+        "Bending forward or backward.",
+        "Using too much weight, causing loss of balance."
+      ],
+      "injury_prevention_tips": [
+        "Start without weight to master the movement pattern first."
+      ],
+      "tempo_recommendation": "1-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1365,7 +1890,29 @@
       ],
       "secondary_muscles": [
         "shoulders"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on the floor with a partner behind you.",
+        "Place your hands behind your head with elbows pointing out.",
+        "Have your partner gently hold your elbows while you try to pull them forward (isometric).",
+        "Relax, and let your partner slowly pull your elbows back for a stretch."
+      ],
+      "form_cues": [
+        "Keep your spine tall.",
+        "Communicate with your partner.",
+        "Stop if you feel sharp pain."
+      ],
+      "common_mistakes": [
+        "Partner pulling too hard or too fast.",
+        "Rounding the back.",
+        "Shrugging shoulders up to ears."
+      ],
+      "injury_prevention_tips": [
+        "Never force a stretch past comfort.",
+        "Ensure your partner watches your facial cues for discomfort."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1389,7 +1936,29 @@
       ],
       "variation_on": [
         "dip"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on the edge of a bench and place hands next to hips.",
+        "Slide your butt off the bench and walk feet out.",
+        "Bend elbows to lower your body, then push back up.",
+        "Keep knees bent to make it easier."
+      ],
+      "form_cues": [
+        "Shoulders down, away from ears.",
+        "Elbows pointing straight back.",
+        "Control the descent."
+      ],
+      "common_mistakes": [
+        "Shoulders shrugging up.",
+        "Flaring elbows out wide.",
+        "Dipping too low (shoulder strain)."
+      ],
+      "injury_prevention_tips": [
+        "If you feel shoulder pain, stop immediately.",
+        "Keep feet close to your body to reduce load."
+      ],
+      "tempo_recommendation": "2-1-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1421,7 +1990,29 @@
       "variation_on": [
         "flat bench press",
         "medium-grip bench press"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Lie on a bench with a band looped under your feet.",
+        "Hold the band handles at chest level.",
+        "Press hands straight up toward the ceiling.",
+        "Lower hands slowly back to chest."
+      ],
+      "form_cues": [
+        "Retract shoulder blades.",
+        "Drive feet into the floor.",
+        "Lockout elbows at the top."
+      ],
+      "common_mistakes": [
+        "Arching lower back excessively.",
+        "Letting bands pull arms inward (losing tension).",
+        "Bouncing at the chest."
+      ],
+      "injury_prevention_tips": [
+        "Check band integrity for tears before use.",
+        "Use a stable bench surface."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1511,7 +2102,29 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your back with knees bent and feet off the floor.",
+        "Pull knees toward your chest using your abs.",
+        "Lift hips off the floor and roll pelvis back.",
+        "Lower hips back down slowly."
+      ],
+      "form_cues": [
+        "Exhale at the top.",
+        "Keep neck relaxed.",
+        "Squeeze abs at the top."
+      ],
+      "common_mistakes": [
+        "Using momentum/swinging.",
+        "Jerking the neck.",
+        "Letting feet touch the floor during the set."
+      ],
+      "injury_prevention_tips": [
+        "Keep movements slow and controlled.",
+        "Avoid if you have existing lower back pain."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1742,7 +2355,29 @@
       "primary_muscles": [
         "triceps"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Find a bar at chest height (like a Smith machine).",
+        "Stand facing away, holding the bar with hands shoulder-width.",
+        "Step feet forward and lean your body forward.",
+        "Bend elbows to lower chest to bar, then push back up."
+      ],
+      "form_cues": [
+        "Body in a straight line.",
+        "Elbows tucked close.",
+        "Heels grounded."
+      ],
+      "common_mistakes": [
+        "Butt sagging down.",
+        "Elbows flaring out.",
+        "Going too close to the bar (harder)"
+      ],
+      "injury_prevention_tips": [
+        "Ensure the bar is locked in place.",
+        "Don't let your nose crash into the bar."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1783,7 +2418,29 @@
       "secondary_muscles": [
         "biceps",
         "lats"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Grab a pull-up bar with an overhand grip.",
+        "Lift knees to chest and lean back.",
+        "Pull your chest toward the bar using your back.",
+        "Lower yourself back down slowly."
+      ],
+      "form_cues": [
+        "Squeeze shoulder blades together.",
+        "Keep arms straight at the bottom.",
+        "Keep legs still."
+      ],
+      "common_mistakes": [
+        "Using legs to swing up.",
+        "Shrugging shoulders.",
+        "Dropping chest too low."
+      ],
+      "injury_prevention_tips": [
+        "Ensure you can safely hang from the bar.",
+        "Don't let go of the bar at the bottom (controlled descent)."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1802,7 +2459,29 @@
       "secondary_muscles": [
         "glutes",
         "hamstrings"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand with feet shoulder-width apart.",
+        "Sit your hips back and down (like a chair).",
+        "Go as low as you can comfortably.",
+        "Stand back up by driving through heels."
+      ],
+      "form_cues": [
+        "Chest up.",
+        "Knees track over toes.",
+        "Weight in heels."
+      ],
+      "common_mistakes": [
+        "Knees caving inward.",
+        "Heels lifting off the ground.",
+        "Rounding the lower back."
+      ],
+      "injury_prevention_tips": [
+        "Keep your core braced.",
+        "Ensure you have adequate ankle mobility."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1823,7 +2502,29 @@
         "calves",
         "glutes",
         "hamstrings"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand tall with hands on hips.",
+        "Step forward with one leg and lower hips.",
+        "Drop back knee toward the ground.",
+        "Push off front foot to step into the next lunge."
+      ],
+      "form_cues": [
+        "Keep torso upright.",
+        "Front knee behind toes.",
+        "Push through the heel."
+      ],
+      "common_mistakes": [
+        "Front knee collapsing inward.",
+        "Leaning too far forward.",
+        "Stride too short."
+      ],
+      "injury_prevention_tips": [
+        "Perform on a soft surface if balance is poor.",
+        "Don't let the back knee slam into the floor."
+      ],
+      "tempo_recommendation": "1-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -1967,7 +2668,29 @@
       "primary_muscles": [
         "biceps"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your side with a foam roller under your upper arm.",
+        "Support your weight with your hand and feet.",
+        "Roll from the elbow toward the shoulder.",
+        "Pause on tender spots for 10-30 seconds."
+      ],
+      "form_cues": [
+        "Keep core tight.",
+        "Breathe into the tension.",
+        "Move slowly."
+      ],
+      "common_mistakes": [
+        "Rolling directly over the elbow joint.",
+        "Moving too fast.",
+        "Collapsing your hips."
+      ],
+      "injury_prevention_tips": [
+        "Avoid rolling over bone.",
+        "Don't spend too long on one spot."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2006,7 +2729,29 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Start in a forearm plank position.",
+        "Arch your lower back slightly.",
+        "Squeeze abs to lift hips toward the ceiling.",
+        "Lower hips back down slowly."
+      ],
+      "form_cues": [
+        "Nose pointing down.",
+        "Squeeze glutes at the top.",
+        "Keep forearms planted."
+      ],
+      "common_mistakes": [
+        "Sagging hips at the bottom.",
+        "Jerking the movement.",
+        "Looking forward (neck strain)."
+      ],
+      "injury_prevention_tips": [
+        "Keep tension in the core throughout.",
+        "Avoid if you have wrist pain."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2024,7 +2769,29 @@
       ],
       "secondary_muscles": [
         "hamstrings"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Lie on your back with knees bent and feet flat.",
+        "Drive through heels to lift hips up.",
+        "Squeeze glutes at the top.",
+        "Lower hips back down slowly."
+      ],
+      "form_cues": [
+        "Ribs down.",
+        "Squeeze glutes, not lower back.",
+        "Keep chin neutral."
+      ],
+      "common_mistakes": [
+        "Overextending the lower back.",
+        "Pushing through toes instead of heels.",
+        "Rushing the movement."
+      ],
+      "injury_prevention_tips": [
+        "Keep glutes tight at the top to protect the back.",
+        "Ensure feet are hip-width apart."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "aliases": [
@@ -2052,7 +2819,29 @@
       ],
       "variation_on": [
         "chest fly"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on the machine with back against the pad.",
+        "Grab the handles with arms slightly bent.",
+        "Bring handles together in front of chest.",
+        "Return slowly to the start position."
+      ],
+      "form_cues": [
+        "Chest up.",
+        "Squeeze chest at the middle.",
+        "Keep elbows slightly bent."
+      ],
+      "common_mistakes": [
+        "Opening arms too far back (shoulder strain).",
+        "Using too much weight (swinging).",
+        "Hunching shoulders."
+      ],
+      "injury_prevention_tips": [
+        "Don't go past shoulder level.",
+        "Control the weight on the way back."
+      ],
+      "tempo_recommendation": "3-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2072,7 +2861,29 @@
       "secondary_muscles": [
         "shoulders",
         "triceps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit between two cable towers.",
+        "Hold handles at chest height, elbows bent.",
+        "Press handles forward until arms are straight.",
+        "Bring handles back slowly."
+      ],
+      "form_cues": [
+        "Shoulders back.",
+        "Press straight forward.",
+        "Exhale on the press."
+      ],
+      "common_mistakes": [
+        "Arching back too much.",
+        "Elbows flaring out.",
+        "Letting cables pull you forward."
+      ],
+      "injury_prevention_tips": [
+        "Choose a weight you can control.",
+        "Keep wrists straight."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2115,7 +2926,29 @@
       "secondary_muscles": [],
       "variation_on": [
         "crunch"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Kneel in front of a high cable with a rope attachment.",
+        "Hold rope behind your head.",
+        "Crunch down, bringing elbows toward knees.",
+        "Return up slowly against the weight."
+      ],
+      "form_cues": [
+        "Hips stay still.",
+        "Round your upper back.",
+        "Exhale on the crunch."
+      ],
+      "common_mistakes": [
+        "Pulling with arms instead of abs.",
+        "Moving hips back and forth.",
+        "Using too much weight."
+      ],
+      "injury_prevention_tips": [
+        "Pad your knees if the floor is hard.",
+        "Keep tension on abs, not lower back."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2167,7 +3000,29 @@
       "variation_on": [
         "curl"
       ],
-      "video": "https://www.youtube.com/watch?v=1Quc_tOv97I"
+      "video": "https://www.youtube.com/watch?v=1Quc_tOv97I",
+      "beginner_friendly_instructions": [
+        "Attach rope to a low cable.",
+        "Stand straight and hold rope with neutral grip.",
+        "Curl rope up toward shoulders.",
+        "Lower rope slowly."
+      ],
+      "form_cues": [
+        "Elbows tucked in.",
+        "Palms facing each other.",
+        "Squeeze biceps at top."
+      ],
+      "common_mistakes": [
+        "Swinging body to lift weight.",
+        "Elbows moving forward or backward.",
+        "Using momentum."
+      ],
+      "injury_prevention_tips": [
+        "Keep upper arms glued to your sides.",
+        "Don't drop the weight suddenly."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2187,7 +3042,29 @@
       "primary_muscles": [
         "quads"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Attach ankle cuff to low cable.",
+        "Stand sideways to the machine.",
+        "Grab the machine for balance.",
+        "Pull working leg across the standing leg."
+      ],
+      "form_cues": [
+        "Stand tall.",
+        "Squeeze inner thigh.",
+        "Keep standing leg slightly bent."
+      ],
+      "common_mistakes": [
+        "Leaning too much.",
+        "Using hip flexor instead of adductor.",
+        "Twisting the knee."
+      ],
+      "injury_prevention_tips": [
+        "Start with light weight.",
+        "Ensure ankle cuff is secure."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2241,7 +3118,29 @@
       "primary_muscles": [
         "shoulders"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Sit next to a low cable.",
+        "Hold handle with elbow bent 90 degrees.",
+        "Keep elbow tucked into your side.",
+        "Rotate forearm across your stomach."
+      ],
+      "form_cues": [
+        "Elbow at side.",
+        "Move only the forearm.",
+        "Control the movement."
+      ],
+      "common_mistakes": [
+        "Elbow lifting off the body.",
+        "Using torso to help swing.",
+        "Going too heavy."
+      ],
+      "injury_prevention_tips": [
+        "Warm up shoulders first.",
+        "Avoid if you have rotator cuff pain."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2336,7 +3235,29 @@
       ],
       "secondary_muscles": [
         "forearms"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit at a preacher bench facing a low cable.",
+        "Hold the bar attachment with arms extended.",
+        "Curl the bar up toward shoulders.",
+        "Lower the bar slowly."
+      ],
+      "form_cues": [
+        "Arms flat on pad.",
+        "Squeeze biceps at top.",
+        "Control the negative."
+      ],
+      "common_mistakes": [
+        "Lifting elbows off the pad.",
+        "Swinging the weight up.",
+        "Ripping the weight up fast."
+      ],
+      "injury_prevention_tips": [
+        "Don't hyperextend elbows at the bottom.",
+        "Use a light weight to start."
+      ],
+      "tempo_recommendation": "3-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2353,7 +3274,29 @@
       "primary_muscles": [
         "shoulders"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Set cables above head height.",
+        "Cross arms in front of you.",
+        "Pull arms back and out to the sides.",
+        "Return arms forward slowly."
+      ],
+      "form_cues": [
+        "Keep arms mostly straight.",
+        "Squeeze rear delts.",
+        "Keep chest up."
+      ],
+      "common_mistakes": [
+        "Bending elbows too much.",
+        "Using traps instead of delts.",
+        "Leaning back."
+      ],
+      "injury_prevention_tips": [
+        "Don't let the weight slam back.",
+        "Keep wrists neutral."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2412,7 +3355,29 @@
       "secondary_muscles": [
         "biceps",
         "middle back"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit at a low row machine with a rope.",
+        "Lean back slightly, arms extended.",
+        "Pull rope to upper chest, elbows wide.",
+        "Return arms forward slowly."
+      ],
+      "form_cues": [
+        "Elbows high and wide.",
+        "Squeeze upper back.",
+        "Keep back straight."
+      ],
+      "common_mistakes": [
+        "Pulling too low (hitting abs).",
+        "Rounding the back.",
+        "Using biceps too much."
+      ],
+      "injury_prevention_tips": [
+        "Keep neck neutral.",
+        "Don't jerk the weight."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2450,7 +3415,29 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Sit on a bench facing away from a high cable.",
+        "Hold rope behind head.",
+        "Crunch down, bringing elbows to knees.",
+        "Return up slowly."
+      ],
+      "form_cues": [
+        "Hips stationary.",
+        "Round the back.",
+        "Exhale on the crunch."
+      ],
+      "common_mistakes": [
+        "Pulling with arms.",
+        "Moving hips forward/back.",
+        "Using too much weight."
+      ],
+      "injury_prevention_tips": [
+        "Pad knees if needed.",
+        "Keep tension on abs."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2473,7 +3460,29 @@
       "secondary_muscles": [
         "middle back",
         "traps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on a bench between two low cables.",
+        "Cross arms in front of you.",
+        "Raise arms to the sides until parallel to floor.",
+        "Lower arms slowly."
+      ],
+      "form_cues": [
+        "Keep elbows slightly bent.",
+        "Lead with elbows.",
+        "Keep torso still."
+      ],
+      "common_mistakes": [
+        "Shrugging shoulders.",
+        "Using momentum.",
+        "Leaning back."
+      ],
+      "injury_prevention_tips": [
+        "Don't go too heavy.",
+        "Keep wrists neutral."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2492,7 +3501,29 @@
       ],
       "secondary_muscles": [
         "triceps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Set cables to bottom position.",
+        "Stand between towers, hold handles at shoulders.",
+        "Press handles straight overhead.",
+        "Lower handles back to shoulders."
+      ],
+      "form_cues": [
+        "Chest up.",
+        "Press straight up.",
+        "Squeeze shoulders at top."
+      ],
+      "common_mistakes": [
+        "Arching lower back excessively.",
+        "Pressing forward instead of up.",
+        "Shrugging at the top."
+      ],
+      "injury_prevention_tips": [
+        "Keep core braced.",
+        "Don't lock elbows out hard."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2510,7 +3541,29 @@
       "primary_muscles": [
         "traps"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Hold a cable bar attached to a low pulley.",
+        "Stand tall with arms straight down.",
+        "Shrug shoulders up to ears.",
+        "Lower shoulders back down."
+      ],
+      "form_cues": [
+        "Keep arms straight.",
+        "Hold at the top for 1 second.",
+        "Keep neck neutral."
+      ],
+      "common_mistakes": [
+        "Rolling shoulders forward/back.",
+        "Bending elbows.",
+        "Using weight too heavy (bad form)."
+      ],
+      "injury_prevention_tips": [
+        "Keep chin tucked slightly.",
+        "Don't jerk the weight."
+      ],
+      "tempo_recommendation": "2-1-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2529,7 +3582,29 @@
       "primary_muscles": [
         "forearms"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Sit on a bench, hold cable bar with palms up.",
+        "Rest forearms on thighs, wrists hanging off.",
+        "Curl wrists up toward you.",
+        "Lower wrists back down slowly."
+      ],
+      "form_cues": [
+        "Forearms stay still.",
+        "Full range of motion.",
+        "Squeeze at the top."
+      ],
+      "common_mistakes": [
+        "Moving forearms.",
+        "Using momentum.",
+        "Dropping the weight at the bottom."
+      ],
+      "injury_prevention_tips": [
+        "Start light to avoid wrist strain.",
+        "Don't hyperextend wrists."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2546,7 +3621,27 @@
       "primary_muscles": [
         "traps"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Stand inside the machine with the pads resting on your shoulders.",
+        "Keep your chest up and arms straight at your sides.",
+        "Shrug your shoulders straight up toward your ears.",
+        "Lower slowly back to the start."
+      ],
+      "form_cues": [
+        "Straight posture.",
+        "Shoulders up to ears.",
+        "No rolling."
+      ],
+      "common_mistakes": [
+        "Rolling shoulders forward or backward instead of moving straight up and down.",
+        "Using too much weight and swinging the torso."
+      ],
+      "injury_prevention_tips": [
+        "Keep your neck in a neutral position; don't crane it forward."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2568,7 +3663,27 @@
       ],
       "variation_on": [
         "calf raise"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit in the machine and adjust the seat so your knees are slightly bent.",
+        "Place the balls of your feet on the lower part of the platform.",
+        "Push down through your toes to lift the weight, extending your ankles.",
+        "Lower the weight slowly until you feel a stretch."
+      ],
+      "form_cues": [
+        "Ball of foot on edge.",
+        "Point toes down.",
+        "Pause at the top."
+      ],
+      "common_mistakes": [
+        "Bouncing at the bottom.",
+        "Moving knees instead of just ankles."
+      ],
+      "injury_prevention_tips": [
+        "Don't lock your knees hard at the top; keep a slight bend."
+      ],
+      "tempo_recommendation": "2-1-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2591,7 +3706,27 @@
       ],
       "variation_on": [
         "calf raise"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on the leg press and place your feet on the platform with heels hanging off.",
+        "Press the platform up until legs are straight (do not lock knees).",
+        "Push through the balls of your feet to raise your heels high.",
+        "Lower heels slowly below the platform for a stretch."
+      ],
+      "form_cues": [
+        "Heels off platform.",
+        "Knees soft.",
+        "Push through toes."
+      ],
+      "common_mistakes": [
+        "Locking knees completely.",
+        "Moving knees up and down instead of keeping them still."
+      ],
+      "injury_prevention_tips": [
+        "Keep safety bars engaged if available."
+      ],
+      "tempo_recommendation": "2-1-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2614,7 +3749,28 @@
       ],
       "variation_on": [
         "calf raise"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Hold a sturdy object for balance.",
+        "Stand on a single dumbbell with the balls of your feet.",
+        "Raise your heels by pressing up on your toes.",
+        "Lower slowly to stretch the calves."
+      ],
+      "form_cues": [
+        "Heels below toes.",
+        "Light touch on support.",
+        "Control the roll."
+      ],
+      "common_mistakes": [
+        "Losing balance by looking down.",
+        "Rushing the movement."
+      ],
+      "injury_prevention_tips": [
+        "Use a stable surface to hold onto.",
+        "Start with light weight to master balance."
+      ],
+      "tempo_recommendation": "2-1-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2637,7 +3793,27 @@
       ],
       "variation_on": [
         "calf raise"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand on the middle of a resistance band.",
+        "Hold the handles at shoulder height with palms forward.",
+        "Press up onto your toes, lifting heels high.",
+        "Lower heels slowly to feel tension."
+      ],
+      "form_cues": [
+        "Stand on band center.",
+        "Keep handles by shoulders.",
+        "Squeeze calves at top."
+      ],
+      "common_mistakes": [
+        "Standing on the ends of the band (causes slipping).",
+        "Leaning too far forward."
+      ],
+      "injury_prevention_tips": [
+        "Check that the band is not frayed before use."
+      ],
+      "tempo_recommendation": "2-1-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -2653,7 +3829,27 @@
       "primary_muscles": [
         "calves"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Stand facing a wall, about arm's length away.",
+        "Place your forearms on the wall.",
+        "Step one foot back, keeping the heel flat.",
+        "Lean forward gently until you feel a stretch."
+      ],
+      "form_cues": [
+        "Heel flat.",
+        "Back leg straight.",
+        "Lean with forearms."
+      ],
+      "common_mistakes": [
+        "Bending the back knee.",
+        "Lifting the back heel."
+      ],
+      "injury_prevention_tips": [
+        "Keep hips facing forward."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -2669,7 +3865,27 @@
       "primary_muscles": [
         "calves"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Stand facing a wall, about arm's length away.",
+        "Step one foot back, keeping the heel flat.",
+        "Place hands on the wall and lean forward.",
+        "Keep your back straight and hips forward."
+      ],
+      "form_cues": [
+        "Heel down.",
+        "Front knee bent.",
+        "Hips forward."
+      ],
+      "common_mistakes": [
+        "Arching the lower back.",
+        "Bringing feet too close together."
+      ],
+      "injury_prevention_tips": [
+        "Keep the back leg straight but not locked."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -2684,7 +3900,27 @@
       "primary_muscles": [
         "calves"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Sit on the floor with legs extended.",
+        "Place a foam roller under your lower leg.",
+        "Lift hips slightly to add pressure.",
+        "Roll slowly from knee to ankle."
+      ],
+      "form_cues": [
+        "Support with hands.",
+        "Roll slowly.",
+        "Pause on tender spots."
+      ],
+      "common_mistakes": [
+        "Rolling too fast.",
+        "Rolling directly over the knee or ankle joint."
+      ],
+      "injury_prevention_tips": [
+        "Avoid rolling over bones; focus on muscle."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2722,7 +3958,27 @@
       "secondary_muscles": [
         "middle back",
         "traps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Get on hands and knees.",
+        "Inhale and drop your belly slightly.",
+        "Exhale and round your spine up toward the ceiling.",
+        "Drop your head and hold."
+      ],
+      "form_cues": [
+        "Hands under shoulders.",
+        "Knees under hips.",
+        "Tuck chin to chest."
+      ],
+      "common_mistakes": [
+        "Rushing the movement.",
+        "Holding breath."
+      ],
+      "injury_prevention_tips": [
+        "Move slowly and smoothly."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2776,7 +4032,27 @@
       ],
       "secondary_muscles": [
         "adductors"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit upright in a chair.",
+        "Extend one leg straight out in front.",
+        "Flex your foot (toes up).",
+        "Hold gently, then switch legs."
+      ],
+      "form_cues": [
+        "Sit tall.",
+        "Leg straight.",
+        "Toes up."
+      ],
+      "common_mistakes": [
+        "Rounding the back.",
+        "Locking the knee harshly."
+      ],
+      "injury_prevention_tips": [
+        "Only extend to a mild stretch."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -2794,7 +4070,27 @@
       ],
       "secondary_muscles": [
         "lower back"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit tall in a chair.",
+        "Reach one arm over your head to the opposite side.",
+        "Gently lean until you feel a stretch.",
+        "Hold, then switch sides."
+      ],
+      "form_cues": [
+        "Sit upright.",
+        "Reach long.",
+        "Breathe into side."
+      ],
+      "common_mistakes": [
+        "Twisting the torso.",
+        "Holding breath."
+      ],
+      "injury_prevention_tips": [
+        "Keep shoulders relaxed."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2817,7 +4113,27 @@
         "calves",
         "glutes",
         "hamstrings"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand in front of a chair with feet shoulder-width.",
+        "Push hips back and bend knees to lower to the chair.",
+        "Lightly tap the seat (don't fully sit).",
+        "Stand back up by driving through heels."
+      ],
+      "form_cues": [
+        "Chest up.",
+        "Knees track over toes.",
+        "Weight in heels."
+      ],
+      "common_mistakes": [
+        "Knees caving inward.",
+        "Rounding the back."
+      ],
+      "injury_prevention_tips": [
+        "Use a higher chair if mobility is limited."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -2835,7 +4151,27 @@
       "secondary_muscles": [
         "biceps",
         "chest"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on the edge of a chair.",
+        "Grip the back of the chair with both hands.",
+        "Straighten arms and gently lean forward.",
+        "Hold and breathe."
+      ],
+      "form_cues": [
+        "Arms straight.",
+        "Back flat.",
+        "Hips back."
+      ],
+      "common_mistakes": [
+        "Rounding shoulders.",
+        "Pulling too hard."
+      ],
+      "injury_prevention_tips": [
+        "Keep wrists neutral."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -2853,7 +4189,27 @@
       ],
       "secondary_muscles": [
         "shoulders"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Hold a stick or broomstick with a wide grip.",
+        "Raise it overhead and behind your head.",
+        "Keep arms straight.",
+        "Stop when you feel a stretch in the chest."
+      ],
+      "form_cues": [
+        "Wide grip.",
+        "Arms straight.",
+        "Slow movement."
+      ],
+      "common_mistakes": [
+        "Bending elbows.",
+        "Jerking the stick."
+      ],
+      "injury_prevention_tips": [
+        "Do not force the stick behind your head if it hurts."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -2869,7 +4225,27 @@
       "primary_muscles": [
         "chest"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Kneel next to a stability ball.",
+        "Place one elbow on the ball.",
+        "Gently lower your chest toward the floor.",
+        "Hold, then switch sides."
+      ],
+      "form_cues": [
+        "Elbow on ball.",
+        "Hips forward.",
+        "Relax chest."
+      ],
+      "common_mistakes": [
+        "Collapsing the shoulder.",
+        "Over-arching the lower back."
+      ],
+      "injury_prevention_tips": [
+        "Keep the shoulder away from the ear."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -2888,7 +4264,27 @@
       "secondary_muscles": [
         "glutes",
         "middle back"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Start on hands and knees.",
+        "Sit your hips back toward your heels.",
+        "Extend arms forward and lower chest.",
+        "Rest forehead on the floor."
+      ],
+      "form_cues": [
+        "Hips to heels.",
+        "Arms long.",
+        "Breathe into back."
+      ],
+      "common_mistakes": [
+        "Holding breath.",
+        "Straining knees."
+      ],
+      "injury_prevention_tips": [
+        "Place a cushion under knees or ankles if sensitive."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -2927,7 +4323,27 @@
       ],
       "secondary_muscles": [
         "traps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit tall with a straight back.",
+        "Place hands behind your head.",
+        "Gently lower chin toward chest.",
+        "Hold and breathe."
+      ],
+      "form_cues": [
+        "Hands interlocked.",
+        "Elbows forward.",
+        "Relax neck."
+      ],
+      "common_mistakes": [
+        "Pulling with hands.",
+        "Rounding the back."
+      ],
+      "injury_prevention_tips": [
+        "Move slowly to avoid neck strain."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3090,7 +4506,27 @@
       ],
       "secondary_muscles": [
         "forearms"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Hold an EZ bar with a close grip (hands inside shoulder width).",
+        "Stand tall with elbows tucked at your sides.",
+        "Curl the bar up toward shoulders.",
+        "Lower slowly to full extension."
+      ],
+      "form_cues": [
+        "Elbows in.",
+        "Upper arms still.",
+        "Squeeze biceps."
+      ],
+      "common_mistakes": [
+        "Swinging the torso.",
+        "Lifting elbows away from body."
+      ],
+      "injury_prevention_tips": [
+        "Keep wrists neutral to avoid strain."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3113,7 +4549,27 @@
         "biceps",
         "middle back",
         "shoulders"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit at the lat pulldown with a close grip.",
+        "Pull the bar down to your upper chest.",
+        "Squeeze shoulder blades together.",
+        "Return slowly to the start."
+      ],
+      "form_cues": [
+        "Chest up.",
+        "Lean back slightly.",
+        "Elbows drive down."
+      ],
+      "common_mistakes": [
+        "Pulling with arms only.",
+        "Yanking the bar behind the neck."
+      ],
+      "injury_prevention_tips": [
+        "Keep the movement controlled; avoid momentum."
+      ],
+      "tempo_recommendation": "2-1-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3154,7 +4610,27 @@
       ],
       "secondary_muscles": [
         "forearms"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Hold a barbell with hands shoulder-width or slightly inside.",
+        "Stand tall with elbows pinned to your sides.",
+        "Curl the bar up to shoulder height.",
+        "Lower slowly to full extension."
+      ],
+      "form_cues": [
+        "Elbows in.",
+        "Chest up.",
+        "No swing."
+      ],
+      "common_mistakes": [
+        "Using hips to swing the weight.",
+        "Wrists bending excessively."
+      ],
+      "injury_prevention_tips": [
+        "Keep wrists neutral."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3190,7 +4666,27 @@
       ],
       "secondary_muscles": [
         "forearms"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on a bench, hold a dumbbell in one hand.",
+        "Place the back of your upper arm against your inner thigh.",
+        "Curl the dumbbell up toward your shoulder.",
+        "Lower slowly and repeat on the other side."
+      ],
+      "form_cues": [
+        "Arm anchored.",
+        "Palm up.",
+        "Squeeze at top."
+      ],
+      "common_mistakes": [
+        "Swinging the weight.",
+        "Lifting the elbow off the thigh."
+      ],
+      "injury_prevention_tips": [
+        "Use a lighter weight to focus on form."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3208,7 +4704,27 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your back with knees bent and feet flat.",
+        "Place hands behind your head.",
+        "Bring right elbow toward left knee while lifting left knee.",
+        "Alternate sides with each rep."
+      ],
+      "form_cues": [
+        "Exhale on effort.",
+        "Shoulder off floor.",
+        "Twist from ribs."
+      ],
+      "common_mistakes": [
+        "Pulling on the neck.",
+        "Moving only the elbows without torso rotation."
+      ],
+      "injury_prevention_tips": [
+        "Keep neck neutral; don't yank head forward."
+      ],
+      "tempo_recommendation": "1-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3233,7 +4749,27 @@
       "variation_on": [
         "curl"
       ],
-      "video": "https://www.youtube.com/watch?v=zC3nLlEvin4"
+      "video": "https://www.youtube.com/watch?v=zC3nLlEvin4",
+      "beginner_friendly_instructions": [
+        "Stand holding dumbbells with palms facing in.",
+        "Curl the right dumbbell toward your left shoulder.",
+        "Lower and repeat on the other side.",
+        "Keep elbows close to your body."
+      ],
+      "form_cues": [
+        "Palms facing in.",
+        "Elbows in.",
+        "Control the descent."
+      ],
+      "common_mistakes": [
+        "Swinging the weights.",
+        "Flaring elbows out."
+      ],
+      "injury_prevention_tips": [
+        "Keep wrists neutral."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3295,7 +4831,27 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your back with knees bent and feet flat.",
+        "Reach arms overhead with palms crossed.",
+        "Curl your chest toward your hips.",
+        "Lower slowly."
+      ],
+      "form_cues": [
+        "Arms aligned with head.",
+        "Exhale at top.",
+        "Lower back stays down."
+      ],
+      "common_mistakes": [
+        "Pulling head forward.",
+        "Lifting hips off the floor."
+      ],
+      "injury_prevention_tips": [
+        "Keep chin slightly tucked."
+      ],
+      "tempo_recommendation": "1-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3334,7 +4890,27 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your back with knees bent and feet flat.",
+        "Place hands lightly by your head (don't lock fingers).",
+        "Press lower back into the floor.",
+        "Lift shoulder blades a few inches, then lower."
+      ],
+      "form_cues": [
+        "Lower back down.",
+        "Exhale at top.",
+        "Slow and controlled."
+      ],
+      "common_mistakes": [
+        "Yanking the neck.",
+        "Using momentum to lift."
+      ],
+      "injury_prevention_tips": [
+        "Keep elbows wide and relaxed."
+      ],
+      "tempo_recommendation": "1-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3374,7 +4950,28 @@
       "secondary_muscles": [
         "abductors",
         "glutes"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on the floor with your right leg crossed over your left, keeping the right knee bent.",
+        "Keep your left leg straight and flat on the floor.",
+        "Place your left elbow on your right knee and your right hand on the floor for support.",
+        "Gently rotate your upper body to the right until you feel a stretch. Hold, then switch sides."
+      ],
+      "form_cues": [
+        "Sit tall.",
+        "Keep hips forward.",
+        "Gentle twist."
+      ],
+      "common_mistakes": [
+        "Hunching the back instead of rotating through the spine.",
+        "Using too much force and bouncing."
+      ],
+      "injury_prevention_tips": [
+        "Focus on a smooth rotation rather than forcing the twist.",
+        "Keep the supporting leg straight to stabilize the hip."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3394,7 +4991,28 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your back with arms extended toward the ceiling and knees bent at 90 degrees.",
+        "Exhale hard to press your lower back flat against the floor.",
+        "Slowly lower one leg toward the floor while keeping your back flat.",
+        "Return to the start and repeat on the other side."
+      ],
+      "form_cues": [
+        "Back flat.",
+        "Move slowly.",
+        "Exhale hard."
+      ],
+      "common_mistakes": [
+        "Letting your lower back arch off the floor.",
+        "Moving too fast and losing control."
+      ],
+      "injury_prevention_tips": [
+        "If your back arches, don't lower your leg as far.",
+        "Keep your ribcage down to prevent flaring."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3523,7 +5141,28 @@
       "secondary_muscles": [],
       "variation_on": [
         "crunch"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Secure your legs on a decline bench and lie back.",
+        "Place hands lightly by your head, elbows wide.",
+        "Press your lower back into the bench and lift your shoulders slightly.",
+        "Squeeze your abs at the top, then lower slowly."
+      ],
+      "form_cues": [
+        "Lower back glued to bench.",
+        "Lift with abs, not neck.",
+        "Small range of motion."
+      ],
+      "common_mistakes": [
+        "Pulling on your neck with your hands.",
+        "Using momentum to lift your shoulders."
+      ],
+      "injury_prevention_tips": [
+        "Keep a tennis ball's space between your chin and chest.",
+        "Stop if you feel strain in your lower back."
+      ],
+      "tempo_recommendation": "2-1-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3624,7 +5263,28 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Secure your legs on a decline bench and lie back.",
+        "Place one hand behind your head and the other on your thigh.",
+        "Crunch up and rotate your torso to bring your elbow toward the opposite knee.",
+        "Lower slowly and complete all reps on one side before switching."
+      ],
+      "form_cues": [
+        "Twist from the ribs.",
+        "Keep hips stable.",
+        "Exhale on the way up."
+      ],
+      "common_mistakes": [
+        "Yanking your neck to force the twist.",
+        "Moving your hips side to side."
+      ],
+      "injury_prevention_tips": [
+        "Keep the movement controlled to protect the spine.",
+        "Use a lighter weight if available to focus on form."
+      ],
+      "tempo_recommendation": "2-1-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3662,7 +5322,28 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your back on a decline bench and hold the top for support.",
+        "Lift your legs until they are parallel to the floor.",
+        "Curl your hips up toward your chest, lifting your butt off the bench.",
+        "Lower your hips back down with control."
+      ],
+      "form_cues": [
+        "Lift hips, not just legs.",
+        "Keep legs together.",
+        "Squeeze abs at the top."
+      ],
+      "common_mistakes": [
+        "Swinging your legs to create momentum.",
+        "Letting your hips drop too quickly."
+      ],
+      "injury_prevention_tips": [
+        "Keep a slight bend in the knees to reduce hip flexor strain.",
+        "Move slowly to keep tension on the abs."
+      ],
+      "tempo_recommendation": "2-1-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3734,7 +5415,28 @@
       ],
       "variation_on": [
         "dip"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit in the dip machine and grip the handles.",
+        "Keep your elbows tucked in close to your sides.",
+        "Push the handles down until your arms are straight.",
+        "Return to the starting position slowly."
+      ],
+      "form_cues": [
+        "Elbows in.",
+        "Push through triceps.",
+        "Control the negative."
+      ],
+      "common_mistakes": [
+        "Flaring elbows out.",
+        "Locking elbows hard at the bottom."
+      ],
+      "injury_prevention_tips": [
+        "Don't let your shoulders shrug up.",
+        "Keep a slight bend in your elbows at the bottom."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -3976,7 +5678,28 @@
       ],
       "secondary_muscles": [
         "forearms"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand holding dumbbells at your sides, palms facing forward.",
+        "Curl one dumbbell up toward your shoulder while keeping your elbow stationary.",
+        "Squeeze your bicep at the top, then lower slowly.",
+        "Alternate arms for each rep."
+      ],
+      "form_cues": [
+        "Elbows pinned to sides.",
+        "No swinging.",
+        "Squeeze at the top."
+      ],
+      "common_mistakes": [
+        "Swinging the weight using momentum.",
+        "Lifting the elbow away from the body."
+      ],
+      "injury_prevention_tips": [
+        "Use a weight you can control without rocking your torso.",
+        "Keep your wrists straight."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4003,7 +5726,28 @@
       "variation_on": [
         "flat bench press",
         "medium-grip bench press"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Lie on a flat bench with dumbbells at your chest, palms forward.",
+        "Press the dumbbells straight up until your arms are extended.",
+        "Squeeze your chest at the top.",
+        "Lower the weights slowly back to the start."
+      ],
+      "form_cues": [
+        "Shoulders packed.",
+        "Press straight up.",
+        "Control the descent."
+      ],
+      "common_mistakes": [
+        "Flaring elbows to 90 degrees (keep them at ~45).",
+        "Bouncing the weights off your chest."
+      ],
+      "injury_prevention_tips": [
+        "Keep your shoulder blades pulled together and down.",
+        "Don't fully lock out your elbows."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4023,7 +5767,28 @@
       "secondary_muscles": [
         "shoulders",
         "triceps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Lie on a flat bench holding dumbbells with palms facing each other.",
+        "Press the weights straight up over your chest.",
+        "Squeeze your chest at the top.",
+        "Lower slowly until the dumbbells are near your ribs."
+      ],
+      "form_cues": [
+        "Palms face in.",
+        "Elbows slightly tucked.",
+        "Press straight up."
+      ],
+      "common_mistakes": [
+        "Letting wrists bend backward.",
+        "Flaring elbows too wide."
+      ],
+      "injury_prevention_tips": [
+        "Keep wrists neutral to protect joints.",
+        "Shoulder blades should stay retracted."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4048,7 +5813,28 @@
       "variation_on": [
         "curl"
       ],
-      "video": "https://www.youtube.com/watch?v=ykJmrZ5v0Oo"
+      "video": "https://www.youtube.com/watch?v=ykJmrZ5v0Oo",
+      "beginner_friendly_instructions": [
+        "Stand holding dumbbells at your sides, palms facing forward.",
+        "Curl both dumbbells up toward your shoulders.",
+        "Squeeze your biceps at the top.",
+        "Lower the weights slowly back to the start."
+      ],
+      "form_cues": [
+        "Elbows stay close.",
+        "No body swing.",
+        "Squeeze hard."
+      ],
+      "common_mistakes": [
+        "Swinging the weights.",
+        "Moving elbows forward."
+      ],
+      "injury_prevention_tips": [
+        "Keep your upper arms vertical and stationary.",
+        "Use a weight that allows strict form."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4133,7 +5919,28 @@
         "forearms",
         "lats",
         "shoulders"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Lean your chest against an incline bench, holding dumbbells with arms straight down.",
+        "Pull the dumbbells up toward your hips by bending your elbows.",
+        "Squeeze your shoulder blades together at the top.",
+        "Lower slowly to the start."
+      ],
+      "form_cues": [
+        "Chest on bench.",
+        "Elbows back.",
+        "Squeeze back."
+      ],
+      "common_mistakes": [
+        "Pulling with your arms instead of your back.",
+        "Lifting your chest off the bench."
+      ],
+      "injury_prevention_tips": [
+        "Keep your neck neutral.",
+        "Don't jerk the weight up."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4174,7 +5981,28 @@
         "calves",
         "glutes",
         "hamstrings"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand holding dumbbells at your sides.",
+        "Step one foot forward and lower your hips until both knees are bent at 90 degrees.",
+        "Keep your front knee behind your toes.",
+        "Push back up to the start and switch legs."
+      ],
+      "form_cues": [
+        "Front shin vertical.",
+        "Torso upright.",
+        "Step far enough."
+      ],
+      "common_mistakes": [
+        "Front knee caving inward.",
+        "Leaning too far forward."
+      ],
+      "injury_prevention_tips": [
+        "Don't let your front knee go past your toes.",
+        "Keep your core braced."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4213,7 +6041,28 @@
       "primary_muscles": [
         "forearms"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie face down on a bench with one arm hanging down, holding a light dumbbell.",
+        "Bend your elbow to 90 degrees with your upper arm parallel to the floor.",
+        "Rotate your forearm up until it's parallel to the floor.",
+        "Lower slowly back down."
+      ],
+      "form_cues": [
+        "Upper arm still.",
+        "Rotate only forearm.",
+        "Use light weight."
+      ],
+      "common_mistakes": [
+        "Using too much weight.",
+        "Moving the upper arm."
+      ],
+      "injury_prevention_tips": [
+        "Start very light to protect the elbow.",
+        "Move smoothly, no jerking."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4250,7 +6099,28 @@
       "primary_muscles": [
         "forearms"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Lie on your side on a bench with one arm hanging down, holding a light dumbbell.",
+        "Bend your elbow to 90 degrees with your upper arm parallel to the floor.",
+        "Rotate your forearm up toward the ceiling until vertical.",
+        "Lower slowly back down."
+      ],
+      "form_cues": [
+        "Upper arm still.",
+        "Rotate smoothly.",
+        "Keep elbow bent."
+      ],
+      "common_mistakes": [
+        "Using momentum.",
+        "Straightening the elbow."
+      ],
+      "injury_prevention_tips": [
+        "Use a very light weight.",
+        "Keep the movement controlled."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4349,7 +6219,28 @@
       ],
       "secondary_muscles": [
         "biceps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand holding dumbbells at your sides, palms facing back.",
+        "Raise your arms out to the sides until they reach shoulder height.",
+        "Pause briefly at the top.",
+        "Lower slowly back down."
+      ],
+      "form_cues": [
+        "Elbows lead.",
+        "Arms at sides.",
+        "No swinging."
+      ],
+      "common_mistakes": [
+        "Lifting too high (past shoulders).",
+        "Using momentum to swing the weight."
+      ],
+      "injury_prevention_tips": [
+        "Keep a slight bend in your elbows.",
+        "Don't shrug your shoulders."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4370,7 +6261,28 @@
         "calves",
         "glutes",
         "hamstrings"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand holding dumbbells at your sides.",
+        "Step one foot backward and lower your hips until both knees are bent at 90 degrees.",
+        "Keep your torso upright and front shin vertical.",
+        "Push back up to the start and switch legs."
+      ],
+      "form_cues": [
+        "Step back far.",
+        "Keep torso tall.",
+        "Front knee behind toes."
+      ],
+      "common_mistakes": [
+        "Front knee caving in.",
+        "Leaning forward too much."
+      ],
+      "injury_prevention_tips": [
+        "Keep your core tight.",
+        "Ensure your front knee doesn't go past your toes."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4388,7 +6300,28 @@
       ],
       "secondary_muscles": [
         "traps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Stand holding light dumbbells at your sides, thumbs pointing up.",
+        "Raise your arms forward and slightly out to the side at a 30-degree angle.",
+        "Stop when your arms are parallel to the floor.",
+        "Lower slowly back down."
+      ],
+      "form_cues": [
+        "Thumbs up.",
+        "Arms at 30 degrees.",
+        "Control the movement."
+      ],
+      "common_mistakes": [
+        "Raising arms too high.",
+        "Using heavy weights."
+      ],
+      "injury_prevention_tips": [
+        "Use very light weights.",
+        "Keep shoulders down, not shrugged."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4412,7 +6345,28 @@
       ],
       "variation_on": [
         "calf raise"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on a bench with one foot on a block and a dumbbell on your thigh.",
+        "Lower your heel as far as you can to stretch the calf.",
+        "Raise your toes up high to contract the calf.",
+        "Complete reps on one leg, then switch."
+      ],
+      "form_cues": [
+        "Full range of motion.",
+        "Knee stays bent.",
+        "Control the stretch."
+      ],
+      "common_mistakes": [
+        "Bouncing at the bottom.",
+        "Using too much weight."
+      ],
+      "injury_prevention_tips": [
+        "Keep your foot straight ahead.",
+        "Don't rush the stretch."
+      ],
+      "tempo_recommendation": "1-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4433,7 +6387,28 @@
       ],
       "secondary_muscles": [
         "triceps"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Sit on a bench with back support, dumbbells at shoulder height.",
+        "Press the dumbbells straight up until your arms are extended.",
+        "Squeeze your shoulders at the top.",
+        "Lower slowly back to shoulder height."
+      ],
+      "form_cues": [
+        "Press straight up.",
+        "Back supported.",
+        "Don't arch."
+      ],
+      "common_mistakes": [
+        "Arching your lower back.",
+        "Banging dumbbells together at the top."
+      ],
+      "injury_prevention_tips": [
+        "Keep your core braced.",
+        "Don't fully lock out your elbows."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4450,7 +6425,28 @@
       "primary_muscles": [
         "traps"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Stand holding dumbbells at your sides, palms facing your body.",
+        "Shrug your shoulders up toward your ears.",
+        "Hold the squeeze at the top for a second.",
+        "Lower slowly back down."
+      ],
+      "form_cues": [
+        "Straight arms.",
+        "Shoulders to ears.",
+        "Hold the squeeze."
+      ],
+      "common_mistakes": [
+        "Bending elbows.",
+        "Rolling shoulders forward."
+      ],
+      "injury_prevention_tips": [
+        "Keep your neck neutral.",
+        "Avoid jerky movements."
+      ],
+      "tempo_recommendation": "1-1-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4467,7 +6463,28 @@
       "primary_muscles": [
         "abs"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Stand holding a dumbbell in one hand, other hand on hip.",
+        "Bend sideways at the waist toward the weighted side.",
+        "Keep your torso straight and don't lean forward.",
+        "Return to the start and complete reps on one side, then switch."
+      ],
+      "form_cues": [
+        "Bend only at waist.",
+        "Keep head neutral.",
+        "Slow and controlled."
+      ],
+      "common_mistakes": [
+        "Leaning forward or backward.",
+        "Using too much weight and twisting."
+      ],
+      "injury_prevention_tips": [
+        "Keep your core engaged.",
+        "Avoid over-stretching at the bottom."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4490,7 +6507,28 @@
         "glutes",
         "hamstrings",
         "lower back"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Hold dumbbells at your sides, feet shoulder-width apart.",
+        "Sit your hips back and down until your thighs are parallel to the floor.",
+        "Keep your chest up and back straight.",
+        "Push through your heels to stand back up."
+      ],
+      "form_cues": [
+        "Chest up.",
+        "Knees track over toes.",
+        "Heels down."
+      ],
+      "common_mistakes": [
+        "Knees caving inward.",
+        "Lifting your heels off the floor."
+      ],
+      "injury_prevention_tips": [
+        "Don't let your knees go past your toes.",
+        "Keep your core braced throughout."
+      ],
+      "tempo_recommendation": "2-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4513,7 +6551,28 @@
         "glutes",
         "hamstrings",
         "lower back"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Hold dumbbells at your sides with a bench behind you.",
+        "Sit your hips back and down until you lightly touch the bench.",
+        "Keep your chest up and back straight.",
+        "Stand back up without sitting fully on the bench."
+      ],
+      "form_cues": [
+        "Touch and go.",
+        "Chest up.",
+        "Control the descent."
+      ],
+      "common_mistakes": [
+        "Plopping onto the bench.",
+        "Letting knees cave in."
+      ],
+      "injury_prevention_tips": [
+        "Use a stable bench.",
+        "Keep your weight in your heels."
+      ],
+      "tempo_recommendation": "3-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4534,7 +6593,28 @@
         "calves",
         "glutes",
         "hamstrings"
-      ]
+      ],
+      "beginner_friendly_instructions": [
+        "Hold dumbbells at your sides and stand facing a step or bench.",
+        "Place one foot fully on the step.",
+        "Push through that heel to lift your body up onto the step.",
+        "Step back down and repeat on the same leg before switching."
+      ],
+      "form_cues": [
+        "Full foot on step.",
+        "Drive through heel.",
+        "Control the descent."
+      ],
+      "common_mistakes": [
+        "Pushing off the back foot.",
+        "Using momentum to swing up."
+      ],
+      "injury_prevention_tips": [
+        "Make sure the step is stable.",
+        "Keep your knee aligned with your foot."
+      ],
+      "tempo_recommendation": "1-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -4566,7 +6646,28 @@
       "primary_muscles": [
         "lats"
       ],
-      "secondary_muscles": []
+      "secondary_muscles": [],
+      "beginner_friendly_instructions": [
+        "Stand with feet shoulder-width apart.",
+        "Swing your straight arms up in front of you.",
+        "Gradually increase the height of the swing with each rep.",
+        "Continue for 5-10 swings until your arms are overhead."
+      ],
+      "form_cues": [
+        "Keep arms straight.",
+        "Smooth motion.",
+        "Gradual increase."
+      ],
+      "common_mistakes": [
+        "Jerking the arms up.",
+        "Hunching shoulders."
+      ],
+      "injury_prevention_tips": [
+        "Move within a comfortable range.",
+        "Don't force the stretch."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",

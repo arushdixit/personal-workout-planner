@@ -1,7 +1,13 @@
 {
   "categories": [
     "strength",
-    "stretching"
+    "stretching",
+    "plyometrics",
+    "strongman",
+    "cardio",
+    "olympic weightlifting",
+    "crossfit",
+    "calisthenics"
   ],
   "equipment": [
     "none",
@@ -43,7 +49,29 @@
       "variations_on": [
         "sit-up"
       ],
-      "video": "https://www.youtube.com/watch?v=wm47Swzn_98"
+      "video": "https://www.youtube.com/watch?v=wm47Swzn_98",
+      "beginner_friendly_instructions": [
+        "Lie on your back with knees bent and feet flat on the floor. Have a partner or anchor hold your feet down gently.",
+        "Place your hands lightly behind your ears or crossed over your chest to avoid pulling on your neck.",
+        "Engage your abs to lift your upper back off the floor until your torso is roughly perpendicular to your legs.",
+        "Lower your back to the floor with control, stopping just before your shoulder blades completely touch the ground."
+      ],
+      "form_cues": [
+        "Lead with your chest, not your head.",
+        "Keep your lower back pressed into the floor on the way down.",
+        "Exhale as you crunch up to maintain core tension."
+      ],
+      "common_mistakes": [
+        "Yanking on your neck with your hands (creates cervical strain).",
+        "Using momentum by swinging your legs or hips.",
+        "Hyperextending the lower back at the top of the movement."
+      ],
+      "injury_prevention_tips": [
+        "If your neck hurts, cross your arms over your chest instead of behind your head.",
+        "Keep your chin tucked slightly to maintain a neutral cervical spine."
+      ],
+      "tempo_recommendation": "2-0-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -64,7 +92,29 @@
       "secondary_muscles": [
         "calves"
       ],
-      "video": "https://www.youtube.com/watch?v=h_yZV27H684"
+      "video": "https://www.youtube.com/watch?v=h_yZV27H684",
+      "beginner_friendly_instructions": [
+        "Lie flat on your back with both legs straight.",
+        "Lift one leg straight up toward the ceiling while keeping the knee straight.",
+        "If you lack flexibility, hold the back of your thigh or calf to assist the leg up.",
+        "Lower the leg back down under control to the starting position and repeat."
+      ],
+      "form_cues": [
+        "Keep the working leg as straight as possible.",
+        "Keep your hips glued to the floor.",
+        "Move slowly to feel the stretch in the back of the thigh."
+      ],
+      "common_mistakes": [
+        "Bending the knee too much during the lift.",
+        "Lifting the opposite hip off the floor to create false range of motion.",
+        "Using a jerky momentum to get the leg higher."
+      ],
+      "injury_prevention_tips": [
+        "Stop immediately if you feel sharp pain behind the knee; that is usually a nerve or hamstring tendon issue.",
+        "Only lift to the point of moderate tension, never pain."
+      ],
+      "tempo_recommendation": "3-0-1-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -86,7 +136,29 @@
       "variation_on": [
         "crunch"
       ],
-      "video": "https://www.youtube.com/watch?v=zDSvdyyxH4w"
+      "video": "https://www.youtube.com/watch?v=zDSvdyyxH4w",
+      "beginner_friendly_instructions": [
+        "Select a very light weight and sit on the machine, placing your feet under the pads.",
+        "Grip the handles or place your arms on the side pads, keeping your elbows bent at 90 degrees.",
+        "Keep your chest lifted and crunch down by bringing your ribs toward your hips.",
+        "Return to the starting position slowly without letting the weight stack touch between reps."
+      ],
+      "form_cues": [
+        "Pull your belly button in toward your spine before you move.",
+        "Round your upper back slightly as you crunch down.",
+        "Keep your hips still—don't rock back and forth."
+      ],
+      "common_mistakes": [
+        "Pulling with your arms instead of using your abs.",
+        "Moving too fast and using hip flexors instead of abs.",
+        "Slouching at the bottom and losing tension."
+      ],
+      "injury_prevention_tips": [
+        "If the machine feels awkward on your back, try a standard crunch on the floor instead.",
+        "Start light to avoid cramping the hip flexors."
+      ],
+      "tempo_recommendation": "2-1-2-0",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -125,7 +197,29 @@
         "adductors"
       ],
       "secondary_muscles": [],
-      "video": "https://www.youtube.com/watch?v=h1xQabdHdes"
+      "video": "https://www.youtube.com/watch?v=h1xQabdHdes",
+      "beginner_friendly_instructions": [
+        "Place a foam roller vertically on the floor.",
+        "Lie face down and place the inside of one thigh on the foam roller.",
+        "Bend the knee slightly and gently roll from just below the hip down to just above the knee.",
+        "When you find a tender spot, pause for 10–15 seconds and breathe deeply before moving on."
+      ],
+      "form_cues": [
+        "Keep your core tight to avoid sinking into your lower back.",
+        "Relax the inner thigh muscle as you roll.",
+        "Keep the knee bent slightly to avoid straining the hip joint."
+      ],
+      "common_mistakes": [
+        "Rolling directly over a bony area like the knee or hip joint.",
+        "Holding your breath, which increases muscle tension.",
+        "Applying too much body weight too quickly."
+      ],
+      "injury_prevention_tips": [
+        "Never roll the lower back; focus strictly on the inner thigh area.",
+        "If it feels like a bruise, skip that spot and come back to it later."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "stretching",
@@ -144,7 +238,29 @@
         "adductors"
       ],
       "secondary_muscles": [],
-      "video": "https://www.youtube.com/watch?v=ScGo0VV85qA"
+      "video": "https://www.youtube.com/watch?v=ScGo0VV85qA",
+      "beginner_friendly_instructions": [
+        "Lie on your back near the edge of a bench or bed.",
+        "Bring your legs up toward the ceiling and let them fall open (split) into a comfortable stretch.",
+        "Have a partner gently push your legs further apart, or use your own hands to guide them if solo.",
+        "Hold the stretch for 20–30 seconds, then bring your legs back together to relax."
+      ],
+      "form_cues": [
+        "Keep your knees slightly bent to protect the joint.",
+        "Relax your hips and let gravity help the stretch.",
+        "Breathe deeply and exhale as your legs are pushed open."
+      ],
+      "common_mistakes": [
+        "Forcing the stretch too far, too fast (can tear adductors).",
+        "Locking the knees straight, which strains the hamstrings instead.",
+        "Not communicating with your partner about pain levels."
+      ],
+      "injury_prevention_tips": [
+        "Always tell your partner to stop if you feel sharp pain.",
+        "Warm up briefly (e.g., walking or leg swings) before this static stretch."
+      ],
+      "tempo_recommendation": "",
+      "difficulty": "Beginner"
     },
     {
       "category": "strength",
@@ -267,6 +383,29 @@
       ],
       "secondary_muscles": [
         "forearms"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Assume a comfortable stance with one foot slightly in front of the other.",
+        "Begin by pushing off with the front leg, driving the opposite knee forward and as high as possible before landing. Attempt to cover as much distance to each side with each bound.",
+        "It may help to use a line on the ground to guage distance from side to side.",
+        "Repeat the sequence with the other leg."
+      ],
+      "name": "Alternate Leg Diagonal Bound",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "hamstrings"
       ]
     },
     {
@@ -534,6 +673,84 @@
       ]
     },
     {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "This trainer is effective for developing Atlas Stone strength for those who don't have access to stones, and are typically made from bar ends or heavy pipe.",
+        "Begin by loading the desired weight onto the bar. Straddle the weight, wrapping your arms around the implement, bending at the hips.",
+        "Begin by pulling the weight up past the knees, extending through the hips. As the weight clears the knees, it can be lapped by resting it on your thighs and sitting back, hugging it tightly to your chest.",
+        "Finish the movement by extending through your hips and knees to raise the weight as high as possible. The weight can be returned to the lap or to the ground for successive repetitions."
+      ],
+      "name": "Atlas Stone Trainer",
+      "primary_muscles": [
+        "lower back"
+      ],
+      "secondary_muscles": [
+        "biceps",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "quads"
+      ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Begin with the atlas stone between your feet. Bend at the hips to wrap your arms vertically around the Atlas Stone, attempting to get your fingers underneath the stone. Many stones will have a small flat portion on the bottom, which will make the stone easier to hold.",
+        "Pulling the stone into your torso, drive through the back half of your feet to pull the stone from the ground.",
+        "As the stone passes the knees, lap it by sitting backward, pulling the stone on top of your thighs.",
+        "Sit low, getting the stone high onto your chest as you change your grip to reach over the stone. Stand, driving through with your hips. Close distance to the loading platform, and lean back, extending the hips to get the stone as high as possible."
+      ],
+      "name": "Atlas Stones",
+      "primary_muscles": [
+        "lower back"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "adductors",
+        "biceps",
+        "calves",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "middle back",
+        "quads",
+        "traps"
+      ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Approach the bar so that it is centered over your feet. You feet should be about hip width apart. Bend at the hip to grip the bar at shoulder width, allowing your shoulder blades to protract. Typically, you would use an over/under grip.",
+        "With your feet and your grip set, take a big breath and then lower your hips and flex the knees until your shins contact the bar. Look forward with your head, keep your chest up and your back arched, and begin driving through the heels to move the weight upward.",
+        "After the bar passes the knees, aggressively pull the bar back, pulling your shoulder blades together as you drive your hips forward into the bar.",
+        "Lower the bar by bending at the hips and guiding it to the floor."
+      ],
+      "name": "Axle Deadlift",
+      "primary_muscles": [
+        "lower back"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "middle back",
+        "quads",
+        "traps"
+      ],
+      "variation_on": [
+        "deadlift"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "bands"
@@ -554,6 +771,44 @@
         "middle back",
         "triceps"
       ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Load a sled with the desired weight, attaching a rope or straps to the sled that you can hold onto.",
+        "Begin the exercise by moving backwards for a given distance. Leaning back, extend through the legs for short steps to move as quickly as possible."
+      ],
+      "name": "Backward Drag",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "This exercise is best done with a partner. If you lack a partner, the ball can be thrown and retrieved or thrown against a wall.",
+        "Begin standing a few meters in front of your partner, both facing the same direction. Begin holding the ball between your legs.",
+        "Squat down and then forcefully reverse direction, coming to full extension and you toss the ball over your head to your partner.",
+        "Your partner can then roll the ball back to you. Repeat for the desired number of repetitions."
+      ],
+      "name": "Backward Medicine Ball Throw",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": []
     },
     {
       "category": "strength",
@@ -1349,6 +1604,25 @@
       ]
     },
     {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Wearing either a harness or a loose weight belt, attach the chain to the back so that you will be facing away from the sled. Bend down so that your hands are on the ground. Your back should be flat and knees bent. This is your starting position.",
+        "Begin by driving with legs, alternating left and right. Use your hands to maintain balance and to help pull. Try to keep your back flat as you move over a given distance."
+      ],
+      "name": "Bear Crawl Sled Drags",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "stretching",
       "equipment": [
         "other"
@@ -1389,6 +1663,28 @@
       ],
       "variation_on": [
         "dip"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Begin with a box or bench 1-2 feet in front of you. Stand with your feet shoulder width apart. This will be your starting position.",
+        "Perform a short squat in preparation for the jump; swing your arms behind you.",
+        "Rebound out of this position, extending through the hips, knees, and ankles to jump as high as possible. Swing your arms forward and up.",
+        "Jump over the bench, landing with the knees bent, absorbing the impact through the legs.",
+        "Turn around and face the opposite direction, then jump back over the bench."
+      ],
+      "name": "Bench Jump",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
       ]
     },
     {
@@ -1447,6 +1743,27 @@
       "variation_on": [
         "flat bench press",
         "medium-grip bench press"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Stand on the ground with one foot resting on a bench or box with your heel close to the edge.",
+        "Push off with your foot on top of the bench, extending through the hip and knee.",
+        "Land with the opposite foot on top of the box, returning your other foot back to the start position.",
+        "Continue alternating from one foot to another to complete the set."
+      ],
+      "name": "Bench Sprint",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
       ]
     },
     {
@@ -1685,6 +2002,43 @@
       ]
     },
     {
+      "category": "cardio",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "To begin, seat yourself on the bike and adjust the seat to your height."
+      ],
+      "name": "Bicycling",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
+      "category": "cardio",
+      "equipment": [
+        "machine"
+      ],
+      "instructions": [
+        "To begin, seat yourself on the bike and adjust the seat to your height.",
+        "Select the desired option from the menu. You may have to start pedaling to turn it on. You can use the manual setting, or you can select a program to use. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise. The level of resistance can be changed throughout the workout. The handles can be used to monitor your heart rate to help you stay at an appropriate intensity."
+      ],
+      "name": "Bicycling, Stationary",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "barbell"
@@ -1881,6 +2235,52 @@
         "abs"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Assume a relaxed stance facing the box or platform approximately an arm's length away. Arms should be down at the sides and legs slightly bent.",
+        "Using the arms to aid in the initial burst, jump upward and forward, landing with feet simultaneously on top of the box or platform.",
+        "Immediately drop or jump back down to the original starting place; then repeat the sequence."
+      ],
+      "name": "Box Jump (Multiple Response)",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "quads"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "You will need several boxes lined up about 8 feet apart.",
+        "Begin facing the first box with one leg slightly behind the other.",
+        "Drive off the back leg, attempting to gain as much height with the hips as possible.",
+        "Immediately upon landing on the box, drive the other leg forward and upward to gain height and distance, leaping from the box. Land between the first two boxes with the same leg that landed on the first box.",
+        "Then, step to the next box and repeat."
+      ],
+      "name": "Box Skip",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "quads"
+      ]
     },
     {
       "category": "strength",
@@ -2687,6 +3087,32 @@
       "secondary_muscles": []
     },
     {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "This event apparatus typically has neutral grip handles, however some have a straight bar that you can approach like a normal deadlift. The apparatus can be loaded with a vehicle or other heavy objects such as tractor tires or kegs.",
+        "Center yourself between the handles if you are a strong squatter, or back a couple inches if you are a strong deadlifter. You feet should be about hip width apart. Bend at the hip to grip the handles. With your feet and your grip set, take a big breath and then lower your hips and flex the knees.",
+        "Look forward with your head, keep your chest up and your back arched, and begin driving through the heels to move the weight upward. As the weight comes up, pull your shoulder blades together as you drive your hips forward.",
+        "Lower the weight by bending at the hips and guiding it to the floor."
+      ],
+      "name": "Car Deadlift",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "traps"
+      ],
+      "variation_on": [
+        "deadlift"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "barbell"
@@ -2706,6 +3132,29 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Begin with your feet a few inches apart and your left arm up in a relaxed, athletic position.",
+        "With your right foot, quick step behind and pull the knee up.",
+        "Fire your arms back up when you pull the right knee, being sure that your knee goes straight up and down. Avoid turning your feet as you move and continue to look forward as you move to the side."
+      ],
+      "name": "Carioca Quick Step",
+      "primary_muscles": [
+        "adductors"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "abductors",
+        "calves",
+        "glutes",
+        "hamstrings",
+        "quads"
+      ]
+    },
+    {
       "category": "stretching",
       "equipment": [
         "none"
@@ -2722,6 +3171,26 @@
       "secondary_muscles": [
         "middle back",
         "traps"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "Begin standing while facing a wall or a partner.",
+        "Using both hands, position the ball behind your head, stretching as much as possible, and forcefully throw the ball forward.",
+        "Ensure that you follow your throw through, being prepared to receive your rebound from your throw. If you are throwing against the wall, make sure that you stand close enough to the wall to receive the rebound, and aim a little higher than you would with a partner."
+      ],
+      "name": "Catch and Overhead Throw",
+      "primary_muscles": [
+        "lats"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "chest",
+        "shoulders"
       ]
     },
     {
@@ -2856,6 +3325,87 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "Begin in a kneeling position facing a wall or utilize a partner. Hold the ball with both hands tight into the chest.",
+        "Execute the pass by exploding forward and outward with the hips while pushing the ball as hard as possible.",
+        "Follow through by falling forward, catching yourself with your hands.",
+        "Immediately return to an upright position. Repeat for the desired number of repetitions."
+      ],
+      "name": "Chest Push (multiple response)",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "Begin in a kneeling position holding the medicine ball with both hands tightly into the chest.",
+        "Execute the pass by exploding forward and outward with the hips while pushing the ball as far as possible.",
+        "Follow through by falling forward, catching yourself with your hands."
+      ],
+      "name": "Chest Push (single response)",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "Begin in a three point stance, squatted down with your back flat and one hand on the ground. Place the medicine ball directly in front of you.",
+        "To begin, take your first step as you pull the ball to your chest, positioning both hands to prepare for the throw.",
+        "As you execute the second step, explosively release the ball forward as hard as possible."
+      ],
+      "name": "Chest Push from 3 point stance",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "Begin in an athletic stance with the knees bent, hips back, and back flat. Hold the medicine ball near your legs. This will be your starting position.",
+        "While taking your first step draw the medicine ball into your chest.",
+        "As you take the second step, explosively push the ball forward, immediately sprinting for 10 yards after the release. If you are really fast, you can catch your own pass!"
+      ],
+      "name": "Chest Push with Run Release",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
       "category": "stretching",
       "equipment": [
         "exercise ball"
@@ -2930,6 +3480,152 @@
       ]
     },
     {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "The circus bell is an oversized dumbbell with a thick handle. Begin with the dumbbell between your feet, and grip the handle with both hands.",
+        "Clean the dumbbell by extending through your hips and knees to deliver the implement to the desired shoulder, letting go with the extra hand.",
+        "Ensure that you get one of the dumbbell heads behind the shoulder to keep from being thrown off balance. To raise it overhead, dip by flexing the knees, and the drive upwards as you extend the dumbbell overhead, leaning slightly away from it as you do so.",
+        "Carefully guide the bell back to the floor, keeping it under control as much as possible. It is best to perform this event on a thick rubber mat to prevent damage to the floor."
+      ],
+      "name": "Circus Bell",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "traps",
+        "triceps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "With a barbell on the floor close to the shins, take an overhand (or hook) grip just outside the legs. Lower your hips with the weight focused on the heels, back straight, head facing forward, chest up, with your shoulders just in front of the bar. This will be your starting position.",
+        "",
+        "Begin the first pull by driving through the heels, extending your knees. Your back angle should stay the same, and your arms should remain straight. Move the weight with control as you continue to above the knees.",
+        "Next comes the second pull, the main source of acceleration for the clean. As the bar approaches the mid-thigh position, begin extending through the hips. In a jumping motion, accelerate by extending the hips, knees, and ankles, using speed to move the bar upward. There should be no need to actively pull through the arms to accelerate the weight; at the end of the second pull, the body should be fully extended, leaning slightly back, with the arms still extended.",
+        "As full extension is achieved, transition into the third pull by aggressively shrugging and flexing the arms with the elbows up and out. At peak extension, aggressively pull yourself down, rotating your elbows under the bar as you do so. Receive the bar in a front squat position, the depth of which is dependent upon the height of the bar at the end of the third pull. The bar should be racked onto the protracted shoulders, lightly touching the throat with the hands relaxed. Continue to descend to the bottom squat position, which will help in the recovery.",
+        "Immediately recover by driving through the heels, keeping the torso upright and elbows up. Continue until you have risen to a standing position."
+      ],
+      "name": "Clean",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "forearms",
+        "glutes",
+        "lower back",
+        "quads",
+        "shoulders",
+        "traps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin standing with a barbell close to your shins. Your feet should be directly under your hips with your feet turned out slightly. Grip the bar with a double overhand grip or hook grip, about shoulder width apart. Squat down to the bar. Your spine should be in full extension, with a back angle that places your shoulders in front of the bar and your back as vertical as possible.",
+        "Begin by driving through the floor through the front of your heels. As the bar travels upward, maintain a constant back angle. Flare your knees out to the side to help keep them out of the bar's path.",
+        "After the bar crosses the knees, complete the lift by driving the hips into the bar until your hips and knees are extended."
+      ],
+      "name": "Clean Deadlift",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "glutes",
+        "lower back",
+        "middle back",
+        "quads",
+        "traps"
+      ],
+      "variation_on": [
+        "deadlift"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "With a barbell on the floor close to the shins, take an overhand or hook grip just outside the legs. Lower your hips with the weight focused on the heels, back straight, head facing forward, chest up, with your shoulders just in front of the bar. This will be your starting position.",
+        "Begin the first pull by driving through the heels, extending your knees. Your back angle should stay the same, and your arms should remain straight and elbows out. Move the weight with control as you continue to above the knees.",
+        "Next comes the second pull, the main source of acceleration for the clean. As the bar approaches the mid-thigh position, begin extending through the hips. In a jumping motion, accelerate by extending the hips, knees, and ankles, using speed to move the bar upward. There should be no need to actively pull through the arms to accelerate the weight; at the end of the second pull, the body should be fully extended, leaning slightly back, with the arms still extended. Full extension should be violent and abrupt, and ensure that you do not prolong the extension for longer than necessary."
+      ],
+      "name": "Clean Pull",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "traps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a shoulder width, double overhand or hook grip, with the bar hanging at the mid thigh position. Your back should be straight and inclined slightly forward.",
+        "Shrug your shoulders towards your ears. While this exercise can usually by loaded with heavier weight than a clean, avoid overloading to the point that the execution slows down."
+      ],
+      "name": "Clean Shrug",
+      "primary_muscles": [
+        "traps"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "shoulders"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "With a barbell on the floor close to the shins, take an overhand or hook grip just outside the legs. Lower your hips with the weight focused on the heels, back straight, head facing forward, chest up, with your shoulders just in front of the bar. This will be your starting position.",
+        "Begin the first pull by driving through the heels, extending your knees. Your back angle should stay the same, and your arms should remain straight. Move the weight with control as you continue to above the knees.",
+        "Next comes the second pull, the main source of acceleration for the clean. As the bar approaches the mid-thigh position, begin extending through the hips. In a jumping motion, accelerate by extending the hips, knees, and ankles, using speed to move the bar upward. There should be no need to actively pull through the arms to accelerate the weight; at the end of the second pull, the body should be fully extended, leaning slightly back, with the arms still extended.",
+        "As full extension is achieved, transition into the third pull by aggressively shrugging and flexing the arms with the elbows up and out. At peak extension, aggressively pull yourself down, rotating your elbows under the bar as you do so. Receive the bar in a front squat position, the depth of which is dependent upon the height of the bar at the end of the third pull. The bar should be racked onto the protracted shoulders, lightly touching the throat with the hands relaxed. Continue to descend to the bottom squat position, which will help in the recovery.",
+        "Immediately recover by driving through the heels, keeping the torso upright and elbows up. Continue until you have risen to a standing position.",
+        "The second phase is the jerk, which raises the weight overhead. Standing with the weight racked on the front of the shoulders, begin with the dip. With your feet directly under your hips, flex the knees without moving the hips backward. Go down only slightly, and reverse direction as powerfully as possible.",
+        "Drive through the heels create as much speed and force as possible, and be sure to move your head out of the way as the bar leaves the shoulders.",
+        "At this moment as the feet leave the floor, the feet must be placed into the receiving position as quickly as possible. In the brief moment the feet are not actively driving against the platform, the athletes effort to push the bar up will drive them down. The feet should be split, with one foot forward, and one foot back. Receive the bar with the arms locked out overhead. Return to a standing position."
+      ],
+      "name": "Clean and Jerk",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "quads",
+        "traps",
+        "triceps"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "barbell"
@@ -2958,6 +3654,29 @@
         "shoulders",
         "traps",
         "triceps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "With a barbell on boxes or stands of the desired height, take an overhand or hook grip just outside the legs. Lower your hips with the weight focused on the heels, back straight, head facing forward, chest up, with your shoulders just in front of the bar. This will be your starting position.",
+        "Begin the first pull by driving through the heels, extending your knees. Your back angle should stay the same, and your arms should remain straight with the elbows pointed out.",
+        "As full extension is achieved, transition into the receiving position by aggressively shrugging and flexing the arms with the elbows up and out. Aggressively pull yourself down, rotating your elbows under the bar as you do so. Receive the bar in a front squat position, the depth of which is dependent upon the height of the bar at the end of the third pull. The bar should be racked onto the protracted shoulders, lightly touching the throat with the hands relaxed. Continue to descend to the bottom squat position, which will help in the recovery.",
+        "Immediately recover by driving through the heels, keeping the torso upright and elbows up. Continue until you have risen to a standing position. Return the weight to the boxes for the next rep."
+      ],
+      "name": "Clean from Blocks",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings",
+        "shoulders",
+        "traps"
       ]
     },
     {
@@ -3173,6 +3892,29 @@
       "secondary_muscles": []
     },
     {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "With the weight loaded, take a zurcher hold on the end of the implement. Place the bar in the crook of the elbow and hold onto your wrist. Try to keep the weight off of the forearms.",
+        "Begin by lifting the weight from the ground. Keep a tight, upright posture as you being to walk, taking short, fast steps. Look up and away as you turn in a circle. Do not hold your breath during the event. Continue walking until you complete one or more complete turns."
+      ],
+      "name": "Conan's Wheel",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "biceps",
+        "calves",
+        "forearms",
+        "lower back",
+        "shoulders",
+        "traps"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "dumbbell"
@@ -3277,6 +4019,23 @@
         "glutes",
         "hamstrings",
         "quads"
+      ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "In the crucifix, you statically hold weights out to the side for time. While the event can be practiced using dumbbells, it is best to practice with one of the various implements used, such as axes and hammers, as it feels different.",
+        "Begin standing, and raise your arms out to the side holding the implements. Your arms should be parallel to the ground. In competition, judges or sensors are used to let you know when you break parallel. Hold for as long as you can. Typically, the weights should be heavy enough that you fail in 30-60 seconds."
+      ],
+      "name": "Crucifix",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "forearms"
       ]
     },
     {
@@ -3712,6 +4471,29 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "For this drill you will need two boxes or benches, one 12 to 16 inches high and the other 22 to 26 inches high.",
+        "Stand on one of the two boxes with arms at the sides; feet should be together and slightly off the edge as in the depth jump. Place the other box approximately two or three feet in front of and facing the performer.",
+        "Begin by dropping off the initial box, landing and simultaneously taking off with both feet.",
+        "Rebound by driving upward and outward as intensely as possible, using the arms and full extension of the body to jump onto the higher box. Again, allow the legs to absorb the impact."
+      ],
+      "name": "Depth Jump Leap",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "description": "Dips performed on a machine",
       "equipment": [
@@ -3922,6 +4704,29 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Begin standing with your knees slightly bent.",
+        "Quickly squat a short distance, flexing the hips and knees, and immediately extend to jump for maximum vertical height.",
+        "As you go up, tuck your heels by flexing the knees, attempting to touch the buttocks.",
+        "Finish the motion by landing with the knees only partially bent, using your legs to absorb the impact."
+      ],
+      "name": "Double Leg Butt Kick",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "exercise ball"
@@ -3956,6 +4761,25 @@
       ],
       "secondary_muscles": [
         "forearms"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Position low boxes or other platforms 2-3 feet apart.",
+        "Move to a pushup position between them, supporting yourself by placing your hands on the boxes.",
+        "With good posture, drop from the platforms by pressing up and moving your hands to shoulder width, cushioning your landing by absorbing the impact through the arm."
+      ],
+      "name": "Drop Push",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "shoulders",
+        "triceps"
       ]
     },
     {
@@ -4391,6 +5215,27 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "dumbbell"
+      ],
+      "instructions": [
+        "Position a box a couple feet to the side of a bench. Hold a dumbbell to your chest with both hands and seat yourself on the bench facing the box. This will be your starting position.",
+        "Plant your feet firmly on the ground as you lean forward, extending through the hips and knees to jump up and forward.",
+        "Land on the box with both feet, absorbing the impact by allowing the hips and knees to bend.",
+        "Step down and return to the starting position."
+      ],
+      "name": "Dumbbell Seated Box Jump",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "dumbbell"
@@ -4734,6 +5579,25 @@
       ]
     },
     {
+      "category": "cardio",
+      "equipment": [
+        "machine"
+      ],
+      "instructions": [
+        "To begin, step onto the elliptical and select the desired option from the menu. Most ellipticals have a manual setting, or you can select a program to run. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise. Elevation can be adjusted to change the intensity of the workout.",
+        "The handles can be used to monitor your heart rate to help you stay at an appropriate intensity."
+      ],
+      "name": "Elliptical Trainer",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "exercise ball"
@@ -4855,6 +5719,51 @@
       ],
       "secondary_muscles": [
         "middle back"
+      ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "There are various implements that can be used for the farmers walk. These can also be performed with heavy dumbbells or short bars if these implements aren't available. Begin by standing between the implements.",
+        "After gripping the handles, lift them up by driving through your heels, keeping your back straight and your head up.",
+        "Walk taking short, quick steps, and don't forget to breathe. Move for a given distance, typically 50-100 feet, as fast as possible."
+      ],
+      "name": "Farmer's Walk",
+      "primary_muscles": [
+        "forearms"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "quads",
+        "traps"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Start in a relaxed position with one leg slightly forward. This will be your starting position.",
+        "Skip by executing a step-hop pattern of right-right-step to left-left-step, and so on, alternating back and forth.",
+        "Perform fast skips by maintaining close contact with the ground and reduce air time, moving as quickly as possible."
+      ],
+      "name": "Fast Skipping",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "hamstrings"
       ]
     },
     {
@@ -5043,6 +5952,50 @@
       "secondary_muscles": []
     },
     {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Attach a dual handled chain or rope attachment to the sled. You should be facing away from the sled, holding a handle in each hand.",
+        "Begin the movement by moving forward for one step. Leaning forward, extend through the legs and hips to move, pausing with each step to extend through the elbows, pressing your hands forward. Step forward until you return to the start position prepared to press."
+      ],
+      "name": "Forward Drag with Press",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings",
+        "quads",
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "This drill teaches you the proper positioning of both the bar and your body during the clean and front squat.",
+        "Place the barbell on the front of the shoulders, releasing your grip and extending your arms out in front of you. The shoulders should be pushed forward to create a shelf, and the bar should be in contact with the throat. Ensure that you only move your shoulder blades forward; don't round the thoracic spine.",
+        "Squat by flexing the knees and hips, sitting in between your legs. Keep the torso upright, the arms up, and the shoulders forward, and the bar should stay in place. Go to the bottom of the squat, until your hamstrings contact your calves.",
+        "Return to the upright position by driving through the front of the heel and extending the knees and hips."
+      ],
+      "name": "Frankenstein Squat",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "none"
@@ -5151,6 +6104,29 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Begin with a box of an appropriate height 1-2 feet in front of you. Stand with your feet should width apart. This will be your starting position.",
+        "Perform a short squat in preparation for jumping, swinging your arms behind you.",
+        "Rebound out of this position, extending through the hips, knees, and ankles to jump as high as possible. Swing your arms forward and up.",
+        "Land on the box with the knees bent, absorbing the impact through the legs. You can jump from the box back to the ground, or preferably step down one leg at a time."
+      ],
+      "name": "Front Box Jump",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "quads"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "cable"
@@ -5167,6 +6143,30 @@
         "shoulders"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Set up a row of cones or other small barriers, placing them a few feet apart.",
+        "Stand in front of the first cone with your feet shoulder width apart. This will be your starting position.",
+        "Begin by jumping with both feet over the first cone, swinging both arms as you jump.",
+        "Absorb the impact of landing by bending the knees, rebounding out of the first leap by jumping over the next cone.",
+        "Continue until you have jumped over all of the cones."
+      ],
+      "name": "Front Cone Hops (or hurdle hops)",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
     },
     {
       "category": "strength",
@@ -5632,6 +6632,107 @@
       ]
     },
     {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a shoulder width, double overhand or hook grip, with the bar hanging at the mid thigh position. Your back should be straight and inclined slightly forward.",
+        "Begin by aggressively extending through the hips, knees and ankles, driving the weight upward. As you do so, shrug your shoulders towards your ears.",
+        "Immediately recover by driving through the heels, keeping the torso upright and elbows up. Continue until you have risen to a standing position."
+      ],
+      "name": "Hang Clean",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "shoulders",
+        "traps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a shoulder width, double overhand or hook grip, with the bar hanging just below the knees. Your back should be straight and inclined slightly forward.",
+        "Begin by aggressively extending through the hips, knees and ankles, driving the weight upward. As you do so, shrug your shoulders towards your ears. As full extension is achieved, transition into the third pull by aggressively shrugging and flexing the arms with the elbows up and out.",
+        "At peak extension, aggressively pull yourself down, rotating your elbows under the bar as you do so. Receive the bar in a front squat position, the depth of which is dependent upon the height of the bar at the end of the third pull. The bar should be racked onto the protracted shoulders, lightly touching the throat with the hands relaxed. Continue to descend to the bottom squat position, which will help in the recovery.",
+        "Immediately recover by driving through the heels, keeping the torso upright and elbows up. Continue until you have risen to a standing position."
+      ],
+      "name": "Hang Clean - Below the Knees",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "shoulders",
+        "traps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a wide grip on the bar, with an overhand or hook grip. The feet should be directly below the hips with the feet turned out. Your knees should be slightly bent, and the torso inclined forward. The spine should be fully extended and the head facing forward. The bar should be at the hips. This will be your starting position.",
+        "Aggressively extend through the legs and hips. At peak extension, shrug the shoulders and allow the elbows to flex to the side.",
+        "As you move your feet into the receiving position, forcefully pull yourself below the bar as you elevate the bar overhead. Receive the bar with your body as low as possible and the arms fully extended overhead.",
+        "Return to a standing position with the weight overhead. Follow by returning the weight to the ground under control."
+      ],
+      "name": "Hang Snatch",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "calves",
+        "forearms",
+        "glutes",
+        "lower back",
+        "quads",
+        "shoulders",
+        "traps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a wide grip on the bar, with an overhand or hook grip. The feet should be directly below the hips with the feet turned out. Your knees should be slightly bent, and the torso inclined forward. The spine should be fully extended and the head facing forward. The bar should be just below the knees. This will be your starting position.",
+        "Aggressively extend through the legs and hips. At peak extension, shrug the shoulders and allow the elbows to flex to the side.",
+        "As you move your feet into the receiving position, forcefully pull yourself below the bar as you elevate the bar overhead. Receive the bar with your body as low as possible and the arms fully extended overhead.",
+        "Return to a standing position with the weight overhead, and then return the weight to the floor under control."
+      ],
+      "name": "Hang Snatch - Below Knees",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "calves",
+        "forearms",
+        "glutes",
+        "lower back",
+        "quads",
+        "shoulders",
+        "traps"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "barbell"
@@ -5686,6 +6787,49 @@
         "abs"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "This drill helps you learn the snatch. Begin by holding a light weight across the back of the shoulders. Your feet should be slightly wider than hip width apart with the feet turned out, the same position that you would perform a squat with.",
+        "Begin by dipping with the knees slightly, and popping back up to briefly unload the bar. Drive yourself underneath the bar, elevating it overhead as you descend into a full squat.",
+        "Return to a standing position."
+      ],
+      "name": "Heaving Snatch Balance",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Utilize a heavy bag for this exercise. Assume an upright stance next to the bag, with your feet staggered, fairly wide apart. Place your hand on the bag at about chest height. This will be your starting position.",
+        "Begin by twisting at the waist, pushing the bag forward as hard as possible. Perform this move quickly, pushing the bag away from your body.",
+        "Receive the bag as it swings back by reversing these steps."
+      ],
+      "name": "Heavy Bag Thrust",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "shoulders",
+        "triceps"
+      ]
     },
     {
       "category": "strength",
@@ -5813,6 +6957,29 @@
       ],
       "secondary_muscles": [
         "glutes"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Set up a row of hurdles or other small barriers, placing them a few feet apart.",
+        "Stand in front of the first hurdle with your feet shoulder width apart. This will be your starting position.",
+        "Begin by jumping with both feet over the first hurdle, swinging both arms as you jump.",
+        "Absorb the impact of landing by bending the knees, rebounding out of the first leap by jumping over the next hurdle. Continue until you have jumped over all of the hurdles."
+      ],
+      "name": "Hurdle Hops",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "hamstrings"
       ]
     },
     {
@@ -6180,6 +7347,26 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "For this drill you will need a box about 12 inches high, and two thick mats or aerobics steps.",
+        "Place the steps just outside of your shoulders, and place your feet on top of the box so that you are in an incline pushup position, your hands just inside the steps. This will be your starting position.",
+        "Begin by bending at the elbows to lower your body, quickly reversing position to push your body off of the ground. As you leave the ground, move your hands onto the steps, bending your elbows to absorb the impact.",
+        "Repeat the motion to return to the starting position."
+      ],
+      "name": "Incline Push-Up Depth Jump",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "none"
@@ -6369,6 +7556,27 @@
       "secondary_muscles": []
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "While either seating or standing, bend your arms at a 90-degree angle and place the palms of your hands together in front of your chest. Tip: Your hands should be open with the palms together and fingers facing forward (perpendicular to your torso).",
+        "Push both hands against each other as you contract your chest. Start with slow tension and increase slowly. Keep breathing normally as you execute this contraction.",
+        "Hold for the recommended number of seconds.",
+        "Now release the tension slowly.",
+        "Rest for the recommended amount of time and repeat."
+      ],
+      "name": "Isometric Chest Squeezes",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "none"
@@ -6503,6 +7711,91 @@
         "glutes",
         "hamstrings",
         "lower back",
+        "traps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "This drill helps you learn to drive yourself low enough during the jerk and corrects those who move backward during the movement. Begin with the bar racked in the jerk position, with the shoulders forward, torso upright, and the feet split slightly apart.",
+        "Initiate the movement as you would a normal jerk, dipping at the knees while keeping your torso vertical, and driving back up forcefully, using momentum and not your arms to elevate the weight.",
+        "Keep the rear foot in place, using it to drive your body forward into a full split as you jerk the weight. Recover by standing up with the weight overhead."
+      ],
+      "name": "Jerk Balance",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "glutes",
+        "hamstrings",
+        "quads",
+        "triceps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "This movement strengthens the dip portion of the jerk. Begin with the bar racked in the jerk position, with the shoulders forward to create a shelf and the bar lightly contacting the throat. The feet should be directly under the hips, with the feet turned out as is comfortable.",
+        "Keeping the torso vertical, dip by flexing the knees, allowing them to travel forward and without moving the hips to the rear. The dip should not be excessive. Return the weight to the starting position by driving forcefully though the feet."
+      ],
+      "name": "Jerk Dip Squat",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "calves"
+      ]
+    },
+    {
+      "category": "cardio",
+      "equipment": [
+        "machine"
+      ],
+      "instructions": [
+        "To begin, step onto the treadmill and select the desired option from the menu. Most treadmills have a manual setting, or you can select a program to run. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise. Elevation can be adjusted to change the intensity of the workout.",
+        "Treadmills offer convenience, cardiovascular benefits, and usually have less impact than jogging outside. A 150 lb person will burn almost 250 calories jogging for 30 minutes, compared to more than 450 calories running. Maintain proper posture as you jog, and only hold onto the handles when necessary, such as when dismounting or checking your heart rate."
+      ],
+      "name": "Jogging, Treadmill",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "To load kegs, place the desired number a distance from the loading platform, typically 30-50 feet.",
+        "Begin by grabbing the close handle of the first keg, tilting it onto its side to grab the opposite edge of the bottom of the keg. Lift the keg up to your chest.",
+        "The higher you can place the keg, the faster you should be able to move to the platform. Shouldering is usually not allowed. Be sure to keep a firm hold on the keg. Move as quickly as possible to the platform, and load it, extending through your hips, knees, and ankles to get it as high as possible.",
+        "Return to the starting position to retrieve the next keg, and repeat until the event is completed."
+      ],
+      "name": "Keg Load",
+      "primary_muscles": [
+        "lower back"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "biceps",
+        "calves",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "middle back",
+        "quads",
+        "shoulders",
         "traps"
       ]
     },
@@ -6891,6 +8184,47 @@
       "secondary_muscles": []
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Begin in a comfortable standing position with your knees slightly bent. Hold your hands in front of you, palms down with your fingertips together at chest height. This will be your starting position.",
+        "Rapidly dip down into a quarter squat and immediately explode upward. Drive the knees towards the chest, attempting to touch them to the palms of the hands.",
+        "Jump as high as you can, raising your knees up, and then ensure a good land be re-extending your legs, absorbing impact through be allowing the knees to rebend."
+      ],
+      "name": "Knee Tuck Jump",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "quads"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "This drill helps increase arm efficiency during the run. Begin kneeling, left foot in front, right knee down. Apply pressure through the front heel to keep your glutes and hamstrings activated.",
+        "Begin by blocking the arms in long, pendulum like swings. Close the arm angle, blocking with the arms as you would when jogging, progressing to a run and finally a sprint.",
+        "As soon as your hands pass the hip, accelerate them forward during the sprinting motion to move them as quickly as possible.",
+        "Switch knees and repeat."
+      ],
+      "name": "Kneeling Arm Drill",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "abs"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "cable"
@@ -6984,6 +8318,27 @@
       ]
     },
     {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin kneeling on the floor with a barbell racked across the back of your shoulders, or you can use your body weight for this exercise. This can be done inside of a power rack to make unracking easier.",
+        "Sit back with your hips until your glutes touch your feet, keeping your head and chest up.",
+        "Explode up with your hips, generating enough power to land with your feet flat on the floor.",
+        "Continue with the squat by driving through your heels and extending the knees to come to a standing position."
+      ],
+      "name": "Kneeling Jump Squat",
+      "primary_muscles": [
+        "glutes"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "hamstrings",
+        "quads"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "cable"
@@ -7068,6 +8423,77 @@
         "hamstrings",
         "quads",
         "triceps"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Assume a half squat position facing 90 degrees from your direction of travel. This will be your starting position.",
+        "Allow your lead leg to do a countermovement inward as you shift your weight to the outside leg.",
+        "Immediately push off and extend, attempting to bound to the side as far as possible.",
+        "Upon landing, immediately push off in the opposite direction, returning to your original start position.",
+        "Continue back and forth for several repetitions."
+      ],
+      "name": "Lateral Bound",
+      "primary_muscles": [
+        "adductors"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "calves",
+        "glutes",
+        "hamstrings",
+        "quads"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Assume a comfortable standing position, with a short box positioned next to you. This will be your starting position.",
+        "Quickly dip into a quarter squat to initiate the stretch reflex, and immediately reverse direction to jump up and to the side.",
+        "Bring your knees high enough to ensure your feet have good clearance over the box.",
+        "Land on the center of the box, using your legs to absorb the impact.",
+        "Carefully jump down to the other side of the box, and continue going back and forth for several repetitions."
+      ],
+      "name": "Lateral Box Jump",
+      "primary_muscles": [
+        "adductors"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "calves",
+        "glutes",
+        "hamstrings",
+        "quads"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Position a number of cones in a row several feet apart.",
+        "Stand next to the end of the cones, facing 90 degrees to the direction of travel. This will be your starting position.",
+        "Begin the jump by dipping with the knees to initiate a stretch reflex, and immediately reverse direction to push off the ground, jumping up and sideways over the cone.",
+        "Use your legs to absorb impact upon landing, and rebound into the next jump, continuing down the row of cones."
+      ],
+      "name": "Lateral Cone Hops",
+      "primary_muscles": [
+        "adductors"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "calves",
+        "glutes",
+        "hamstrings",
+        "quads"
       ]
     },
     {
@@ -7366,6 +8792,94 @@
       ],
       "secondary_muscles": [
         "forearms"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "This drill helps you accelerate as quickly as possible into a sprint from a dead stop. It helps to use a line to start from. Begin with two feet on the line. Place your left foot with the toe next to your right ankle. Place your right foot 4-6 inches behind the left.",
+        "Place your right hand onto the line, and thing bring your nose close to your left knee.",
+        "Squat down as you lean foward, your head being lower than your hips and your weight loaded onto the left leg. This will be your starting position.",
+        "Take your left hand up so that it is parallel to the ground, pointing behind you, and explode out when ready."
+      ],
+      "name": "Linear 3-Part Start Technique",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "quads"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Lean at around 45 degrees against a wall. Your feet should be together, glutes contracted.",
+        "Begin by lifting your right knee quickly, pausing, and then driving it straight down into the ground.",
+        "Switch legs, raising the opposite knee, and then attacking the ground straight down.",
+        "Repeat once more with your right leg, and as soon as the right foot strikes the ground hammer them out rapidly, alternating left and right as fast as you can."
+      ],
+      "name": "Linear Acceleration Wall Drill",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "quads"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "You will need two boxes or benches spaced a few feet away from each other. Begin by standing on one box facing towards the other platform.",
+        "To initiate the movement, gently drop down to the ground between your platforms, allowing the knees and hips to flex.",
+        "Reverse the motion by exploding, extending through the hips, knees, and ankles to jump onto the other platform.",
+        "Land softly, asborbing the impact through the legs."
+      ],
+      "name": "Linear Depth Jump",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Begin standing with the log in front of you. Grasp the handles, and begin to clean the log. As you are bent over to start the clean, attempt to get the log as high as possible, pulling it into your chest. Extend through the hips and knees to bring it up to complete the clean.",
+        "Push your head back and look up, creating a shelf on your chest to rest the log. Begin the press by dipping, flexing slightly through the knees and reversing the motion. This push press will generate momentum to start the log moving vertically. Continue by extending through the elbows to press the log above your head. There are no strict rules on form, so use whatever techniques you are most efficient with. As the log is pressed, ensure that you push your head through on each repetition, looking forward.",
+        "Repeat as many times as possible. Attempt to control the descent of the log as it is returned to the ground."
+      ],
+      "name": "Log Lift",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "chest",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "middle back",
+        "quads",
+        "traps",
+        "triceps"
       ]
     },
     {
@@ -8021,6 +9535,66 @@
       "secondary_muscles": []
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "You will need a partner for this exercise. Lacking one, this movement can be performed against a wall.",
+        "Begin facing your partner holding the medicine ball at your torso with both hands.",
+        "Pull the ball to your chest, and reverse the motion by extending through the elbows. For sports applications, you can take a step as you throw.",
+        "Your partner should catch the ball, and throw it back to you.",
+        "Receive the throw with both hands at chest height."
+      ],
+      "name": "Medicine Ball Chest Pass",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "For this exercise you will need a medicine ball and a partner. Stand back to back with your partner, spaced 2-3 feet apart. This will be your starting position.",
+        "Hold the ball in front of the trunk. Open the hips and turn the shoulders at the same time as your partner.",
+        "For full rotation, you and your partner should twist in the same direction, i.e. counter-clockwise.",
+        "Pass the ball to your partner, and both of you can now twist in the opposite direction to repeat the procedure."
+      ],
+      "name": "Medicine Ball Full Twist",
+      "primary_muscles": [
+        "abs"
+      ],
+      "secondary_muscles": [
+        "shoulders"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "Assume a semisquat stance with a medicine ball in your hands. Your arms should hang so the ball is near your feet.",
+        "Begin by thrusting the hips forward as you extend through the legs, jumping up.",
+        "As you do, swing your arms up and over your head, keeping them extended, releasing the ball at the peak of your movement. The goal is to throw the ball the greatest distance behind you."
+      ],
+      "name": "Medicine Ball Scoop Throw",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "hamstrings",
+        "quads"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "dumbbell"
@@ -8092,6 +9666,66 @@
         "abductors"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Begin in a pushup position, with your weight supported by your hands and toes. Flexing the knee and hip, bring one leg until the knee is approximately under the hip. This will be your starting position.",
+        "Explosively reverse the positions of your legs, extending the bent leg until the leg is straight and supported by the toe, and bringing the other foot up with the hip and knee flexed. Repeat in an alternating fashion for 20-30 seconds."
+      ],
+      "name": "Mountain Climbers",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "chest",
+        "hamstrings",
+        "shoulders"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "This move helps prepare your running form to help you excel at sprinting. As you run, be sure to flex the knee, aiming to kick your glutes as the hip extends.",
+        "Reload the quad as the leg moves back forward, attacking the ground on the next step.",
+        "Ensure that as you run, you block with the arms, punching through in a rapid 1-2 motion."
+      ],
+      "name": "Moving Claw Series",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "quads"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a loaded barbell held at the mid thigh position with a wide grip. The feet should be directly below the hips, with the feet turned out as needed. Lower the hips, with the chest up and the head looking forward. The shoulders should be just in front of the bar. This will be the starting position.",
+        "Begin the pull by driving through the front of the heels, raising the bar. Transition into the second pull by extending through the hips knees and ankles, driving the bar up as quickly as possible. The bar should be close to the body.",
+        "Continue raising the bar to the overhead position, without rebending the knees."
+      ],
+      "name": "Muscle Snatch",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "glutes",
+        "lower back",
+        "quads",
+        "shoulders",
+        "triceps"
+      ]
     },
     {
       "category": "strength",
@@ -8282,6 +9916,26 @@
         "abs"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a barbell supported on top of the traps. The chest should be up, and the head facing forward. Adopt a hip width stance with the feet turned out as needed.",
+        "Descend by flexing the knees, refraining from moving the hips back as much as possible. This requires that the knees travel forward; ensure that they stay aligned with the feet. The goal is to keep the torso as upright as possible. Continue all the way down, keeping the weight on the front of the heel.",
+        "At the moment the upper legs contact the lower, reverse the motion, driving the weight upward."
+      ],
+      "name": "Olympic Squat",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
     },
     {
       "category": "stretching",
@@ -9110,6 +10764,50 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "Hold a medine ball with both hands and stand with your feet at shoulder width. This will be your starting position.",
+        "Initiate the countermovement by raising the ball above your head and fully extending your body.",
+        "Reverse the motion, slamming the ball into the ground directly in front of you as hard as you can.",
+        "Receive the ball with both hands on the bounce and repeat the movement."
+      ],
+      "name": "Overhead Slam",
+      "primary_muscles": [
+        "lats"
+      ],
+      "secondary_muscles": []
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Start out by having a barbell in front of you on the floor. Your feet should be wider than shoulder width apart from each other.",
+        "Bend the knees and use a pronated grip (palms facing you) to grab the barbell. Your hands should be at a wider than shoulder width apart from each other before lifting. Once you are positioned, lift the barbell up until you can rest it on your chest.",
+        "Move the barbell over and slightly behind your head and make sure your arms are fully extended. Keep your head up at all times and also maintain a straight back. Retract your shoulder blades. This is your starting position.",
+        "Slowly lower the weight by bending your knees until your thighs are parallel to the ground while inhaling. Tip: Keep your back straight while performing this exercise to avoid any injuries and your arms should remain extended and over your head at all times.",
+        "Now use your feet and legs to help bring the weight back up to the starting position while exhaling.",
+        "Repeat for the recommended amount of repetitions."
+      ],
+      "name": "Overhead Squat",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "calves",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
       "category": "stretching",
       "equipment": [
         "none"
@@ -9493,6 +11191,28 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Move into a prone position on the floor, supporting your weight on your hands and toes.",
+        "Your arms should be fully extended with the hands around shoulder width. Keep your body straight throughout the movement. This will be your starting position.",
+        "Descend by flexing at the elbow, lowering your chest towards the ground.",
+        "At the bottom, reverse the motion by pushing yourself up through elbow extension as quickly as possible. Attempt to push your upper body up until your hands leave the ground.",
+        "Return to the starting position and repeat the exercise.",
+        "For added difficulty, add claps into the movement while you are air borne."
+      ],
+      "name": "Plyo Push-up",
+      "primary_muscles": [
+        "chest"
+      ],
+      "secondary_muscles": [
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
       "category": "stretching",
       "equipment": [
         "other"
@@ -9555,6 +11275,51 @@
       ]
     },
     {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "With a barbell on boxes of the desired height, take a grip just outside the legs. Lower your hips with the weight focused on the heels, back straight, head facing forward, chest up, with your shoulders just in front of the bar. This will be your starting position.",
+        "Begin the first pull by driving through the heels, extending your knees. Your back angle should stay the same, and your arms should remain straight. As the bar approaches the mid-thigh position, begin extending through the hips.",
+        "In a jumping motion, accelerate by extending the hips, knees, and ankles, using speed to move the bar upward. There should be no need to actively pull through the arms to accelerate the weight. At the end of the second pull, the body should be fully extended, leaning slightly back, with the arms still extended.",
+        "As full extension is achieved, transition into the third pull by aggressively shrugging and flexing the arms with the elbows up and out. At peak extension, pull yourself under the bar far enough that it can be racked onto the shoulders, rotating your elbows under the bar as you do so. The bar should be racked onto the protracted shoulders, lightly touching the throat with the hands relaxed.",
+        "Immediately recover by driving through the heels, keeping the torso upright and elbows up. Continue until you have risen to a standing position, and complete the repetition by returning the weight to the boxes."
+      ],
+      "name": "Power Clean from Blocks",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "quads"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Standing with the weight racked on the front of the shoulders, begin with the dip. With your feet directly under your hips, flex the knees without moving the hips backward. Go down only slightly, and reverse direction as powerfully as possible.",
+        "Drive through the heels create as much speed and force as possible, and be sure to move your head out of the way as the bar leaves the shoulders.",
+        "At this moment as the feet leave the floor, the feet must be placed into the receiving position as quickly as possible. In the brief moment the feet are not actively driving against the platform, the athletes effort to push the bar up will drive them down. The feet should be moved to a slightly wider stance, with the knees partially bent.",
+        "Receive the bar with the arms locked out overhead.",
+        "Return to a standing position."
+      ],
+      "name": "Power Jerk",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "calves",
+        "glutes",
+        "hamstrings",
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "dumbbell"
@@ -9571,6 +11336,84 @@
         "shoulders"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a loaded barbell on the floor. The bar should be close to or touching the shins, and a wide grip should be taken on the bar. The feet should be directly below the hips, with the feet turned out as needed. Lower the hips, with the chest up and the head looking forward. The shoulders should be just in front of the bar. This will be the starting position.",
+        "Begin the first pull by driving through the front of the heels, raising the bar from the ground. The back angle should stay the same until the bar passes the knees.",
+        "Transition into the second pull by extending through the hips knees and ankles, driving the bar up as quickly as possible. The bar should be close to the body. At peak extension, shrug the shoulders and allow the elbows to flex to the side.",
+        "As you move your feet into the receiving position, a slightly wider position, pull yourself below the bar as you elevate the bar overhead. The bar should be received in a partial squat. Continue raising the bar to the overhead position, receiving the bar locked out overhead.",
+        "Return to a standing position with the weight over head."
+      ],
+      "name": "Power Snatch",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "lower back",
+        "quads",
+        "shoulders",
+        "traps",
+        "triceps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a loaded barbell on boxes or stands of the desired height. A wide grip should be taken on the bar. The feet should be directly below the hips, with the feet turned out as needed. Lower the hips, with the chest up and the head looking forward. The shoulders should be just in front of the bar, with the elbows pointed out. This will be the starting position.",
+        "Begin the first pull by driving through the front of the heels, raising the bar from the boxes.",
+        "Transition into the second pull by extending through the hips knees and ankles, driving the bar up as quickly as possible. The bar should be close to the body. At peak extension, shrug the shoulders and allow the elbows to flex to the side.",
+        "As you move your feet into the receiving position, forcefully pull yourself below the bar as you elevate the bar overhead. The feet should move to just outside the hips, turned out as necessary. Receive the bar above a full squat and with the arms fully extended overhead.",
+        "Keeping the bar aligned over the front of the heels, your head and chest up, drive through heels of the feet to move to a standing position. Carefully return the weight to the boxes."
+      ],
+      "name": "Power Snatch from Blocks",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "shoulders",
+        "traps",
+        "triceps"
+      ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "In the power stairs, implements are moved up a staircase. For training purposes, these can be performed with a tire or box.",
+        "Begin by taking the implement with both hands. Set your feet wide, with your head and chest up. Drive through the ground with your heels, extending your knees and hips to raise the weight from the ground.",
+        "As you lean back, attempt to swing the weight onto the stairs, which are usually around 16-18 high. You can use your legs to help push the weight onto the stair.",
+        "Repeat for 3-5 repetitions, and continue with a heavier weight, moving as fast as possible."
+      ],
+      "name": "Power Stairs",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "adductors",
+        "calves",
+        "glutes",
+        "lower back",
+        "quads",
+        "shoulders",
+        "traps"
+      ]
     },
     {
       "category": "strength",
@@ -9645,6 +11488,28 @@
         "hamstrings"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "cardio",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Place your sled on an appropriate surface, loaded to a suitable weight. The sled should provide enough resistance to require effort, but not so heavy that you are significantly slowed down.",
+        "You may use the upright or the low handles for this exercise. Place your hands on the handles with your arms extended, leaning into the implement.",
+        "With good posture, drive through the ground with alternating, short steps. Move as fast as you can for a short distance."
+      ],
+      "name": "Prowler Sprint",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "chest",
+        "glutes",
+        "quads",
+        "shoulders"
+      ]
     },
     {
       "category": "strength",
@@ -9769,6 +11634,41 @@
       ]
     },
     {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [],
+      "name": "Push Press",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "quads",
+        "triceps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Standing with the weight racked on the back of the shoulders, begin with the dip. With your feet directly under your hips, flex the knees without moving the hips backward. Go down only slightly, and reverse direction as powerfully as possible. Drive through the heels create as much speed and force as possible, moving the bar in a vertical path.",
+        "Using the momentum generated, finish pressing the weight overhead be extending through the arms.",
+        "Return to the starting position, using your legs to absorb the impact."
+      ],
+      "name": "Push Press - Behind the Neck",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "quads",
+        "triceps"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "none"
@@ -9878,6 +11778,45 @@
       "secondary_muscles": []
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "You will need a box for this exerise.",
+        "Begin facing the box standing 1-2 feet from its edge.",
+        "By utilizing your hips, hop onto the box, landing on both legs. Ensure that you land with your legs bent and your feet flat.",
+        "Immediately upon landing, fully extend through the entire body and swing your arms overhead to explode off of the box. Use your legs to absorb the impact of landing."
+      ],
+      "name": "Quick Leap",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "hamstrings"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "This drill teaches the delivery of the barbell to the rack position on the shoulders. Begin holding a bar in the scarecrow position, with the upper arms parallel to the floor, and the forearms hanging down. Use a hook grip, with your fingers wrapped over your thumbs.",
+        "Begin by rotating the elbows around the bar, delivering the bar to the shoulders. As your elbows come forward, relax your grip. The shoulders should be protracted, providing a shelf for the bar, which should lightly contact the throat.",
+        "It is important that the bar stay close to the body at all times, as with a heavier load any distance will result in an unwanted collision. As the movement becomes smoother, speed and load can be increased before progressing further."
+      ],
+      "name": "Rack Delivery",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "traps"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "barbell"
@@ -9934,6 +11873,47 @@
         "quads"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "cardio",
+      "equipment": [
+        "machine"
+      ],
+      "instructions": [
+        "To begin, seat yourself on the bike and adjust the seat to your height.",
+        "Select the desired option from the menu. You may have to start pedaling to turn it on. You can use the manual setting, or you can select a program to use. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise. The level of resistance can be changed throughout the workout. The handles can be used to monitor your heart rate to help you stay at an appropriate intensity.",
+        "Recumbent bikes offer convenience, cardiovascular benefits, and have less impact than other activities. A 150 lb person will burn about 230 calories cycling at a moderate rate for 30 minutes, compared to 450 calories or more running."
+      ],
+      "name": "Recumbent Bike",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "You will need a partner for this drill.",
+        "Begin in an athletic 2 or 3 point stance.",
+        "At the signal, move into a position to receive the pass from your partner.",
+        "Catch the medicine ball with both hands and immediately throw it back to your partner.",
+        "You can modify this drill by running different routes."
+      ],
+      "name": "Return Push from Stance",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "chest",
+        "triceps"
+      ]
     },
     {
       "category": "strength",
@@ -10316,6 +12296,97 @@
       ]
     },
     {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Position the frame at the starting point, and load with the appropriate weight. Standing in the center of the frame, begin by gripping the handles and driving through your heels to lift the frame. Ensure your chest and head are up and your back is straight.",
+        "Immediately begin walking briskly with quick, controlled steps. Keep your chest up and head forward, and make sure you continue breathing. Bring the frame to the ground after you have reached the end point."
+      ],
+      "name": "Rickshaw Carry",
+      "primary_muscles": [
+        "forearms"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "calves",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "quads",
+        "traps"
+      ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Load the frame with the desired weight. Center yourself between the handles. You feet should be about hip width apart. Bend at the hips to grip the handles, allowing your shoulder blades to protract.",
+        "With your feet and your grip set, take a big breath and then lower your hips and flex the knees. Look forward with your head, keep your chest up and your back arched, and begin driving through the heels to move the weight upward. As the weight comes up, pull your shoulder blades together as you drive your hips forward.",
+        "Lower the weight by bending at the hips and guiding it to the ground."
+      ],
+      "name": "Rickshaw Deadlift",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "traps"
+      ],
+      "variation_on": [
+        "deadlift"
+      ]
+    },
+    {
+      "category": "calisthenics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Grip a ring in each hand, and then take a small jump to help you get into the starting position with your arms locked out.",
+        "Begin by flexing the elbow, lowering your body until your arms break 90 degrees. Avoid swinging, and maintain good posture throughout the descent.",
+        "Reverse the motion by extending the elbow, pushing yourself back up into the starting position.",
+        "Repeat for the desired number of repetitions."
+      ],
+      "name": "Ring Dips",
+      "primary_muscles": [
+        "triceps"
+      ],
+      "secondary_muscles": [
+        "chest",
+        "shoulders",
+        "abs"
+      ],
+      "variation_on": [
+        "dip"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Begin in a relaxed stance with your feet shoulder width apart and hold your arms close to the body.",
+        "To initiate the move, squat down halfway and explode back up as high as possible.",
+        "Fully extend your entire body, reaching overhead as far as possible. As you land, absorb your impact through the legs."
+      ],
+      "name": "Rocket Jump",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "barbell"
@@ -10390,6 +12461,30 @@
       ]
     },
     {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin standing while holding a bar at arm length in front of you. You can stand on a raised platform to increase the range of motion.",
+        "Begin by flexing the knees slightly, and then flex at the hip, moving your butt back as far as possible, lowering the torso as far as flexibility allows. The back should remain in absolute extension at all times, and the bar should remain in contact with the legs. If done properly, there should be heavy tension felt in the hamstrings.",
+        "Reverse the motion to return to the starting position."
+      ],
+      "name": "Romanian Deadlift from Deficit",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "glutes",
+        "lower back",
+        "traps"
+      ],
+      "variation_on": [
+        "deadlift"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "other"
@@ -10431,6 +12526,24 @@
       "secondary_muscles": []
     },
     {
+      "category": "cardio",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Hold an end of the rope in each hand. Position the rope behind you on the ground. Raise your arms up and turn the rope over your head bringing it down in front of you. When it reaches the ground, jump over it. Find a good turning pace that can be maintained. Different speeds and techniques can be used to introduce variation.",
+        "Rope jumping is exciting, challenges your coordination, and requires a lot of energy. A 150 lb person will burn about 350 calories jumping rope for 30 minutes, compared to over 450 calories running."
+      ],
+      "name": "Rope Jumping",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "cable"
@@ -10467,6 +12580,29 @@
       ]
     },
     {
+      "category": "cardio",
+      "equipment": [
+        "machine"
+      ],
+      "instructions": [
+        "To begin, seat yourself on the rower. Make sure that your heels are resting comfortably against the base of the foot pedals and that the straps are secured. Select the program that you wish to use, if applicable. Sit up straight and bend forward at the hips.",
+        "There are three phases of movement when using a rower. The first phase is when you come forward on the rower. Your knees are bent and against your chest. Your upper body is leaning slightly forward while still maintaining good posture. Next, push against the foot pedals and extend your legs while bringing your hands to your upper abdominal area, squeezing your shoulders back as you do so. To avoid straining your back, use primarily your leg and hip muscles.",
+        "The recovery phase simply involves straightening your arms, bending the knees, and bringing your body forward again as you transition back into the first phase."
+      ],
+      "name": "Rowing, Stationary",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "biceps",
+        "calves",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "middle back"
+      ]
+    },
+    {
       "category": "stretching",
       "equipment": [
         "none"
@@ -10482,6 +12618,25 @@
       ],
       "secondary_muscles": [
         "calves"
+      ]
+    },
+    {
+      "category": "cardio",
+      "equipment": [
+        "machine"
+      ],
+      "instructions": [
+        "To begin, step onto the treadmill and select the desired option from the menu. Most treadmills have a manual setting, or you can select a program to run. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise. Elevation can be adjusted to change the intensity of the workout.",
+        "Treadmills offer convenience, cardiovascular benefits, and usually have less impact than running outside. A 150 lb person will burn over 450 calories running 8 miles per hour for 30 minutes. Maintain proper posture as you run, and only hold onto the handles when necessary, such as when dismounting or checking your heart rate."
+      ],
+      "name": "Running, Treadmill",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
       ]
     },
     {
@@ -10502,6 +12657,34 @@
       ],
       "secondary_muscles": [
         "lower back"
+      ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "To load sandbags or other objects, begin with the implements placed a distance from the loading platform, typically 50 feet.",
+        "Begin by lifting the sandbag. Sandbags are extremely awkward, and the manner of lifting them can vary depending on the particular sandbag used. Reach as far around it as possible, extending through the hips and knees to pull it up high. Shouldering is usually not allowed.",
+        "Move as quickly as possible to the platform, and load it, extending through your hips, knees, and ankles to get it as high as possible. Place it onto the platform, ensuring it doesn't fall off.",
+        "Return to the starting position to retrieve the next sandbag, and repeat until the event is completed."
+      ],
+      "name": "Sandbag Load",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "biceps",
+        "calves",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "middle back",
+        "shoulders",
+        "traps"
       ]
     },
     {
@@ -10540,6 +12723,26 @@
         "abs"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Assume a lunge stance position with one foot forward with the knee bent, and the rear knee nearly touching the ground.",
+        "Ensure that the front knee is over the midline of the foot. Extending through both legs, jump as high as possible, swinging your arms to gain lift.",
+        "As you jump as high as you can, switch the position of your legs, moving your front leg to the back and the rear leg to the front.",
+        "As you land, absorb the impact through the legs by adopting the lunge position, and repeat."
+      ],
+      "name": "Scissors Jump",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "glutes",
+        "hamstrings"
+      ]
     },
     {
       "category": "strength",
@@ -11365,6 +13568,27 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Stand to the side of a cone or hurdle.",
+        "Begin this drill by hopping sideways over the obstacle, rebounding out of your landing to hop back to where you started.",
+        "Hop for a prescribed number or repetitions as quickly as possible, and finish this drill by sprinting a short distance upon landing the last hop."
+      ],
+      "name": "Side Hop-Sprint",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "none"
@@ -11464,6 +13688,26 @@
       "secondary_muscles": []
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Begin standing with your feet hip width apart in an athletic stance. Your head and chest should be up, knees and hips slightly bent. This will be your starting position.",
+        "Leaning to your right, extend through your hips, knees, and ankles to jump into the air. Block with the arms to lead the movement, jumping as far to your right as you can.",
+        "Land facing the same direction with your feet hip width apart, absorbing the impact through your lower body."
+      ],
+      "name": "Side Standing Long Jump",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "other"
@@ -11504,6 +13748,27 @@
       "secondary_muscles": [
         "forearms",
         "lats"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Stand to one side of the box with your left foot resting on the middle of it.",
+        "To begin, jump up and over to the other side of the box, landing with your right foot on top of the box and your left foot on the floor. Swing your arms to aid your movement.",
+        "Continue shuffling back and forth across the box."
+      ],
+      "name": "Side to Side Box Shuffle",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "hamstrings"
       ]
     },
     {
@@ -11565,6 +13830,26 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "This drill teaches quick foot action. You need a single cone. Begin standing next to the cone with one arm back and one arm forward.",
+        "Chop the feet as quickly as possible, blocking with the arms. Circle the cone, keep your knees up, with violent foot action.",
+        "Rest after three trips around the cone."
+      ],
+      "name": "Single-Cone Sprint Drill",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "other"
@@ -11580,6 +13865,50 @@
       ],
       "secondary_muscles": [
         "glutes",
+        "hamstrings"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Arrange a line of cones in front of you. Assume a relaxed standing position, balanced on one leg. Raise the knee of your opposite leg. This will be your starting position.",
+        "Hop forward, jumping and landing with the same leg over the cone.",
+        "Use a countermovement jump to hop from cone to cone.",
+        "At the end, turn around and go back on the other leg."
+      ],
+      "name": "Single-Leg Hop Progression",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "hamstrings"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Stand to the side of a cone or hurdle. To get into the start position, stand on one leg with your knee slightly bent.",
+        "To begin, execute a counterjump to hop sideways over the cone.",
+        "Land on your jumping leg, and immediately rebound out of it by jumping back to the start position.",
+        "Continue hopping back and forth."
+      ],
+      "name": "Single-Leg Lateral Hop",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
         "hamstrings"
       ]
     },
@@ -11601,6 +13930,27 @@
       "secondary_muscles": []
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Stand to the side of a box with your inside foot on top of it, close to the edge.",
+        "Begin by swinging the arms upward as you push through the top leg, jumping upward as high as possible. Attempt to drive the opposite knee upward.",
+        "Land in the same position that you started, using your inside leg to decelerate the impact."
+      ],
+      "name": "Single-Leg Stride Jump",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "dumbbell"
@@ -11620,6 +13970,26 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Begin by standing on one leg, with the bent knee raised. This will be your start position.",
+        "Using a countermovement jump, take off upward by extending the hip, knee, and ankle of the grounded leg.",
+        "Immediately flex the knee and attempt to touch your butt with the heel of your jumping leg.",
+        "Return the leg to a partially bent position underneath the hips and land. Your opposite leg should stay in relatively the same position throughout the drill."
+      ],
+      "name": "Single Leg Butt Kick",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "none"
@@ -11635,6 +14005,25 @@
         "glutes"
       ],
       "secondary_muscles": [
+        "hamstrings"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Stand on the ground with one foot resting on the box, heel close to the edge.",
+        "Push off with your foot on top of the box, trying to gain as much height as possible by extending through the hip and knee.",
+        "Land with the same foot on top of the box, returning your other foot back to the start position."
+      ],
+      "name": "Single Leg Push-off",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
         "hamstrings"
       ]
     },
@@ -11681,6 +14070,46 @@
       ]
     },
     {
+      "category": "cardio",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Roller skating is a fun activity which can be effective in improving cardiorespiratory fitness and muscular endurance. It requires relatively good balance and coordination. It is necessary to learn the basics of skating including turning and stopping and to wear protective gear to avoid possible injury.",
+        "You can skate at a comfortable pace for 30 minutes straight. If you want a cardio challenge, do interval skating  speed skate two minutes of every five minutes, using the remaining three minutes to recover. A 150 lb person will typically burn about 175 calories in 30 minutes skating at a comfortable pace, similar to brisk walking."
+      ],
+      "name": "Skating",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "To begin, load the sled with the desired weight and attach the pulling strap. You can pull with handles, use a harness, or attach the pulling strap to a weight belt.",
+        "Whether pulling forwards or backwards, lean in the direction of travel and progress by extending through the hips and knees."
+      ],
+      "name": "Sled Drag - Harness",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "other"
@@ -11718,6 +14147,27 @@
       "secondary_muscles": []
     },
     {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Load your pushing sled with the desired weight.",
+        "Take an athletic posture, leaning into the sled with your arms fully extended, grasping the handles. Push the sled as fast as possible, focusing on extending your hips and knees to strengthen your posterior chain."
+      ],
+      "name": "Sled Push",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "chest",
+        "glutes",
+        "hamstrings",
+        "triceps"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "other"
@@ -11752,6 +14202,29 @@
       "secondary_muscles": [
         "biceps",
         "lats"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "You will need a tire and a sledgehammer for this exercise. Stand in front of the tire about two feet away from it with a staggered stance. Grip the sledgehammer.",
+        "If you are right handed, your left hand should be at the bottom of the handle, and your right hand should be choking up closer to the head.",
+        "As you bring the sledge up, your right hand slides toward the head; as you swing down, your right hand will slide down to join your left hand. Slam it down as hard as you can against the tire. Control the bounce of the hammer off of the tire.",
+        "Repeat on the other side."
+      ],
+      "name": "Sledgehammer Swings",
+      "primary_muscles": [
+        "abs"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "forearms",
+        "lats",
+        "middle back",
+        "shoulders"
       ]
     },
     {
@@ -12169,6 +14642,83 @@
       ]
     },
     {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Place your feet at a shoulder width stance with the barbell resting right above the connection between the toes and the rest of the foot.",
+        "With a palms facing down grip, bend at the knees and keeping the back flat grab the bar using a wider than shoulder width grip. Bring the hips down and make sure that your body drops as if you were going to sit on a chair. This will be your starting position.",
+        "Start pushing the floor as if it were a moving platform with your feet and simultaneously start lifting the barbell keeping it close to your legs.",
+        "As the bar reaches the middle of your thighs, push the floor with your legs and lift your body to a complete extension in an explosive motion.",
+        "Lift your shoulders back in a shrugging movement as you bring the bar up while lifting your elbows out to the side and keeping them above the bar for as long as possible.",
+        "Now in a very quick but powerful motion, you have to get your body under the barbell when it has reached a high enough point where it can be controlled and drop while locking your arms and holding the barbell overhead as you assume a squat position.",
+        "Finalize the movement by rising up out of the squat position to finish the lift. At the end of the lift both feet should be on line and the arms fully extended holding the barbell overhead."
+      ],
+      "name": "Snatch",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "biceps",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "shoulders",
+        "traps",
+        "triceps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with the feet in the pulling position, the bar racked across the back of the shoulders, and the hands placed in a wide snatch grip.",
+        "Pop the bar with an abrupt dip and drive of the knees, and aggressively drive under the bar, transitioning the feet into the receiving position.",
+        "Receive the bar locked out overhead near the bottom of the squat. The torso should remain vertical, lowering the hips between the legs.",
+        "Continue to descend to full depth, and return to a standing position. Carefully lower the weight."
+      ],
+      "name": "Snatch Balance",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings",
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "The snatch deadlift strengthens the first pull of the snatch. Begin with a wide snatch grip with the barbell placed on the platform. The feet should be directly under the hips, with the feet turned out. Squat down to the bar, keeping the back in absolute extension with the head facing forward.",
+        "Initiate the movement by driving through the heels, raising the hips. The back angle should remain the same until the bar passes the knees.",
+        "At that point, drive your hips through the bar as you lay back. Return the bar to the platform by reversing the motion."
+      ],
+      "name": "Snatch Deadlift",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "quads",
+        "traps"
+      ],
+      "variation_on": [
+        "deadlift"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "barbell"
@@ -12189,6 +14739,51 @@
         "lower back",
         "quads",
         "traps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a wide grip, with the bar hanging at the mid thigh position. You can use a hook or overhand grip. Your back should be straight and inclined slightly forward.",
+        "Shrug your shoulders towards your ears. While this exercise can usually by loaded with heavier weight than a snatch, avoid overloading to the point that the execution slows down."
+      ],
+      "name": "Snatch Shrug",
+      "primary_muscles": [
+        "traps"
+      ],
+      "secondary_muscles": [
+        "forearms",
+        "shoulders"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a loaded barbell on boxes or stands of the desired height. A wide grip should be taken on the bar. The feet should be directly below the hips, with the feet turned out as needed. Lower the hips, with the chest up and the head looking forward. The shoulders should be just in front of the bar, with the elbows pointed out. This will be the starting position.",
+        "Begin the first pull by driving through the front of the heels, raising the bar from the boxes.",
+        "Transition into the second pull by extending through the hips knees and ankles, driving the bar up as quickly as possible. The bar should be close to the body. At peak extension, shrug the shoulders and allow the elbows to flex to the side.",
+        "As you move your feet into the receiving position, forcefully pull yourself below the bar as you elevate the bar overhead. The feet should move to just outside the hips, turned out as necessary. Receive the bar with your body as low as possible and the arms fully extended overhead.",
+        "Keeping the bar aligned over the front of the heels, your head and chest up, drive through heels of the feet to move to a standing position. Carefully return the weight to the boxes."
+      ],
+      "name": "Snatch from Blocks",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "shoulders",
+        "traps",
+        "triceps"
       ]
     },
     {
@@ -12334,6 +14929,106 @@
         "lower back",
         "neck",
         "traps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "With a barbell on the floor close to the shins, take an overhand grip just outside the legs. Lower your hips with the weight focused on the heels, back straight, head facing forward, chest up, with your shoulders just in front of the bar. This will be your starting position.",
+        "Begin the first pull by driving through the heels, extending your knees. Your back angle should stay the same, and your arms should remain straight. Move the weight with control as you continue to above the knees.",
+        "Next comes the second pull, the main source of acceleration for the clean. As the bar approaches the mid-thigh position, begin extending through the hips. In a jumping motion, accelerate by extending the hips, knees, and ankles, using speed to move the bar upward. There should be no need to actively pull through the arms to accelerate the weight; at the end of the second pull, the body should be fully extended, leaning slightly back, with the arms still extended.",
+        "As full extension is achieved, transition into the third pull by aggressively shrugging and flexing the arms with the elbows up and out. At peak extension, aggressively pull yourself down, rotating your elbows under the bar as you do so.",
+        "Receive the bar with the feet split, aggressively moving one foot forward and one foot back. The bar should be racked onto the protracted shoulders, lightly touching the throat with the hands relaxed. Continue to descend to the bottom position, which will help in the recovery.",
+        "Immediately recover by driving through the heels, keeping the torso upright and elbows up. Bring the feet together as you stand up."
+      ],
+      "name": "Split Clean",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "shoulders",
+        "traps"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Standing with the weight racked on the front of the shoulders, begin with the dip. With your feet directly under your hips, flex the knees without moving the hips backward.",
+        "Go down only slightly, and reverse direction as powerfully as possible. Drive through the heels create as much speed and force as possible, and be sure to move your head out of the way as the bar leaves the shoulders. At this moment as the feet leave the floor, the feet must be placed into the receiving position as quickly as possible.",
+        "In the brief moment the feet are not actively driving against the platform, the athlete effort to push the bar up will drive them down. The feet should be moved to a split stance, one foot forward, one foot back, with the knees partially bent. Receive the bar with the arms locked out overhead.",
+        "Return to a standing position, bringing the feet together."
+      ],
+      "name": "Split Jerk",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "glutes",
+        "hamstrings",
+        "shoulders",
+        "triceps"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Assume a lunge stance position with one foot forward with the knee bent, and the rear knee nearly touching the ground.",
+        "Ensure that the front knee is over the midline of the foot.",
+        "Extending through both legs, jump as high as possible, swinging your arms to gain lift.",
+        "As you jump, bring your feet together, and move them back to their initial positions as you land.",
+        "Absorb the impact by reverting back to the starting position."
+      ],
+      "name": "Split Jump",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a loaded barbell on the floor. The bar should be close to or touching the shins, and a wide grip should be taken on the bar. The feet should be directly below the hips, with the feet turned out as needed. Lower the hips, with the chest up and the head looking forward. The shoulders should be just in front of the bar. This will be the starting position.",
+        "Begin the first pull by driving through the front of the heels, raising the bar from the ground. The back angle should stay the same until the bar passes the knees.",
+        "Transition into the second pull by extending through the hips knees and ankles, driving the bar up as quickly as possible. The bar should be close to the body. At peak extension, shrug the shoulders and allow the elbows to flex to the side.",
+        "As you move your feet into the receiving position, forcefully pull yourself below the bar as you elevate the bar overhead. The feet should move forcefully to a split position, one foot forward one foot back. Receive the bar with your body as low as possible and the arms fully extended overhead.",
+        "Keeping the bar aligned over the front of the heels, your head and chest up, drive through heels of the feet to move to a standing position, bringing your feet together.",
+        "Carefully return the weight to floor."
+      ],
+      "name": "Split Snatch",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "quads",
+        "shoulders",
+        "traps",
+        "triceps"
       ]
     },
     {
@@ -12491,6 +15186,26 @@
         "glutes",
         "hamstrings",
         "lower back"
+      ]
+    },
+    {
+      "category": "cardio",
+      "equipment": [
+        "machine"
+      ],
+      "instructions": [
+        "To begin, step onto the stairmaster and select the desired option from the menu. You can choose a manual setting, or you can select a program to run. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise.",
+        "Pump your legs up and down in an established rhythm, driving the pedals down but not all the way to the floor. It is recommended that you maintain your grip on the handles so that you don fall. The handles can be used to monitor your heart rate to help you stay at an appropriate intensity.",
+        "Stairmasters offer convenience, cardiovascular benefits, and usually have less impact than running outside. They are typically much harder than other cardio equipment. A 150 lb person will typically burn over 300 calories in 30 minutes, compared to about 175 calories walking."
+      ],
+      "name": "Stairmaster",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
       ]
     },
     {
@@ -13034,6 +15749,27 @@
       "secondary_muscles": []
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "This drill is best done in sand or other soft landing surface. Ensure that you are able to measure distance. Stand in a partial squat stance with feet shoulder width apart.",
+        "Utilizing a big arm swing and a countermovement of the legs, jump forward as far as you can.",
+        "Attempt to land with your feet out in front you, reaching as far as possible with your legs.",
+        "Measure the distance from your landing point to the starting point and track results."
+      ],
+      "name": "Standing Long Jump",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "cable"
@@ -13340,6 +16076,46 @@
       "secondary_muscles": []
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "Stand with your feet shoulder width apart holding a medicine ball in both hands. To begin, reach the medicine ball deep behind your head as you bend the knees slightly and lean back.",
+        "Violently throw the ball forward, flexing at the hip and using your whole body to complete the movement.",
+        "The medicine ball can be thrown to a partner or to a wall, receiving it as it bounces back."
+      ],
+      "name": "Standing Two-Arm Overhead Throw",
+      "primary_muscles": [
+        "shoulders"
+      ],
+      "secondary_muscles": [
+        "chest",
+        "lats"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Begin in a relaxed stance with your feet shoulder width apart and hold your arms close to the body.",
+        "To initiate the move, squat down halfway and explode back up as high as possible. Fully extend your entire body, spreading your legs and arms away from the body.",
+        "As you land, bring your limbs back in and absorb your impact through the legs."
+      ],
+      "name": "Star Jump",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings",
+        "shoulders"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "none"
@@ -13356,6 +16132,25 @@
       "secondary_muscles": [
         "hamstrings",
         "quads"
+      ]
+    },
+    {
+      "category": "cardio",
+      "equipment": [
+        "machine"
+      ],
+      "instructions": [
+        "To begin, step onto the stepmill and select the desired option from the menu. You can choose a manual setting, or you can select a program to run. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise. Use caution so that you don trip as you climb the stairs. It is recommended that you maintain your grip on the handles so that you don fall.",
+        "Stepmills offer convenience, cardiovascular benefits, and usually have less impact than running outside while offering a similar rate of calories burned. They are typically much harder than other cardio equipment. A 150 lb person will typically burn over 300 calories in 30 minutes, compared to about 175 calories walking."
+      ],
+      "name": "Step Mill",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
       ]
     },
     {
@@ -13526,6 +16321,28 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Stand to the side of a box with your inside foot on top of it, close to the edge.",
+        "Begin by swinging the arms upward as you push through the top leg, jumping upward as high as possible. Attempt to drive the opposite knee upward.",
+        "Land in the opposite position that you started, on the opposite side of the box. The foot that was initially on the box will now be on the ground, with the opposite foot now on the box.",
+        "Repeat the movement, crossing back over to the other side."
+      ],
+      "name": "Stride Jump Crossover",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abductors",
+        "adductors",
+        "calves",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "barbell"
@@ -13630,6 +16447,67 @@
       "secondary_muscles": [
         "glutes",
         "hamstrings"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "This drill is great for chest passes when you lack a partner or a wall of sufficient strength. Lay on the ground on your back with your knees bent.",
+        "Begin with the ball on your chest, held with both hands on the bottom.",
+        "Explode up, extending through the elbow to throw the ball directly above you as high as possible.",
+        "Catch the ball with both hands as it comes down."
+      ],
+      "name": "Supine Chest Throw",
+      "primary_muscles": [
+        "triceps"
+      ],
+      "secondary_muscles": [
+        "chest",
+        "shoulders"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "Lay on the ground on your back with your knees bent. Hold the ball with one hand, extending the arm fully behind your head. This will be your starting position.",
+        "Initiate the movement at the shoulder, throwing the ball directly forward of you as you sit up, attempting to go for maximum distance.",
+        "The ball can be thrown to a partner or bounced off of a wall."
+      ],
+      "name": "Supine One-Arm Overhead Throw",
+      "primary_muscles": [
+        "abs"
+      ],
+      "secondary_muscles": [
+        "chest",
+        "lats",
+        "shoulders"
+      ]
+    },
+    {
+      "category": "plyometrics",
+      "equipment": [
+        "medicine ball"
+      ],
+      "instructions": [
+        "Lay on the ground on your back with your knees bent.",
+        "Hold the ball with both hands, extending the arms fully behind your head. This will be your starting position.",
+        "Initiate the movement at the shoulder, throwing the ball directly forward of you as you sit up, attempting to go for maximum distance.",
+        "The ball can be thrown to a partner or bounced off of a wall."
+      ],
+      "name": "Supine Two-Arm Overhead Throw",
+      "primary_muscles": [
+        "abs"
+      ],
+      "secondary_muscles": [
+        "chest",
+        "lats",
+        "shoulders"
       ]
     },
     {
@@ -13854,6 +16732,32 @@
       ]
     },
     {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "Begin by gripping the bottom of the tire on the tread, and position your feet back a bit. Your chest should be driving into the tire.",
+        "To lift the tire, extend through the hips, knees, and ankles, driving into the tire and up.",
+        "As the tire reaches a 45 degree angle, step forward and drive a knee into the tire. As you do so adjust your grip to the upper portion of the tire and push it forward as hard as possible to complete the turn. Repeat as necessary."
+      ],
+      "name": "Tire Flip",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "chest",
+        "forearms",
+        "glutes",
+        "hamstrings",
+        "lower back",
+        "shoulders",
+        "traps",
+        "triceps"
+      ]
+    },
+    {
       "category": "stretching",
       "equipment": [
         "none"
@@ -13886,6 +16790,25 @@
         "abs"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "cardio",
+      "equipment": [
+        "none"
+      ],
+      "instructions": [
+        "Running or hiking on trails will get the blood pumping and heart beating almost immediately. Make sure you have good shoes. While you use the muscles in your calves and buttocks to pull yourself up a hill, the knees, joints and ankles absorb the bulk of the pounding coming back down. Take smaller steps as you walk downhill, keep your knees bent to reduce the impact and slow down to avoid falling.",
+        "A 150 lb person can burn over 200 calories for 30 minutes walking uphill, compared to 175 on a flat surface. If running the trail, a 150 lb person can burn well over 500 calories in 30 minutes."
+      ],
+      "name": "Trail Running/Walking",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
     },
     {
       "category": "strength",
@@ -14335,6 +17258,46 @@
       ]
     },
     {
+      "category": "plyometrics",
+      "equipment": [
+        "dumbbell"
+      ],
+      "instructions": [
+        "Allow the dumbbell to hang at arms length between your legs, holding it with both hands. Keep your back straight and your head up.",
+        "Swing the dumbbell between your legs, flexing at the hips and bending the knees slightly.",
+        "Powerfully reverse the motion by extending at the hips, knees, and ankles to propel yourself upward, swinging the dumbell over your head.",
+        "As you land, absorb the impact through your legs and draw the dumbbell to your torso before the next repetition."
+      ],
+      "name": "Vertical Swing",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "glutes",
+        "quads",
+        "shoulders"
+      ]
+    },
+    {
+      "category": "cardio",
+      "equipment": [
+        "machine"
+      ],
+      "instructions": [
+        "To begin, step onto the treadmill and select the desired option from the menu. Most treadmills have a manual setting, or you can select a program to run. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise. Elevation can be adjusted to change the intensity of the workout.",
+        "Treadmills offer convenience, cardiovascular benefits, and usually have less impact than walking outside. When walking, you should move at a moderate to fast pace, not a leisurely one. Being an activity of lower intensity, walking doesn burn as many calories as some other activities, but still provides great benefit. A 150 lb person will burn about 175 calories walking 4 miles per hour for 30 minutes, compared to 450 calories running twice as fast. Maintain proper posture as you walk, and only hold onto the handles when necessary, such as when dismounting or checking your heart rate."
+      ],
+      "name": "Walking, Treadmill",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "calves",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "exercise ball"
@@ -14694,6 +17657,25 @@
       ]
     },
     {
+      "category": "olympic weightlifting",
+      "equipment": [
+        "barbell"
+      ],
+      "instructions": [
+        "Begin with a barbell loaded on the floor. Adopt a wide stance, and then bend at the hips to grab the bar. Your hips should be as far back as possible, and your legs nearly straight. Keep your back straight, and your head and chest up. This will be your starting position.",
+        "Begin the movement be engaging the hips, driving them forward as you allow the arms to hang straight. Continue until you are standing straight up, and then slowly return the weight to the starting position. For successive reps, the weight need not touch the floor."
+      ],
+      "name": "Wide Stance Stiff Legs",
+      "primary_muscles": [
+        "hamstrings"
+      ],
+      "secondary_muscles": [
+        "adductors",
+        "glutes",
+        "lower back"
+      ]
+    },
+    {
       "category": "strength",
       "equipment": [
         "none"
@@ -14801,6 +17783,30 @@
         "forearms"
       ],
       "secondary_muscles": []
+    },
+    {
+      "category": "strongman",
+      "equipment": [
+        "other"
+      ],
+      "instructions": [
+        "The yoke is usually done with a yoke apparatus, but is sometimes seen with refrigerators or other heavy objects.",
+        "Begin by racking the apparatus across the back of the shoulders. With your head looking forward and back arched, lift the yoke by driving through the heels.",
+        "Begin walking as quickly as possible using short, quick steps. You may hold the side posts of the yoke to help steady it and hold it in position. Continue for the given distance as fast as possible, usually 75-100 feet."
+      ],
+      "name": "Yoke Walk",
+      "primary_muscles": [
+        "quads"
+      ],
+      "secondary_muscles": [
+        "abs",
+        "abductors",
+        "adductors",
+        "calves",
+        "glutes",
+        "hamstrings",
+        "lower back"
+      ]
     },
     {
       "category": "strength",

@@ -1,38 +1,69 @@
 import { Exercise } from '@/lib/db';
-import { Button } from '@/components/ui/button';
-import { X, Dumbbell, Target, Info, Video, ListChecks, Lightbulb, Edit } from 'lucide-react';
+import { X, Dumbbell, Target, Info, Video, ListChecks, Lightbulb, Edit, ChevronLeft } from 'lucide-react';
 import AnatomyDiagram from './AnatomyDiagram';
 import { useUser } from '@/context/UserContext';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
+import {
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerDescription,
+} from "@/components/ui/drawer";
+import { Button } from '@/components/ui/button';
 
 interface ExerciseDetailProps {
     exercise: Exercise;
-    onClose: () => void;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
     onEdit?: () => void;
 }
 
-const ExerciseDetail = ({ exercise, onClose, onEdit }: ExerciseDetailProps) => {
+const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetailProps) => {
     const { currentUser } = useUser();
     const gender = currentUser?.gender || 'male';
 
+    if (!open && !exercise?.name) return null;
+
+    // Provide defaults for mapping to avoid crashes when exercise is empty
+    const primaryMuscles = exercise?.primaryMuscles || [];
+    const secondaryMuscles = exercise?.secondaryMuscles || [];
+    const instructions = exercise?.instructions || [];
+    const tips = exercise?.tips || [];
+
     return (
-        <Drawer open={!!exercise} onOpenChange={(val) => !val && onClose()}>
-            <DrawerContent className="h-[96dvh] bg-background border-white/10 rounded-t-[3rem] overflow-hidden">
+        <Drawer open={open} onOpenChange={onOpenChange}>
+            <DrawerContent className="h-[98dvh] border-none bg-background flex flex-col focus:outline-none">
                 <DrawerHeader className="sr-only">
                     <DrawerTitle>{exercise.name}</DrawerTitle>
                     <DrawerDescription>{exercise.description || `Details for ${exercise.name}`}</DrawerDescription>
                 </DrawerHeader>
 
-                {/* Header / Navigation Overlay */}
-                <div className="sticky top-0 left-0 right-0 h-16 flex items-center justify-between px-6 z-50 bg-background/80 backdrop-blur-xl border-b border-white/5">
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">Exercise Intel</span>
+                {/* Custom Header */}
+                <div className="flex-shrink-0 sticky top-0 left-0 right-0 h-16 flex items-center justify-between px-6 z-50 bg-background/80 backdrop-blur-xl border-b border-white/5">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => onOpenChange(false)}
+                            className="p-2 -ml-2 hover:bg-white/5 rounded-full transition-colors"
+                            aria-label="Go back"
+                        >
+                            <ChevronLeft className="w-6 h-6" />
+                        </button>
+                        <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">Exercise Intel</span>
+                        </div>
                     </div>
+                    <button
+                        onClick={() => onOpenChange(false)}
+                        className="p-2 hover:bg-white/5 rounded-full transition-colors"
+                        aria-label="Close"
+                    >
+                        <X className="w-6 h-6 text-muted-foreground" />
+                    </button>
                 </div>
 
                 {/* Main Content Area */}
-                <div className="flex-1 overflow-y-auto overscroll-contain custom-scrollbar bg-background">
+                <div className="flex-1 overflow-y-auto overscroll-contain custom-scrollbar pb-32">
                     {/* Visual Hero */}
                     <div className="relative pt-8 pb-10 px-6 bg-gradient-to-b from-rose-950/20 to-transparent">
                         <div className="max-w-5xl mx-auto">
@@ -51,7 +82,7 @@ const ExerciseDetail = ({ exercise, onClose, onEdit }: ExerciseDetailProps) => {
                         </div>
                     </div>
 
-                    <div className="px-6 pb-32 max-w-5xl mx-auto w-full">
+                    <div className="px-6 max-w-5xl mx-auto w-full">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                             {/* Visuals */}
                             <div className="lg:col-span-5 space-y-8">
@@ -62,8 +93,8 @@ const ExerciseDetail = ({ exercise, onClose, onEdit }: ExerciseDetailProps) => {
                                     </div>
                                     <div className="bg-rose-950/5 rounded-[3rem] p-8 border border-white/5 shadow-inner">
                                         <AnatomyDiagram
-                                            selectedPrimary={exercise.primaryMuscles}
-                                            selectedSecondary={exercise.secondaryMuscles}
+                                            selectedPrimary={primaryMuscles}
+                                            selectedSecondary={secondaryMuscles}
                                             gender={gender}
                                             mode="read-only"
                                         />
@@ -90,20 +121,20 @@ const ExerciseDetail = ({ exercise, onClose, onEdit }: ExerciseDetailProps) => {
                                             <div className="w-2 h-2 rounded-full bg-rose-600" /> Primary Focus
                                         </div>
                                         <div className="flex flex-wrap gap-2">
-                                            {exercise.primaryMuscles.map(m => (
+                                            {primaryMuscles.map(m => (
                                                 <span key={m} className="px-5 py-3 bg-rose-600/10 text-rose-400 rounded-2xl text-[11px] font-black uppercase tracking-wider border border-rose-600/20">
                                                     {m.replace(/[_-]/g, ' ')}
                                                 </span>
                                             ))}
                                         </div>
                                     </div>
-                                    {exercise.secondaryMuscles.length > 0 && (
+                                    {secondaryMuscles.length > 0 && (
                                         <div className="space-y-4">
                                             <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-black flex items-center gap-2">
                                                 <div className="w-2 h-2 rounded-full bg-orange-400" /> Assisting
                                             </div>
                                             <div className="flex flex-wrap gap-2">
-                                                {exercise.secondaryMuscles.map(m => (
+                                                {secondaryMuscles.map(m => (
                                                     <span key={m} className="px-5 py-3 bg-orange-400/10 text-orange-400 rounded-2xl text-[11px] font-bold border border-orange-400/20 uppercase tracking-wide">
                                                         {m.replace(/[_-]/g, ' ')}
                                                     </span>
@@ -131,7 +162,7 @@ const ExerciseDetail = ({ exercise, onClose, onEdit }: ExerciseDetailProps) => {
                                             Execution Protocol
                                         </div>
                                         <div className="space-y-6">
-                                            {exercise.instructions.map((step, i) => (
+                                            {instructions.map((step, i) => (
                                                 <div key={i} className="flex gap-6 group items-start">
                                                     <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[10px] font-black text-white border border-white/10 group-hover:bg-rose-600 transition-all shadow-lg">
                                                         {(i + 1).toString().padStart(2, '0')}
@@ -164,14 +195,14 @@ const ExerciseDetail = ({ exercise, onClose, onEdit }: ExerciseDetailProps) => {
                                         </div>
                                     )}
 
-                                    {exercise.tips && exercise.tips.length > 0 && (
+                                    {tips.length > 0 && (
                                         <div className="space-y-4">
                                             <div className="flex items-center gap-2 text-amber-500 font-bold uppercase text-[10px] tracking-widest pl-4">
                                                 <Lightbulb className="w-4 h-4" />
                                                 Expert Insights
                                             </div>
                                             <div className="grid gap-3">
-                                                {exercise.tips.map((tip, i) => (
+                                                {tips.map((tip, i) => (
                                                     <div key={i} className="flex gap-3 p-5 bg-amber-500/5 rounded-3xl border border-amber-500/10 text-xs text-amber-200/80 leading-relaxed italic">
                                                         <span className="text-amber-500 font-bold">•</span>
                                                         {tip}

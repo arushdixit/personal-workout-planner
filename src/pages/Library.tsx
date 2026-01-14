@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -164,7 +165,7 @@ const Library = () => {
     }
 
     return (
-        <div className="space-y-6 animate-slide-up">
+        <div className="space-y-6 animate-slide-up min-h-[100dvh]">
             {/* View Switcher */}
             <div className="flex p-1 bg-white/5 rounded-xl border border-white/10">
                 <button
@@ -422,28 +423,28 @@ const Library = () => {
             </div>
 
             {/* Wizard Modal */}
-            {showWizard && (
-                <ExerciseWizard
-                    exercise={editingExercise}
-                    onComplete={handleWizardComplete}
-                    onCancel={() => {
-                        setShowWizard(false);
-                        setEditingExercise(undefined);
-                    }}
-                />
-            )}
+            <ExerciseWizard
+                exercise={editingExercise}
+                open={showWizard}
+                onOpenChange={(open) => {
+                    setShowWizard(open);
+                    if (!open) setEditingExercise(undefined);
+                }}
+                onComplete={handleWizardComplete}
+            />
 
-            {viewingExercise && (
-                <ExerciseDetail
-                    exercise={viewingExercise}
-                    onClose={() => setViewingExercise(undefined)}
-                    onEdit={viewingExercise.source === 'exercemus' && view === 'my' ? () => {
-                        setEditingExercise(viewingExercise);
-                        setViewingExercise(undefined);
-                        setShowWizard(true);
-                    } : undefined}
-                />
-            )}
+            <ExerciseDetail
+                exercise={viewingExercise || ({} as Exercise)}
+                open={!!viewingExercise}
+                onOpenChange={(open) => {
+                    if (!open) setViewingExercise(undefined);
+                }}
+                onEdit={viewingExercise?.source === 'exercemus' && view === 'my' ? () => {
+                    setEditingExercise(viewingExercise);
+                    setViewingExercise(undefined);
+                    setShowWizard(true);
+                } : undefined}
+            />
 
             {/* Delete Confirmation */}
             <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
