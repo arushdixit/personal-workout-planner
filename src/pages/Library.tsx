@@ -13,10 +13,12 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Plus, Search, Dumbbell, Edit, Trash2, Filter, CheckCircle, Globe, User } from 'lucide-react';
+import { Plus, Search, Dumbbell, Edit, Trash2, Filter, CheckCircle, Globe, User, PlusCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import { db, Exercise, MUSCLE_GROUPS, EQUIPMENT_TYPES } from '@/lib/db';
 import ExerciseWizard from '@/components/ExerciseWizard';
 import { cn } from '@/lib/utils';
+import { importExercemusData } from '@/lib/exercemus';
 
 const Library = () => {
     const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -32,8 +34,13 @@ const Library = () => {
     const loadExercises = async () => {
         setLoading(true);
         try {
-            // In a real app with 1k+ exercises, we would use pagination
-            // For now we'll load them all but prioritize filtering in memory
+            // Check if we have Exercemus data, if not try to import it
+            const exercemusCount = await db.exercises.where('source').equals('exercemus').count();
+            if (exercemusCount === 0) {
+                console.log('No global library data found, attempting to import...');
+                await importExercemusData();
+            }
+
             const all = await db.exercises.toArray();
             setExercises(all);
         } catch (err) {
@@ -81,6 +88,29 @@ const Library = () => {
         setShowWizard(false);
         setEditingExercise(undefined);
         loadExercises();
+    };
+
+    const handleAddToMy = async (ex: Exercise) => {
+        if (!ex.id) return;
+        try {
+            await db.exercises.update(ex.id, { mastered: true });
+            toast.success(`${ex.name} added to your exercises!`);
+            loadExercises();
+        } catch (err) {
+            console.error('Failed to add exercise:', err);
+            toast.error('Failed to add exercise');
+        }
+    };
+
+    const handleRemoveFromMy = async (ex: Exercise) => {
+        if (!ex.id) return;
+        try {
+            await db.exercises.update(ex.id, { mastered: false });
+            toast.success(`${ex.name} removed from your exercises`);
+            loadExercises();
+        } catch (err) {
+            console.error('Failed to remove exercise:', err);
+        }
     };
 
     if (loading) {
@@ -228,17 +258,52 @@ const Library = () => {
                                         </p>
                                     </div>
                                     <div className="flex gap-1">
-                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(ex)}>
-                                            <Edit className="w-4 h-4" />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => setDeleteTarget(ex)}
-                                            className="text-red-500 hover:text-red-400"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </Button>
+                                        {view === 'global' ? (
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handleAddToMy(ex)}
+                                                aria-label={ex.mastered ? "Added" : "Add to My Exercises"}
+                                                className={cn(ex.mastered && "text-green-500 opacity-100")}
+                                            >
+                                                {ex.mastered ? <CheckCircle className="w-4 h-4" /> : <PlusCircle className="w-4 h-4" />}
+                                            </Button>
+                                        ) : (
+                                            <>
+                                                {ex.source === 'exercemus' ? (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => handleRemoveFromMy(ex)}
+                                                        className="text-muted-foreground hover:text-red-400"
+                                                        aria-label="Remove from My Exercises"
+                                                        title="Remove from My Exercises"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                ) : (
+                                                    <>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => handleEdit(ex)}
+                                                            aria-label="Edit Exercise"
+                                                        >
+                                                            <Edit className="w-4 h-4" />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => setDeleteTarget(ex)}
+                                                            className="text-red-500 hover:text-red-400"
+                                                            aria-label="Delete Exercise"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </>
+                                                )}
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                             </CardContent>

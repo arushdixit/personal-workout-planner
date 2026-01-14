@@ -59,12 +59,19 @@ export async function importExercemusData() {
     }
 
     try {
+        console.log('Loading exercemus-data.json...');
         // Dynamic import to keep main bundle small
-        const data = await import('./exercemus-data.json');
+        const module = await import('./exercemus-data.json');
+        const data = module.default || module;
+
+        if (!data || !data.exercises) {
+            console.error('Invalid Exercemus data format:', data);
+            return;
+        }
 
         const exercisesToInsert: Exercise[] = data.exercises.map((ex: any) => ({
             name: ex.name,
-            primaryMuscles: mapMuscles(ex.primary_muscles),
+            primaryMuscles: mapMuscles(ex.primary_muscles || []),
             secondaryMuscles: mapMuscles(ex.secondary_muscles || []),
             equipment: mapEquipment(ex.equipment || []),
             source: 'exercemus',

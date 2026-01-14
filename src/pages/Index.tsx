@@ -52,7 +52,7 @@ const Index = () => {
       }
     };
     loadExercises();
-  }, [todayType]);
+  }, [todayType, currentUser?.id]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -160,7 +160,12 @@ const Index = () => {
               {allUsers.map((u) => (
                 <button
                   key={u.id}
-                  onClick={() => u.id && switchUser(u.id)}
+                  onClick={() => {
+                    if (u.id) {
+                      switchUser(u.id);
+                      setActiveTab('today');
+                    }
+                  }}
                   className={`w-full glass-card p-4 flex items-center gap-4 ${u.id === currentUser?.id ? 'border-primary/30' : ''}`}
                 >
                   <UserCircle className={`w-5 h-5 ${u.id === currentUser?.id ? 'text-primary' : 'text-muted-foreground'}`} />
