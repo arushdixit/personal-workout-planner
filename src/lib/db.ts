@@ -25,6 +25,11 @@ export interface Exercise {
     equipment: EquipmentType;
     repRange?: string; // e.g., "8-12"
     formCues?: string; // e.g., "Elbows at 45°, chest up"
+    formCuesArray?: string[];
+    beginnerFriendlyInstructions?: string[];
+    commonMistakes?: string[];
+    injuryPreventionTips?: string[];
+    difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
     tutorialUrl?: string;
     inLibrary?: boolean;
     isStarter?: boolean;

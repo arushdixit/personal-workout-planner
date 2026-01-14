@@ -3,6 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
     AlertDialog,
@@ -38,12 +39,8 @@ const Library = () => {
     const loadExercises = async () => {
         setLoading(true);
         try {
-            // Check if we have Exercemus data, if not try to import it
-            const exercemusCount = await db.exercises.where('source').equals('exercemus').count();
-            if (exercemusCount === 0) {
-                console.log('No global library data found, attempting to import...');
-                await importExercemusData();
-            }
+            // Ensure Exercemus data is imported and up to date
+            await importExercemusData();
 
             const all = await db.exercises.toArray();
             setExercises(all);
@@ -276,6 +273,19 @@ const Library = () => {
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2 mb-1">
                                             <h3 className="font-semibold">{ex.name}</h3>
+                                            {ex.difficulty && (
+                                                <Badge
+                                                    variant="outline"
+                                                    className={cn(
+                                                        "px-1.5 py-0 h-4 text-[8px] font-black uppercase tracking-tighter border-0",
+                                                        ex.difficulty === 'Beginner' && "bg-emerald-500/10 text-emerald-400",
+                                                        ex.difficulty === 'Intermediate' && "bg-blue-500/10 text-blue-400",
+                                                        ex.difficulty === 'Advanced' && "bg-orange-500/10 text-orange-400"
+                                                    )}
+                                                >
+                                                    {ex.difficulty}
+                                                </Badge>
+                                            )}
                                         </div>
                                         <div className="flex flex-wrap gap-1 mb-2">
                                             {Array.from(new Set(ex.primaryMuscles)).slice(0, 3).map(m => (
@@ -387,7 +397,22 @@ const Library = () => {
                                             <CardContent className="p-4">
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex-1">
-                                                        <h3 className="font-semibold mb-1">{ex.name}</h3>
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <h3 className="font-semibold">{ex.name}</h3>
+                                                            {ex.difficulty && (
+                                                                <Badge
+                                                                    variant="outline"
+                                                                    className={cn(
+                                                                        "px-1.5 py-0 h-4 text-[8px] font-black uppercase tracking-tighter border-0",
+                                                                        ex.difficulty === 'Beginner' && "bg-emerald-500/10 text-emerald-400",
+                                                                        ex.difficulty === 'Intermediate' && "bg-blue-500/10 text-blue-400",
+                                                                        ex.difficulty === 'Advanced' && "bg-orange-500/10 text-orange-400"
+                                                                    )}
+                                                                >
+                                                                    {ex.difficulty}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
                                                         <p className="text-xs text-muted-foreground">
                                                             {ex.equipment} {ex.repRange && `· ${ex.repRange} reps`}
                                                         </p>

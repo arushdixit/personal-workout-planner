@@ -1,5 +1,5 @@
 import { Exercise } from '@/lib/db';
-import { X, Dumbbell, Target, Info, Video, ListChecks, Lightbulb, Edit, ChevronLeft } from 'lucide-react';
+import { X, Dumbbell, Target, Info, Video, ListChecks, Lightbulb, Edit, ChevronLeft, ShieldCheck, AlertCircle, Timer, Zap } from 'lucide-react';
 import AnatomyDiagram from './AnatomyDiagram';
 import { useUser } from '@/context/UserContext';
 import {
@@ -10,6 +10,8 @@ import {
     DrawerDescription,
 } from "@/components/ui/drawer";
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface ExerciseDetailProps {
     exercise: Exercise;
@@ -91,15 +93,45 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                                         <Target className="w-4 h-4" />
                                         Biomechanical Map
                                     </div>
-                                    <div className="bg-rose-950/5 rounded-[3rem] p-8 border border-white/5 shadow-inner">
+                                    <div className="bg-rose-950/5 rounded-[3rem] p-8 border border-white/5 shadow-inner relative">
                                         <AnatomyDiagram
                                             selectedPrimary={primaryMuscles}
                                             selectedSecondary={secondaryMuscles}
                                             gender={gender}
                                             mode="read-only"
                                         />
+
+                                        {exercise.difficulty && (
+                                            <div className="absolute top-6 right-6">
+                                                <Badge
+                                                    className={cn(
+                                                        "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border",
+                                                        exercise.difficulty === 'Beginner' && "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+                                                        exercise.difficulty === 'Intermediate' && "bg-blue-500/10 text-blue-400 border-blue-500/20",
+                                                        exercise.difficulty === 'Advanced' && "bg-orange-500/10 text-orange-400 border-orange-500/20"
+                                                    )}
+                                                >
+                                                    {exercise.difficulty}
+                                                </Badge>
+                                            </div>
+                                        )}
                                     </div>
                                 </section>
+
+                                {exercise.tempo && (
+                                    <div className="bg-white/[0.02] p-6 rounded-[2rem] border border-white/5 flex items-center justify-between group">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-3 rounded-2xl bg-rose-600/10 border border-rose-600/20">
+                                                <Timer className="w-5 h-5 text-rose-500" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Optimal Tempo</p>
+                                                <p className="text-xl font-black text-white">{exercise.tempo}</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-[10px] text-rose-500/40 font-bold uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">Eccentric / Pause / Concentric / Pause</div>
+                                    </div>
+                                )}
 
                                 {onEdit && (
                                     <Button
@@ -155,14 +187,21 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                                 </div>
 
                                 {/* Procedure */}
-                                {exercise.instructions && exercise.instructions.length > 0 && (
+                                {(exercise.beginnerFriendlyInstructions || exercise.instructions) && (
                                     <section className="space-y-8">
-                                        <div className="flex items-center gap-2 text-rose-500 font-bold uppercase text-[10px] tracking-widest border-l-2 border-rose-500 pl-4">
-                                            <ListChecks className="w-4 h-4" />
-                                            Execution Protocol
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2 text-rose-500 font-bold uppercase text-[10px] tracking-widest border-l-2 border-rose-500 pl-4">
+                                                <ListChecks className="w-4 h-4" />
+                                                Execution Protocol
+                                            </div>
+                                            {exercise.beginnerFriendlyInstructions && (
+                                                <Badge variant="outline" className="text-[9px] uppercase tracking-tighter border-rose-500/30 text-rose-500/70">
+                                                    Simplified for Clarity
+                                                </Badge>
+                                            )}
                                         </div>
                                         <div className="space-y-6">
-                                            {instructions.map((step, i) => (
+                                            {(exercise.beginnerFriendlyInstructions || instructions).map((step, i) => (
                                                 <div key={i} className="flex gap-6 group items-start">
                                                     <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[10px] font-black text-white border border-white/10 group-hover:bg-rose-600 transition-all shadow-lg">
                                                         {(i + 1).toString().padStart(2, '0')}
@@ -176,30 +215,72 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                                     </section>
                                 )}
 
-                                {/* Insights */}
+                                {/* Intelligence Grid */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    {(exercise.formCues || exercise.description) && (
+                                    {/* Form Cues */}
+                                    {(exercise.formCuesArray || exercise.formCues) && (
                                         <div className="bg-rose-950/20 p-8 rounded-[3rem] border border-rose-900/30 relative overflow-hidden group">
                                             <div className="absolute -top-10 -right-10 w-40 h-40 bg-rose-500/10 blur-[80px] rounded-full group-hover:bg-rose-500/20 transition-all" />
-                                            <Info className="w-6 h-6 text-rose-500 mb-6" />
-                                            {exercise.description && (
-                                                <p className="text-xs font-semibold italic text-muted-foreground mb-4 leading-relaxed">
-                                                    "{exercise.description}"
-                                                </p>
-                                            )}
-                                            {exercise.formCues && (
-                                                <div className="text-sm font-medium leading-[1.6]">
-                                                    {exercise.formCues}
-                                                </div>
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <Zap className="w-5 h-5 text-rose-500" />
+                                                <span className="text-[10px] text-rose-500 uppercase tracking-widest font-black">Critical Cues</span>
+                                            </div>
+
+                                            {exercise.formCuesArray ? (
+                                                <ul className="space-y-3">
+                                                    {exercise.formCuesArray.map((cue, i) => (
+                                                        <li key={i} className="text-sm font-medium leading-relaxed flex items-start gap-2">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 flex-shrink-0" />
+                                                            {cue}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            ) : (
+                                                <p className="text-sm font-medium leading-[1.6]">{exercise.formCues}</p>
                                             )}
                                         </div>
                                     )}
 
+                                    {/* Common Mistakes */}
+                                    {exercise.commonMistakes && exercise.commonMistakes.length > 0 && (
+                                        <div className="bg-orange-950/10 p-8 rounded-[3rem] border border-orange-900/20 relative overflow-hidden group">
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <AlertCircle className="w-5 h-5 text-orange-500" />
+                                                <span className="text-[10px] text-orange-500 uppercase tracking-widest font-black">Avoid These</span>
+                                            </div>
+                                            <ul className="space-y-3">
+                                                {exercise.commonMistakes.map((mistake, i) => (
+                                                    <li key={i} className="text-xs text-orange-200/60 leading-relaxed flex items-start gap-2 italic">
+                                                        <span className="text-orange-500 font-bold">×</span>
+                                                        {mistake}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+
+                                    {/* Injury Prevention */}
+                                    {exercise.injuryPreventionTips && exercise.injuryPreventionTips.length > 0 && (
+                                        <div className="md:col-span-2 bg-emerald-950/10 p-8 rounded-[3rem] border border-emerald-900/20 relative overflow-hidden group">
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                                                <span className="text-[10px] text-emerald-500 uppercase tracking-widest font-black">Safety Protocol</span>
+                                            </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                {exercise.injuryPreventionTips.map((tip, i) => (
+                                                    <div key={i} className="flex gap-3 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10 text-xs text-emerald-200/80 leading-relaxed">
+                                                        {tip}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {tips.length > 0 && (
-                                        <div className="space-y-4">
+                                        <div className="md:col-span-2 space-y-4">
                                             <div className="flex items-center gap-2 text-amber-500 font-bold uppercase text-[10px] tracking-widest pl-4">
                                                 <Lightbulb className="w-4 h-4" />
-                                                Expert Insights
+                                                Legacy Wisdom
                                             </div>
                                             <div className="grid gap-3">
                                                 {tips.map((tip, i) => (

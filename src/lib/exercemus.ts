@@ -54,9 +54,9 @@ export async function importExercemusData() {
     console.log('Checking for Exercemus data...');
     const existingCount = await db.exercises.where('source').equals('exercemus').count();
 
-    // Check if we need to refresh data (if tempo is missing from an exercemus exercise)
+    // Check if we need to refresh data (if difficulty is missing from an exercemus exercise)
     const sample = await db.exercises.where('source').equals('exercemus').first();
-    const needsRefresh = sample && sample.tempo === undefined;
+    const needsRefresh = sample && sample.difficulty === undefined;
 
     if (existingCount > 0 && !needsRefresh) {
         console.log('Exercemus data already imported and up to date.');
@@ -64,14 +64,14 @@ export async function importExercemusData() {
     }
 
     if (needsRefresh) {
-        console.log('Exercemus data is outdated, clearing for refresh...');
+        console.log('Exercemus data is outdated or missing enrichment, clearing for refresh...');
         await db.exercises.where('source').equals('exercemus').delete();
     }
 
     try {
-        console.log('Loading exercemus-data.json...');
+        console.log('Loading enriched-exercemus-data.json...');
         // Dynamic import to keep main bundle small
-        const module = await import('./exercemus-data.json');
+        const module = await import('./enriched-exercemus-data.json');
         const data = module.default || module;
 
         if (!data || !data.exercises) {
@@ -90,7 +90,13 @@ export async function importExercemusData() {
             instructions: ex.instructions || [],
             tips: ex.tips || [],
             aliases: ex.aliases || [],
-            tempo: ex.tempo || '',
+            tempo: ex.tempo_recommendation || ex.tempo || '',
+            difficulty: ex.difficulty || 'Intermediate',
+            beginnerFriendlyInstructions: ex.beginner_friendly_instructions || [],
+            formCuesArray: ex.form_cues || [],
+            formCues: (ex.form_cues || []).join(', '),
+            commonMistakes: ex.common_mistakes || [],
+            injuryPreventionTips: ex.injury_prevention_tips || [],
             variationOf: ex.variation_on || ex.variations_on || [],
             tutorialUrl: ex.video || '',
             createdAt: new Date().toISOString(),
@@ -100,7 +106,7 @@ export async function importExercemusData() {
         // Filter out exercises with no name or no primary muscles
         const validExercises = exercisesToInsert.filter(ex => ex.name && ex.primaryMuscles.length > 0);
 
-        console.log(`Importing ${validExercises.length} exercises from Exercemus...`);
+        console.log(`Importing ${validExercises.length} enriched exercises from Exercemus...`);
 
         // Insert in chunks to avoid blocking or memory issues
         const chunkSize = 100;
@@ -109,7 +115,7 @@ export async function importExercemusData() {
             await db.exercises.bulkAdd(chunk);
         }
 
-        console.log('Exercemus import complete.');
+        console.log('Exercemus enrichment import complete.');
     } catch (err) {
         console.error('Failed to import Exercemus data:', err);
     }
