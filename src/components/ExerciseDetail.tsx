@@ -1,6 +1,7 @@
 import { Exercise } from '@/lib/db';
-import { X, ChevronLeft, Edit } from 'lucide-react';
+import { X, ChevronLeft, Edit, Dumbbell } from 'lucide-react';
 import AnatomyDiagram from './AnatomyDiagram';
+import MuscleIcon from './MuscleIcon';
 import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -30,43 +31,7 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
     const beginnerInstructions = exercise?.beginnerFriendlyInstructions || exercise?.instructions || [];
     const commonMistakes = exercise?.commonMistakes || [];
     const formCues = exercise?.formCuesArray || (exercise?.formCues ? [exercise.formCues] : []);
-
-    // Get anatomy icons for muscles - using simple emoji-based icons
-    const getMuscleIcon = (muscleName: string, isPrimary: boolean) => {
-        // Map muscle names to emoji/icon representations
-        const muscleIcons: Record<string, string> = {
-            'chest': '💪',
-            'back': '🔙',
-            'shoulders': '🏋️',
-            'deltoids': '🏋️',
-            'biceps': '💪',
-            'triceps': '💪',
-            'forearm': '🤜',
-            'abs': '🎯',
-            'obliques': '🎯',
-            'quadriceps': '🦵',
-            'hamstrings': '🦵',
-            'glutes': '🍑',
-            'calves': '🦵',
-            'lats': '🔙',
-            'traps': '🏔️',
-            'lower-back': '🔙',
-            'adductors': '🦵',
-            'neck': '🧠',
-        };
-
-        const muscleSlug = muscleName.toLowerCase().replace(/\s+/g, '-');
-        const icon = muscleIcons[muscleSlug] || '💪';
-
-        return (
-            <div className={cn(
-                "w-12 h-12 rounded-full flex items-center justify-center text-2xl",
-                isPrimary ? "bg-rose-600/20 border border-rose-600/30" : "bg-orange-400/20 border border-orange-400/30"
-            )}>
-                {icon}
-            </div>
-        );
-    };
+    const injuryPreventionTips = exercise?.injuryPreventionTips || [];
 
     const content = (
         <div className={cn(
@@ -82,6 +47,7 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                 >
                     <ChevronLeft className="w-6 h-6" />
                 </button>
+                <h1 className="flex-1 text-lg font-bold text-center px-4 truncate">{exercise.name}</h1>
                 {onEdit && (
                     <button
                         onClick={onEdit}
@@ -93,16 +59,29 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                 )}
             </div>
 
-            {/* Video/Image Area - Placeholder for future YouTube embed */}
+            {/* Video/Image Area */}
             <div className="flex-shrink-0 bg-gradient-to-b from-zinc-900 to-background aspect-video max-h-[40vh] relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <AnatomyDiagram
-                        selectedPrimary={primaryMuscles}
-                        selectedSecondary={secondaryMuscles}
-                        gender={gender}
-                        mode="read-only"
+                {exercise.tutorialUrl ? (
+                    // YouTube Video Embed
+                    <iframe
+                        className="absolute inset-0 w-full h-full"
+                        src={exercise.tutorialUrl.includes('youtube.com') || exercise.tutorialUrl.includes('youtu.be')
+                            ? exercise.tutorialUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')
+                            : exercise.tutorialUrl
+                        }
+                        title={`${exercise.name} tutorial`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
                     />
-                </div>
+                ) : (
+                    // Fallback to exercise image placeholder
+                    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-900">
+                        <div className="text-center p-8">
+                            <Dumbbell className="w-16 h-16 mx-auto mb-4 text-white/20" />
+                            <p className="text-sm text-white/40">No video available</p>
+                        </div>
+                    </div>
+                )}
                 {/* Tempo indicator in bottom right */}
                 {exercise.tempo && (
                     <div className="absolute bottom-4 right-4 bg-black/80 backdrop-blur-sm px-3 py-1.5 rounded-lg">
@@ -111,12 +90,12 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                 )}
             </div>
 
-            {/* Exercise Title */}
+            {/* Exercise Metadata */}
             <div className="flex-shrink-0 px-6 pt-6 pb-4">
-                <h1 className="text-3xl font-black tracking-tight mb-2">{exercise.name}</h1>
                 <p className="text-sm text-muted-foreground">
-                    {exercise.category && `${exercise.category} • `}
+                    {exercise.category && `${exercise.category.charAt(0).toUpperCase() + exercise.category.slice(1)} • `}
                     {exercise.equipment}
+                    {exercise.difficulty && ` • ${exercise.difficulty}`}
                 </p>
             </div>
 
@@ -218,6 +197,26 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                             </section>
                         )}
 
+                        {/* Injury Prevention Tips */}
+                        {injuryPreventionTips.length > 0 && (
+                            <section className="space-y-4">
+                                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                                    Injury Prevention
+                                </h2>
+                                <div className="space-y-3">
+                                    {injuryPreventionTips.map((tip, i) => (
+                                        <div key={i} className="flex gap-3 items-start bg-blue-500/5 border border-blue-500/10 rounded-xl p-4">
+                                            <span className="text-blue-500 font-bold text-lg leading-none">🛡️</span>
+                                            <p className="text-sm text-blue-100/90 leading-relaxed flex-1">
+                                                {tip}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
                         {/* Rep Range */}
                         {exercise.repRange && (
                             <section className="bg-white/5 rounded-2xl p-6 border border-white/10">
@@ -244,7 +243,7 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                                             key={muscle}
                                             className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/10"
                                         >
-                                            {getMuscleIcon(muscle, true)}
+                                            <MuscleIcon muscleName={muscle} isPrimary={true} />
                                             <span className="text-base font-semibold capitalize">
                                                 {muscle.replace(/[_-]/g, ' ')}
                                             </span>
@@ -266,7 +265,7 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                                             key={muscle}
                                             className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/10"
                                         >
-                                            {getMuscleIcon(muscle, false)}
+                                            <MuscleIcon muscleName={muscle} isPrimary={false} />
                                             <span className="text-base font-semibold capitalize">
                                                 {muscle.replace(/[_-]/g, ' ')}
                                             </span>

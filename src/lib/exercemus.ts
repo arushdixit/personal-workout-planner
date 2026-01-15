@@ -52,11 +52,16 @@ function mapEquipment(exercemusEquip: string[]): EquipmentType {
 
 export async function importExercemusData() {
     console.log('Checking for Exercemus data...');
+
+    // Version of the enriched data - increment this when JSON is updated
+    const DATA_VERSION = 3; // Incremented to restore difficulty levels (Beginner/Intermediate/Advanced)
+
     const existingCount = await db.exercises.where('source').equals('exercemus').count();
 
-    // Check if we need to refresh data (if difficulty is missing from an exercemus exercise)
+    // Check if we need to refresh data by comparing version numbers
     const sample = await db.exercises.where('source').equals('exercemus').first();
-    const needsRefresh = sample && sample.difficulty === undefined;
+    const currentVersion = sample?.dataVersion || 0;
+    const needsRefresh = sample && currentVersion < DATA_VERSION;
 
     if (existingCount > 0 && !needsRefresh) {
         console.log('Exercemus data already imported and up to date.');
@@ -64,7 +69,7 @@ export async function importExercemusData() {
     }
 
     if (needsRefresh) {
-        console.log('Exercemus data is outdated or missing enrichment, clearing for refresh...');
+        console.log(`Exercemus data is outdated (v${currentVersion} < v${DATA_VERSION}), clearing for refresh...`);
         await db.exercises.where('source').equals('exercemus').delete();
     }
 
@@ -99,6 +104,7 @@ export async function importExercemusData() {
             injuryPreventionTips: ex.injury_prevention_tips || [],
             variationOf: ex.variation_on || ex.variations_on || [],
             tutorialUrl: ex.video || '',
+            dataVersion: DATA_VERSION, // Track which version of data this is
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         }));

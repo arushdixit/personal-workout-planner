@@ -43,6 +43,7 @@ export interface Exercise {
     variationOf?: string[];
     createdAt?: string;
     updatedAt?: string;
+    dataVersion?: number; // Track version of enriched data
 }
 
 export interface WorkoutSet {

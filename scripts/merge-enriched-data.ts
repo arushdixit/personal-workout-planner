@@ -17,6 +17,7 @@ interface EnrichedExercise extends Exercise {
   form_cues?: string[];
   common_mistakes?: string[];
   injury_prevention_tips?: string[];
+  difficulty?: string;
 }
 
 interface BatchOutput {
@@ -46,7 +47,7 @@ console.log(`📦 Found ${batchFiles.length} batch output files`);
 
 for (const file of batchFiles) {
   const batchData: BatchOutput[] = JSON.parse(readFileSync(file, 'utf-8'));
-  
+
   for (const exercise of batchData) {
     batchOutputs.set(exercise.name, exercise);
   }
@@ -57,7 +58,7 @@ console.log(`✅ Loaded enrichment data for ${batchOutputs.size} exercises`);
 // Merge the data
 const enrichedData: EnrichedExercise[] = originalData.map(exercise => {
   const enrichment = batchOutputs.get(exercise.name);
-  
+
   if (enrichment) {
     return {
       ...exercise,
@@ -67,7 +68,7 @@ const enrichedData: EnrichedExercise[] = originalData.map(exercise => {
       injury_prevention_tips: enrichment.injury_prevention_tips,
     };
   }
-  
+
   return exercise;
 });
 

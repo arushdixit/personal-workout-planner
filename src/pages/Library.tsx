@@ -303,7 +303,7 @@ const Library = () => {
                                             )}
                                         </div>
                                         <p className="text-xs text-muted-foreground">
-                                            {ex.equipment} {ex.repRange && `· ${ex.repRange} reps`}
+                                            {ex.category ? ex.category.charAt(0).toUpperCase() + ex.category.slice(1) : 'Exercise'} {ex.repRange && `· ${ex.repRange} reps`}
                                         </p>
                                     </div>
                                     <div className="flex gap-1" onClick={e => e.stopPropagation()}>
@@ -414,7 +414,7 @@ const Library = () => {
                                                             )}
                                                         </div>
                                                         <p className="text-xs text-muted-foreground">
-                                                            {ex.equipment} {ex.repRange && `· ${ex.repRange} reps`}
+                                                            {ex.category ? ex.category.charAt(0).toUpperCase() + ex.category.slice(1) : 'Exercise'} {ex.repRange && `· ${ex.repRange} reps`}
                                                         </p>
                                                     </div>
                                                     <div className="flex gap-1" onClick={e => e.stopPropagation()}>
