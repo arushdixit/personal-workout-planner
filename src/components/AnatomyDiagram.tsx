@@ -43,8 +43,8 @@ const AnatomyDiagram = ({
     : (gender === 'female' ? bodyFemaleBack : bodyBack);
 
   const getMuscleColor = (muscle: string) => {
-    if (activePrimary.includes(muscle)) return '#9f1239'; // Rose-800 (Dark Red)
-    if (activeSecondary.includes(muscle)) return '#fda4af'; // Rose-300 (Salmon/Light Red)
+    if (activePrimary.includes(muscle)) return '#e11d48'; // Rose-600 to match primary badges
+    if (activeSecondary.includes(muscle)) return '#fb923c'; // Orange-400 to match secondary badges
     return '#1e1e1e'; // Darker gray for base
   };
 
@@ -143,11 +143,11 @@ const AnatomyDiagram = ({
       {/* Legend */}
       <div className="flex justify-center gap-6 text-xs bg-white/5 p-3 rounded-2xl border border-white/5 max-w-[280px] mx-auto">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-[#9f1239]" />
+          <div className="w-3 h-3 rounded-full bg-rose-600" />
           <span className="text-muted-foreground">Primary</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-[#fda4af]" />
+          <div className="w-3 h-3 rounded-full bg-orange-400" />
           <span className="text-muted-foreground">Secondary</span>
         </div>
       </div>
