@@ -6,7 +6,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Slider } from '@/components/ui/slider';
 import { ChevronLeft, ChevronRight, Dumbbell, User } from 'lucide-react';
 import { db, UserProfile } from '@/lib/db';
-import { starterExercises } from '@/lib/starter-exercises';
 import { importExercemusData } from '@/lib/exercemus';
 
 interface OnboardingProps {
@@ -40,13 +39,7 @@ const Onboarding = ({ onComplete }: OnboardingProps) => {
             const userId = await db.users.add(newUser);
             localStorage.setItem('prolifts_active_user', String(userId));
 
-            // Seed exercises if empty
-            const count = await db.exercises.count();
-            if (count === 0) {
-                await db.exercises.bulkAdd(starterExercises);
-            }
-
-            // Always try to import Exercemus data (it will check if already done)
+            // Import Exercemus exercise database (it will check if already done)
             await importExercemusData();
 
             onComplete();
