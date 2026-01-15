@@ -33,3 +33,12 @@ _pouch_*
 
 #ENV
 .env
+
+# Archive (enrichment batch files)
+archive/
+
+# Screenshot references
+images/
+
+# Warp documentation
+WARP.md
