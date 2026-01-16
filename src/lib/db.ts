@@ -31,6 +31,7 @@ export interface Exercise {
     injuryPreventionTips?: string[];
     difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
     tutorialUrl?: string;
+    personalNotes?: string; // User's custom notes for this exercise
     inLibrary?: boolean;
     isStarter?: boolean;
     source?: 'exercemus' | 'local';

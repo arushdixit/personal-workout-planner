@@ -123,10 +123,17 @@ const Library = () => {
         }
     };
 
-    const handleWizardComplete = () => {
+    const handleWizardComplete = async () => {
         setShowWizard(false);
+        const editedExerciseId = editingExercise?.id;
         setEditingExercise(undefined);
-        loadExercises();
+        await loadExercises();
+
+        // If we were viewing an exercise, refresh it with updated data
+        if (editedExerciseId && viewingExercise?.id === editedExerciseId) {
+            const updated = await db.exercises.get(editedExerciseId);
+            if (updated) setViewingExercise(updated);
+        }
     };
 
     const handleAddToMy = async (ex: Exercise) => {
@@ -466,7 +473,6 @@ const Library = () => {
                 }}
                 onEdit={viewingExercise?.source === 'exercemus' && view === 'my' ? () => {
                     setEditingExercise(viewingExercise);
-                    setViewingExercise(undefined);
                     setShowWizard(true);
                 } : undefined}
             />

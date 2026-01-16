@@ -35,7 +35,7 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
 
     const content = (
         <div className={cn(
-            "fixed top-0 left-0 right-0 bottom-20 z-[9999] bg-background flex flex-col focus:outline-none overflow-hidden transition-all duration-300",
+            "fixed top-0 left-0 right-0 bottom-0 z-[9999] bg-background flex flex-col focus:outline-none overflow-hidden transition-all duration-300",
             open ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
         )}>
             {/* Header */}
@@ -135,6 +135,32 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
             <div className="flex-1 overflow-y-auto overscroll-contain custom-scrollbar">
                 {activeTab === 'instructions' && (
                     <div className="px-6 py-6 space-y-8">
+                        {/* Personal Notes - Always at the top if they exist */}
+                        {exercise.personalNotes && (
+                            <section className="space-y-4 animate-slide-up">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                                        Your Personal Notes
+                                    </h2>
+                                    {onEdit && (
+                                        <button
+                                            onClick={onEdit}
+                                            className="px-3 py-1.5 text-xs font-bold bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 rounded-lg transition-colors flex items-center gap-1.5"
+                                        >
+                                            <Edit className="w-3 h-3" />
+                                            Edit
+                                        </button>
+                                    )}
+                                </div>
+                                <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 rounded-2xl p-6">
+                                    <p className="text-sm text-purple-50/90 leading-relaxed whitespace-pre-wrap">
+                                        {exercise.personalNotes}
+                                    </p>
+                                </div>
+                            </section>
+                        )}
+
                         {/* Beginner Friendly Instructions */}
                         {beginnerInstructions.length > 0 && (
                             <section className="space-y-4">
@@ -155,6 +181,25 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                                     ))}
                                 </div>
                             </section>
+                        )}
+
+                        {/* Add Personal Notes Button - Show if no notes exist */}
+                        {!exercise.personalNotes && onEdit && (
+                            <button
+                                onClick={onEdit}
+                                className="w-full group relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-600/20 to-purple-500/20 border-2 border-purple-500/30 hover:border-purple-500/50 transition-all duration-300 p-6"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-500/10 to-purple-600/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                                <div className="relative flex flex-col items-center gap-3">
+                                    <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <Edit className="w-6 h-6 text-purple-400" />
+                                    </div>
+                                    <div>
+                                        <p className="text-lg font-bold text-purple-300 mb-1">Add Your Personal Notes</p>
+                                        <p className="text-xs text-purple-400/70">Customize this exercise with your own tips and reminders</p>
+                                    </div>
+                                </div>
+                            </button>
                         )}
 
                         {/* Things to Avoid */}

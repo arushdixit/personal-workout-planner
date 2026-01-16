@@ -384,9 +384,7 @@
       "primary_muscles": [
         "quads"
       ],
-      "secondary_muscles": [
-        "quads"
-      ],
+      "secondary_muscles": [],
       "beginner_friendly_instructions": [
         "Start on your hands and knees in a tabletop position with your spine neutral",
         "Reach back with one hand and grab your foot or ankle on the same side, bending your knee fully",
@@ -2653,8 +2651,7 @@
       "secondary_muscles": [
         "calves",
         "glutes",
-        "hamstrings",
-        "quads"
+        "hamstrings"
       ],
       "beginner_friendly_instructions": [
         "Stand tall with the barbell across your upper back, facing a box or bench about knee height - imagine you're a soldier standing at attention",
@@ -2971,7 +2968,6 @@
       ],
       "secondary_muscles": [
         "chest",
-        "lats",
         "shoulders",
         "triceps"
       ],
@@ -6085,7 +6081,6 @@
         "lower back",
         "middle back",
         "quads",
-        "shoulders",
         "traps",
         "triceps"
       ],
@@ -14633,9 +14628,7 @@
       "primary_muscles": [
         "quads"
       ],
-      "secondary_muscles": [
-        "quads"
-      ],
+      "secondary_muscles": [],
       "beginner_friendly_instructions": [
         "Kneel on a soft mat with both knees on the ground",
         "Bring your right foot forward so it's flat on the floor with your knee bent at 90 degrees - this creates a lunge position with your back knee down",
@@ -15430,26 +15423,26 @@
         "triceps"
       ],
       "beginner_friendly_instructions": [
-        "Sit down and adjust the seat so the handles are level with your upper shoulders\u2014think of them being at ear height",
+        "Sit down and adjust the seat so the handles are level with your upper shoulders—think of them being at ear height",
         "Grab the handles with palms facing away from you, chest proud like you're showing off a medal",
-        "Press the handles straight up overhead until your arms are fully extended\u2014imagine pushing the ceiling away",
+        "Press the handles straight up overhead until your arms are fully extended—imagine pushing the ceiling away",
         "Lower back down with control until handles reach shoulder height, keeping constant tension on your delts",
-        "Stop just before the weight stack touches\u2014don't let the muscles rest between reps"
+        "Stop just before the weight stack touches—don't let the muscles rest between reps"
       ],
       "form_cues": [
         "Keep your core braced like someone's about to punch your stomach throughout the entire press",
-        "Press the handles up and slightly back\u2014imagine following the natural arc of an overhead press, not straight up like an elevator",
-        "Squeeze your shoulder blades down and back into the pad\u2014pretend you're trying to hold a pencil between them",
-        "At the top, finish strong like you're reaching for the ceiling with your head still\u2014don't let your head jut forward"
+        "Press the handles up and slightly back—imagine following the natural arc of an overhead press, not straight up like an elevator",
+        "Squeeze your shoulder blades down and back into the pad—pretend you're trying to hold a pencil between them",
+        "At the top, finish strong like you're reaching for the ceiling with your head still—don't let your head jut forward"
       ],
       "common_mistakes": [
-        "Arching the lower back excessively when pressing\u2014this means the weight is too heavy or core isn't engaged",
-        "Not going through full range of motion\u2014stopping too high on the descent leaves gains on the table",
-        "Using momentum or bouncing the weight at the bottom\u2014this turns it into a push exercise instead of a controlled press"
+        "Arching the lower back excessively when pressing—this means the weight is too heavy or core isn't engaged",
+        "Not going through full range of motion—stopping too high on the descent leaves gains on the table",
+        "Using momentum or bouncing the weight at the bottom—this turns it into a push exercise instead of a controlled press"
       ],
       "injury_prevention_tips": [
-        "If you feel shoulder pinching or discomfort at the top, adjust the seat height\u2014your shoulder joint should feel comfortable throughout",
-        "Keep your head neutral against the back pad\u2014don't crane your neck forward as this can strain cervical spine"
+        "If you feel shoulder pinching or discomfort at the top, adjust the seat height—your shoulder joint should feel comfortable throughout",
+        "Keep your head neutral against the back pad—don't crane your neck forward as this can strain cervical spine"
       ],
       "difficulty": "Beginner"
     },
@@ -15475,23 +15468,23 @@
       "beginner_friendly_instructions": [
         "Load the weight and stand directly between the handles with feet hip-width apart",
         "Grab the top handles, drop your hips down like you're about to jump, chest up and proud",
-        "Drive through your heels to stand up explosively, keeping arms completely straight\u2014think of your arms as hooks, not levers",
-        "Once standing tall, shrug your shoulders straight up toward your ears\u2014imagine trying to touch your ears with your shoulders",
+        "Drive through your heels to stand up explosively, keeping arms completely straight—think of your arms as hooks, not levers",
+        "Once standing tall, shrug your shoulders straight up toward your ears—imagine trying to touch your ears with your shoulders",
         "Hold the squeeze at the top for a full second, then lower your shoulders back down with control"
       ],
       "form_cues": [
-        "Think 'elevators not circles'\u2014your traps move straight up and down, no rolling shoulders forward or backward",
+        "Think 'elevators not circles'—your traps move straight up and down, no rolling shoulders forward or backward",
         "At the top of the shrug, pretend you're trying to pinch your ears with your shoulders while keeping your head still",
-        "Keep your head neutral\u2014imagine balancing a book on your head throughout the movement",
-        "Your arms stay dead straight the entire time\u2014if your elbows bend, you're stealing work from your traps"
+        "Keep your head neutral—imagine balancing a book on your head throughout the movement",
+        "Your arms stay dead straight the entire time—if your elbows bend, you're stealing work from your traps"
       ],
       "common_mistakes": [
-        "Rolling the shoulders in a circular motion instead of straight up\u2014this doesn't add benefit and can cause shoulder irritation",
-        "Bending the elbows and using biceps to help\u2014this is a trap exercise, not an arm exercise",
-        "Using momentum and bouncing at the bottom\u2014smooth and controlled gets better trap activation"
+        "Rolling the shoulders in a circular motion instead of straight up—this doesn't add benefit and can cause shoulder irritation",
+        "Bending the elbows and using biceps to help—this is a trap exercise, not an arm exercise",
+        "Using momentum and bouncing at the bottom—smooth and controlled gets better trap activation"
       ],
       "injury_prevention_tips": [
-        "Don't let your head drop forward\u2014keep a neutral neck position to avoid cervical spine strain",
+        "Don't let your head drop forward—keep a neutral neck position to avoid cervical spine strain",
         "Start with lighter weight to master the straight up-down motion before loading heavy"
       ],
       "difficulty": "Beginner"
@@ -15524,18 +15517,18 @@
         "Pull yourself back up hand-over-hand until you're standing vertical again, maintaining that rigid body position"
       ],
       "form_cues": [
-        "Your body is one solid steel beam from head to toe\u2014don't let your hips sag or pike up",
+        "Your body is one solid steel beam from head to toe—don't let your hips sag or pike up",
         "Imagine a laser beam shooting from your chest that stays pointed at the same spot on the ceiling as you lower",
-        "Squeeze your glutes hard like you're trying to crack a walnut between your cheeks\u2014this keeps your body straight",
-        "Control the descent\u2014pretend you're slowly laying down on an invisible bed, not falling backward"
+        "Squeeze your glutes hard like you're trying to crack a walnut between your cheeks—this keeps your body straight",
+        "Control the descent—pretend you're slowly laying down on an invisible bed, not falling backward"
       ],
       "common_mistakes": [
-        "Letting the hips sag or fold, breaking the plank position\u2014this makes it easier but defeats the purpose",
-        "Going too fast on the descent and losing control\u2014this is about controlled strength, not speed",
-        "Not going all the way to horizontal\u2014partial reps mean partial results"
+        "Letting the hips sag or fold, breaking the plank position—this makes it easier but defeats the purpose",
+        "Going too fast on the descent and losing control—this is about controlled strength, not speed",
+        "Not going all the way to horizontal—partial reps mean partial results"
       ],
       "injury_prevention_tips": [
-        "Ensure your setup is completely secure before attempting\u2014test the rope and bar with partial weight first",
+        "Ensure your setup is completely secure before attempting—test the rope and bar with partial weight first",
         "Build up core strength with planks and hanging leg raises before attempting this advanced move"
       ],
       "difficulty": "Intermediate"
@@ -15556,24 +15549,24 @@
       "secondary_muscles": [],
       "beginner_friendly_instructions": [
         "Kneel on a mat with knees hip-width apart, reaching both hands back to grab your heels",
-        "Push your hips forward and up while keeping your hands on your heels\u2014imagine someone pulling your hips forward with a rope",
+        "Push your hips forward and up while keeping your hands on your heels—imagine someone pulling your hips forward with a rope",
         "Simultaneously drop your head back gently to look up at the ceiling behind you",
         "Hold this arched position for 20-30 seconds while breathing normally, feeling the stretch through your quads and hip flexors"
       ],
       "form_cues": [
         "Push your hips forward like you're trying to show off your belt buckle to someone in front of you",
-        "Think 'lift and arch'\u2014your hips drive up and forward while your chest opens to the ceiling",
-        "Let your head drop back naturally\u2014imagine your head is heavy and you're just letting gravity take it back gently",
-        "Keep breathing deeply\u2014this stretch is intense, so don't hold your breath"
+        "Think 'lift and arch'—your hips drive up and forward while your chest opens to the ceiling",
+        "Let your head drop back naturally—imagine your head is heavy and you're just letting gravity take it back gently",
+        "Keep breathing deeply—this stretch is intense, so don't hold your breath"
       ],
       "common_mistakes": [
-        "Collapsing the hips back instead of pushing them forward\u2014this reduces the stretch significantly",
-        "Cranking the head back too aggressively\u2014let gravity do the work, don't force it",
-        "Holding breath due to intensity\u2014remember to breathe throughout the stretch"
+        "Collapsing the hips back instead of pushing them forward—this reduces the stretch significantly",
+        "Cranking the head back too aggressively—let gravity do the work, don't force it",
+        "Holding breath due to intensity—remember to breathe throughout the stretch"
       ],
       "injury_prevention_tips": [
         "If you have lower back issues, limit how far you arch back and don't force the stretch",
-        "Come out of the stretch slowly\u2014don't snap back up quickly as this can cause dizziness"
+        "Come out of the stretch slowly—don't snap back up quickly as this can cause dizziness"
       ],
       "difficulty": "Beginner"
     },
@@ -15603,18 +15596,18 @@
         "Slowly lower your arms back down to the starting position, maintaining that slight elbow bend throughout"
       ],
       "form_cues": [
-        "Imagine you're scooping up a huge beach ball from the ground and lifting it to your chest\u2014keep that big arc motion",
+        "Imagine you're scooping up a huge beach ball from the ground and lifting it to your chest—keep that big arc motion",
         "At the top, squeeze your pecs hard like you're trying to crush a can between your chest muscles",
-        "Your elbows stay slightly bent the entire time\u2014think 'hugging motion' not 'arm curls'",
-        "Lean slightly forward from the hips for better stability\u2014pretend you're in a power stance"
+        "Your elbows stay slightly bent the entire time—think 'hugging motion' not 'arm curls'",
+        "Lean slightly forward from the hips for better stability—pretend you're in a power stance"
       ],
       "common_mistakes": [
-        "Straightening the arms completely or bending them too much\u2014this should be a sweeping arc, not a press or curl",
-        "Using too much weight and losing the smooth arc motion\u2014go lighter and focus on the squeeze",
-        "Leaning back instead of forward\u2014this can strain the lower back and reduces chest engagement"
+        "Straightening the arms completely or bending them too much—this should be a sweeping arc, not a press or curl",
+        "Using too much weight and losing the smooth arc motion—go lighter and focus on the squeeze",
+        "Leaning back instead of forward—this can strain the lower back and reduces chest engagement"
       ],
       "injury_prevention_tips": [
-        "Start with light weight to master the arc motion\u2014heavy weight with poor form can strain shoulder joints",
+        "Start with light weight to master the arc motion—heavy weight with poor form can strain shoulder joints",
         "Keep a slight forward lean and engage your core to protect your lower back"
       ],
       "difficulty": "Intermediate"
@@ -15640,23 +15633,23 @@
       "beginner_friendly_instructions": [
         "Lie face-up on a bench with your head toward a low cable attachment with a rope handle",
         "Grab the rope ends with a neutral grip (palms facing each other) and position your upper arms perpendicular to your body, pointing at the ceiling",
-        "Bend your elbows to 90 degrees so your forearms point back toward the cable\u2014this is your starting position",
+        "Bend your elbows to 90 degrees so your forearms point back toward the cable—this is your starting position",
         "Keeping your upper arms completely still, extend your forearms straight up toward the ceiling until your arms are fully locked out",
         "Squeeze your triceps hard at the top, then slowly lower back to the 90-degree starting position"
       ],
       "form_cues": [
-        "Your upper arms are frozen in space\u2014pretend they're bolted to the ceiling, only your forearms move",
-        "At the top, imagine squeezing a lemon in your armpit\u2014this maximizes triceps contraction",
-        "Think 'hammer down'\u2014you're driving your forearms straight up like hammering a nail into the ceiling",
-        "Keep your elbows pointing up the entire time\u2014if they flare out to the sides, your form is breaking down"
+        "Your upper arms are frozen in space—pretend they're bolted to the ceiling, only your forearms move",
+        "At the top, imagine squeezing a lemon in your armpit—this maximizes triceps contraction",
+        "Think 'hammer down'—you're driving your forearms straight up like hammering a nail into the ceiling",
+        "Keep your elbows pointing up the entire time—if they flare out to the sides, your form is breaking down"
       ],
       "common_mistakes": [
-        "Letting the elbows drift forward or to the sides during the extension\u2014this reduces triceps activation",
-        "Moving the upper arms during the rep\u2014only the forearms should move from the elbow joint",
-        "Rushing the negative (lowering phase)\u2014the slow descent is where a lot of growth happens"
+        "Letting the elbows drift forward or to the sides during the extension—this reduces triceps activation",
+        "Moving the upper arms during the rep—only the forearms should move from the elbow joint",
+        "Rushing the negative (lowering phase)—the slow descent is where a lot of growth happens"
       ],
       "injury_prevention_tips": [
-        "Don't let the cable pull your arms back beyond 90 degrees at the start\u2014this can strain the shoulder joint",
+        "Don't let the cable pull your arms back beyond 90 degrees at the start—this can strain the shoulder joint",
         "If you feel elbow pain, reduce weight and ensure you're not locking out too aggressively"
       ],
       "difficulty": "Beginner"
@@ -15690,18 +15683,18 @@
         "Hold for one second squeezing your rear delts, then slowly return to the starting position with control"
       ],
       "form_cues": [
-        "Think 'elbows high and wide'\u2014imagine drawing your elbows back like you're opening a curtain to your sides",
-        "Your upper arms should stay parallel to the floor throughout\u2014pretend you're balancing a broomstick on your upper arms",
+        "Think 'elbows high and wide'—imagine drawing your elbows back like you're opening a curtain to your sides",
+        "Your upper arms should stay parallel to the floor throughout—pretend you're balancing a broomstick on your upper arms",
         "At the peak, squeeze your shoulder blades together like you're crushing a grape between them",
-        "Keep your torso completely still\u2014pretend you're wearing a back brace that prevents any forward/back movement"
+        "Keep your torso completely still—pretend you're wearing a back brace that prevents any forward/back movement"
       ],
       "common_mistakes": [
-        "Letting the torso rock forward and backward\u2014this turns it into a momentum exercise instead of isolating rear delts",
-        "Pulling with elbows down instead of out to the sides\u2014this shifts work to the lats instead of rear delts",
-        "Not pulling high enough toward the neck\u2014stopping at chest height misses the rear delt contraction"
+        "Letting the torso rock forward and backward—this turns it into a momentum exercise instead of isolating rear delts",
+        "Pulling with elbows down instead of out to the sides—this shifts work to the lats instead of rear delts",
+        "Not pulling high enough toward the neck—stopping at chest height misses the rear delt contraction"
       ],
       "injury_prevention_tips": [
-        "Start light\u2014this is a rear delt isolation move, not a heavy rowing exercise",
+        "Start light—this is a rear delt isolation move, not a heavy rowing exercise",
         "If you feel shoulder pinching, adjust the height or reduce weight"
       ],
       "difficulty": "Intermediate"
@@ -15728,18 +15721,18 @@
         "Switch to the other side and repeat the rolling process"
       ],
       "form_cues": [
-        "Stay OFF the spine\u2014imagine the spine is lava and you're only rolling on the muscles to the sides",
-        "Move in tiny increments\u2014think 'inch by inch' not 'roll back and forth quickly'",
-        "When you find a trigger point, sink into it like you're melting butter\u2014don't tense up",
-        "Use your feet to control the pressure\u2014push more through your feet if you need to lighten the pressure"
+        "Stay OFF the spine—imagine the spine is lava and you're only rolling on the muscles to the sides",
+        "Move in tiny increments—think 'inch by inch' not 'roll back and forth quickly'",
+        "When you find a trigger point, sink into it like you're melting butter—don't tense up",
+        "Use your feet to control the pressure—push more through your feet if you need to lighten the pressure"
       ],
       "common_mistakes": [
-        "Rolling directly on the spine\u2014this can cause injury and doesn't release the muscles properly",
-        "Rolling too fast without pausing on tender spots\u2014slow and deliberate is more effective",
-        "Holding breath when hitting painful areas\u2014breathe through the discomfort to help muscles release"
+        "Rolling directly on the spine—this can cause injury and doesn't release the muscles properly",
+        "Rolling too fast without pausing on tender spots—slow and deliberate is more effective",
+        "Holding breath when hitting painful areas—breathe through the discomfort to help muscles release"
       ],
       "injury_prevention_tips": [
-        "NEVER roll directly on your spine\u2014always shift to the muscles on either side",
+        "NEVER roll directly on your spine—always shift to the muscles on either side",
         "If you have acute lower back pain or injury, skip this and consult a professional first"
       ],
       "difficulty": "Beginner"
@@ -15760,24 +15753,24 @@
       "secondary_muscles": [],
       "beginner_friendly_instructions": [
         "Lie face down on the floor with your arms extended out to your sides like a 'T' shape",
-        "Keep your arms relaxed on the floor\u2014don't push with them at all during this movement",
+        "Keep your arms relaxed on the floor—don't push with them at all during this movement",
         "Using only your lower back muscles, lift your chest and upper body off the ground while keeping your hips on the floor",
         "Look forward and up slightly as you lift, like you're trying to see over a fence in front of you",
         "Lower back down with control and repeat for 10-20 controlled reps"
       ],
       "form_cues": [
-        "Pretend someone is gently pulling your chest up toward the ceiling with a string\u2014your lower back does all the work",
-        "Your arms are just along for the ride\u2014keep them completely relaxed, no pushing",
-        "Squeeze your glutes lightly to protect your spine\u2014like you're holding a credit card between your cheeks",
-        "Think 'lift and arch'\u2014your chest rises while creating a smooth arch in your lower back"
+        "Pretend someone is gently pulling your chest up toward the ceiling with a string—your lower back does all the work",
+        "Your arms are just along for the ride—keep them completely relaxed, no pushing",
+        "Squeeze your glutes lightly to protect your spine—like you're holding a credit card between your cheeks",
+        "Think 'lift and arch'—your chest rises while creating a smooth arch in your lower back"
       ],
       "common_mistakes": [
-        "Pushing with the arms to assist\u2014this defeats the purpose of isolating the lower back muscles",
-        "Hyperextending and coming up too high\u2014a moderate lift is sufficient and safer",
-        "Letting the head drop or cranking it back too far\u2014maintain a neutral neck aligned with your spine"
+        "Pushing with the arms to assist—this defeats the purpose of isolating the lower back muscles",
+        "Hyperextending and coming up too high—a moderate lift is sufficient and safer",
+        "Letting the head drop or cranking it back too far—maintain a neutral neck aligned with your spine"
       ],
       "injury_prevention_tips": [
-        "Don't lift too high\u2014a few inches off the ground is enough to work the lower back safely",
+        "Don't lift too high—a few inches off the ground is enough to work the lower back safely",
         "If you have existing lower back issues, start with smaller range of motion or skip this exercise"
       ],
       "difficulty": "Beginner"
@@ -15811,15 +15804,15 @@
         "Repeat on the opposite leg, continuing to pass the kettlebell under the front leg each rep"
       ],
       "form_cues": [
-        "The pass-through happens at the bottom of the lunge\u2014think 'lunge, pass, drive up'",
-        "Keep your torso upright like you're balancing a book on your head\u2014don't lean forward when passing the kettlebell",
-        "Your front knee tracks over your toes\u2014imagine your knee is following a train track straight forward",
-        "Drive through your front heel like you're pushing the floor away\u2014this powers you back to standing"
+        "The pass-through happens at the bottom of the lunge—think 'lunge, pass, drive up'",
+        "Keep your torso upright like you're balancing a book on your head—don't lean forward when passing the kettlebell",
+        "Your front knee tracks over your toes—imagine your knee is following a train track straight forward",
+        "Drive through your front heel like you're pushing the floor away—this powers you back to standing"
       ],
       "common_mistakes": [
-        "Leaning forward excessively when passing the bell\u2014this compromises balance and reduces leg activation",
-        "Letting the front knee cave inward\u2014keep it tracking in line with your toes",
-        "Not lowering deep enough in the lunge\u2014your back knee should almost kiss the ground for full range"
+        "Leaning forward excessively when passing the bell—this compromises balance and reduces leg activation",
+        "Letting the front knee cave inward—keep it tracking in line with your toes",
+        "Not lowering deep enough in the lunge—your back knee should almost kiss the ground for full range"
       ],
       "injury_prevention_tips": [
         "Start with a light kettlebell to master the coordination before going heavier",
@@ -16268,19 +16261,19 @@
         "Hold the contraction at the top for one second before repeating"
       ],
       "form_cues": [
-        "Move your head in a smooth arc like a pendulum\u2014not straight up and down",
-        "Keep the plate pressed firmly to your forehead throughout\u2014imagine it's glued there",
-        "Your neck does all the work\u2014think of your head as a heavy bowling ball your neck muscles are lifting",
-        "Control the descent\u2014pretend you're lowering your head onto a pillow in slow motion"
+        "Move your head in a smooth arc like a pendulum—not straight up and down",
+        "Keep the plate pressed firmly to your forehead throughout—imagine it's glued there",
+        "Your neck does all the work—think of your head as a heavy bowling ball your neck muscles are lifting",
+        "Control the descent—pretend you're lowering your head onto a pillow in slow motion"
       ],
       "common_mistakes": [
-        "Using too much weight and jerking the movement\u2014this exercise requires very light weight and strict control",
-        "Letting the plate slide or shift on the forehead\u2014maintain constant pressure with your hands",
-        "Moving too fast or using momentum\u2014slow and controlled is key for neck safety"
+        "Using too much weight and jerking the movement—this exercise requires very light weight and strict control",
+        "Letting the plate slide or shift on the forehead—maintain constant pressure with your hands",
+        "Moving too fast or using momentum—slow and controlled is key for neck safety"
       ],
       "injury_prevention_tips": [
         "Start with just the weight of your head (no plate) to learn the movement pattern safely",
-        "NEVER use heavy weight on neck exercises\u2014even 2.5-5 lbs is sufficient for most people"
+        "NEVER use heavy weight on neck exercises—even 2.5-5 lbs is sufficient for most people"
       ],
       "difficulty": "Intermediate"
     },
@@ -16310,19 +16303,19 @@
         "Communicate with your partner when the stretch reaches the right intensity, then switch sides"
       ],
       "form_cues": [
-        "During the push phase, contract your glute like you're trying to squeeze a walnut\u2014give it real effort",
-        "When you relax, go completely limp like a ragdoll\u2014let your partner do all the work",
-        "Think 'push, relax, stretch'\u2014the contraction before the stretch makes the stretch more effective",
-        "Breathe deeply during the stretch phase\u2014exhaling helps you relax deeper into the stretch"
+        "During the push phase, contract your glute like you're trying to squeeze a walnut—give it real effort",
+        "When you relax, go completely limp like a ragdoll—let your partner do all the work",
+        "Think 'push, relax, stretch'—the contraction before the stretch makes the stretch more effective",
+        "Breathe deeply during the stretch phase—exhaling helps you relax deeper into the stretch"
       ],
       "common_mistakes": [
-        "Not contracting hard enough during the push phase\u2014you need a genuine 70-80% effort contraction",
-        "Tensing up during the stretch phase\u2014you must completely relax to benefit from PNF stretching",
-        "Letting your partner push too far too fast\u2014communication is crucial to prevent overstretching"
+        "Not contracting hard enough during the push phase—you need a genuine 70-80% effort contraction",
+        "Tensing up during the stretch phase—you must completely relax to benefit from PNF stretching",
+        "Letting your partner push too far too fast—communication is crucial to prevent overstretching"
       ],
       "injury_prevention_tips": [
-        "Always communicate clearly with your partner\u2014say 'stop' immediately if it's too much",
-        "The partner should push gently and gradually\u2014never force or bounce the stretch"
+        "Always communicate clearly with your partner—say 'stop' immediately if it's too much",
+        "The partner should push gently and gradually—never force or bounce the stretch"
       ],
       "difficulty": "Beginner"
     },
@@ -16351,18 +16344,18 @@
         "Tell your partner when to stop stretching, then switch to the other leg"
       ],
       "form_cues": [
-        "During the contraction, imagine you're trying to kick your heel back to your glutes with force\u2014really engage those hamstrings",
-        "Keep your hips flat on the ground throughout\u2014don't let them twist or lift",
-        "When relaxing into the stretch, think 'melt into it'\u2014zero resistance from your muscles",
+        "During the contraction, imagine you're trying to kick your heel back to your glutes with force—really engage those hamstrings",
+        "Keep your hips flat on the ground throughout—don't let them twist or lift",
+        "When relaxing into the stretch, think 'melt into it'—zero resistance from your muscles",
         "Point your toes toward your shin during the stretch to also get a calf stretch"
       ],
       "common_mistakes": [
-        "Lifting the hips off the ground during the contraction or stretch\u2014this reduces effectiveness",
-        "Not contracting the hamstring hard enough before the stretch\u2014this is PNF, not passive stretching",
-        "Bending the knee during the stretch phase\u2014keep the leg straight for maximum hamstring lengthening"
+        "Lifting the hips off the ground during the contraction or stretch—this reduces effectiveness",
+        "Not contracting the hamstring hard enough before the stretch—this is PNF, not passive stretching",
+        "Bending the knee during the stretch phase—keep the leg straight for maximum hamstring lengthening"
       ],
       "injury_prevention_tips": [
-        "Keep constant communication with your partner about intensity\u2014hamstrings are easy to overstretch",
+        "Keep constant communication with your partner about intensity—hamstrings are easy to overstretch",
         "If you feel sharp pain or cramping, stop immediately and ease off the intensity"
       ],
       "difficulty": "Beginner"
@@ -16388,22 +16381,22 @@
         "Grab a barbell with an underhand grip (palms up) at shoulder width, arms hanging straight down perpendicular to the floor",
         "Keeping your upper arms completely still, curl the bar up in an arc toward your face while exhaling",
         "Squeeze hard at the top for one second, then slowly lower the bar back down while inhaling",
-        "Keep your elbows locked in position throughout\u2014only your forearms should move"
+        "Keep your elbows locked in position throughout—only your forearms should move"
       ],
       "form_cues": [
-        "Your upper arms and elbows are frozen\u2014pretend they're clamped to your sides and can't move",
-        "Think of your forearms as pistons moving in an arc\u2014smooth and controlled, no jerking",
+        "Your upper arms and elbows are frozen—pretend they're clamped to your sides and can't move",
+        "Think of your forearms as pistons moving in an arc—smooth and controlled, no jerking",
         "At the top, squeeze your biceps like you're trying to touch them to your forearms",
-        "Your chest stays pressed into the bench\u2014don't lift your torso to help curl the weight"
+        "Your chest stays pressed into the bench—don't lift your torso to help curl the weight"
       ],
       "common_mistakes": [
-        "Swinging the weight or using momentum\u2014this is a strict isolation move, not a power exercise",
-        "Letting the elbows drift forward or backward\u2014they should stay fixed in space",
-        "Lifting the chest off the bench to help\u2014this defeats the purpose of the prone position"
+        "Swinging the weight or using momentum—this is a strict isolation move, not a power exercise",
+        "Letting the elbows drift forward or backward—they should stay fixed in space",
+        "Lifting the chest off the bench to help—this defeats the purpose of the prone position"
       ],
       "injury_prevention_tips": [
-        "Use lighter weight than standing curls\u2014the prone position makes it harder to cheat, so less weight is needed",
-        "Don't let the bar drop fast on the negative\u2014control it down to protect your elbow joints"
+        "Use lighter weight than standing curls—the prone position makes it harder to cheat, so less weight is needed",
+        "Don't let the bar drop fast on the negative—control it down to protect your elbow joints"
       ],
       "difficulty": "Intermediate"
     },
@@ -16431,19 +16424,19 @@
         "Slowly lower your legs back down to the starting position with control"
       ],
       "form_cues": [
-        "At the top, imagine trying to kick your own butt with your heels\u2014get maximum contraction",
-        "Keep your hips glued to the pad\u2014if they lift, you're using too much weight or going too fast",
-        "Think 'slow down, explode up'\u2014controlled lowering, then powerful curl",
+        "At the top, imagine trying to kick your own butt with your heels—get maximum contraction",
+        "Keep your hips glued to the pad—if they lift, you're using too much weight or going too fast",
+        "Think 'slow down, explode up'—controlled lowering, then powerful curl",
         "Squeeze your hamstrings at the top like you're crushing tennis balls in the back of your knees"
       ],
       "common_mistakes": [
-        "Lifting the hips off the pad during the curl\u2014this reduces hamstring tension and can strain the lower back",
-        "Not going through full range of motion\u2014partial reps leave gains on the table",
-        "Dropping the weight too fast on the descent\u2014the negative is where growth happens"
+        "Lifting the hips off the pad during the curl—this reduces hamstring tension and can strain the lower back",
+        "Not going through full range of motion—partial reps leave gains on the table",
+        "Dropping the weight too fast on the descent—the negative is where growth happens"
       ],
       "injury_prevention_tips": [
         "If you get hamstring cramps, reduce weight and ensure you're properly hydrated",
-        "Keep your toes pointed straight or slightly out\u2014never curl with toes pointed in as this can stress the knees"
+        "Keep your toes pointed straight or slightly out—never curl with toes pointed in as this can stress the knees"
       ],
       "difficulty": "Beginner"
     },
@@ -16472,23 +16465,23 @@
       "beginner_friendly_instructions": [
         "Lie face up in the lying squat machine with your knees bent and thighs slightly below parallel",
         "Position your shoulders under the shoulder pads, back and head resting against the machine, hands on handles",
-        "Place your feet shoulder-width apart with toes slightly pointed out\u2014make sure knees don't pass your toes",
+        "Place your feet shoulder-width apart with toes slightly pointed out—make sure knees don't pass your toes",
         "Drive through the balls of your feet to extend your legs fully, squeezing your quads at the top",
         "Lower back down slowly until your thighs are parallel to the platform (90-degree angle at the knees), then repeat"
       ],
       "form_cues": [
         "Drive through the balls of your feet like you're pushing the platform away from you",
         "At the top, lock out completely and squeeze your quads like you're flexing for a photo",
-        "Keep your back flat against the pad\u2014imagine you're trying to leave a sweat imprint",
-        "Control the descent\u2014think 'ride the elevator down slowly' to parallel"
+        "Keep your back flat against the pad—imagine you're trying to leave a sweat imprint",
+        "Control the descent—think 'ride the elevator down slowly' to parallel"
       ],
       "common_mistakes": [
-        "Bouncing at the bottom instead of stopping at parallel\u2014this stresses the knees unnecessarily",
-        "Letting the knees cave inward\u2014push your knees out in line with your toes throughout",
-        "Lifting the lower back off the pad\u2014keep your core braced and back pressed flat"
+        "Bouncing at the bottom instead of stopping at parallel—this stresses the knees unnecessarily",
+        "Letting the knees cave inward—push your knees out in line with your toes throughout",
+        "Lifting the lower back off the pad—keep your core braced and back pressed flat"
       ],
       "injury_prevention_tips": [
-        "Never go below parallel on this machine\u2014stopping at 90 degrees is sufficient and safer for knees",
+        "Never go below parallel on this machine—stopping at 90 degrees is sufficient and safer for knees",
         "If you feel knee pain, adjust foot position or ensure knees aren't traveling too far forward"
       ],
       "difficulty": "Beginner"
@@ -16518,18 +16511,18 @@
         "Complete all reps on one side, then switch arms"
       ],
       "form_cues": [
-        "Lead with your elbow, not your hand\u2014imagine your elbow is pulling the dumbbell up",
-        "Keep your arm perpendicular to your body\u2014like you're drawing a line straight out to the side",
-        "At the top, think 'pour the pitcher'\u2014rotate your wrist slightly so your pinky is higher than your thumb",
-        "Your arm stays slightly bent the whole time\u2014think 'hugging a beach ball' not 'straight arm'"
+        "Lead with your elbow, not your hand—imagine your elbow is pulling the dumbbell up",
+        "Keep your arm perpendicular to your body—like you're drawing a line straight out to the side",
+        "At the top, think 'pour the pitcher'—rotate your wrist slightly so your pinky is higher than your thumb",
+        "Your arm stays slightly bent the whole time—think 'hugging a beach ball' not 'straight arm'"
       ],
       "common_mistakes": [
-        "Swinging or using momentum\u2014this is a strict isolation move requiring light weight and control",
-        "Raising the arm too high (above shoulder level)\u2014this shifts work from side delts to traps",
-        "Rotating the torso to help lift\u2014stay pressed flat against the bench"
+        "Swinging or using momentum—this is a strict isolation move requiring light weight and control",
+        "Raising the arm too high (above shoulder level)—this shifts work from side delts to traps",
+        "Rotating the torso to help lift—stay pressed flat against the bench"
       ],
       "injury_prevention_tips": [
-        "Use very light weight\u2014this angle is tough on the shoulder, so less weight is needed",
+        "Use very light weight—this angle is tough on the shoulder, so less weight is needed",
         "If you feel shoulder impingement or pinching, reduce the range of motion or skip this exercise"
       ],
       "difficulty": "Intermediate"
@@ -16558,18 +16551,18 @@
         "Hold the stretch for 10-20 seconds, then switch to the other leg"
       ],
       "form_cues": [
-        "During the push, contract your quad like you're trying to kick straight\u2014give it real force against the resistance",
-        "When you relax, go completely limp\u2014imagine your leg is made of jelly",
-        "Keep your hips flat on the floor\u2014don't twist or lift one hip up",
-        "Breathe deeply during the stretch\u2014exhaling helps you sink deeper into the stretch"
+        "During the push, contract your quad like you're trying to kick straight—give it real force against the resistance",
+        "When you relax, go completely limp—imagine your leg is made of jelly",
+        "Keep your hips flat on the floor—don't twist or lift one hip up",
+        "Breathe deeply during the stretch—exhaling helps you sink deeper into the stretch"
       ],
       "common_mistakes": [
-        "Not pushing hard enough during the contraction phase\u2014you need 70-80% effort for PNF to work",
-        "Tensing the muscles during the stretch phase\u2014complete relaxation is essential",
-        "Letting the hips twist or lift\u2014maintain alignment for proper quad and hip flexor stretch"
+        "Not pushing hard enough during the contraction phase—you need 70-80% effort for PNF to work",
+        "Tensing the muscles during the stretch phase—complete relaxation is essential",
+        "Letting the hips twist or lift—maintain alignment for proper quad and hip flexor stretch"
       ],
       "injury_prevention_tips": [
-        "Communicate clearly with your partner\u2014if it's too intense, tell them to back off immediately",
+        "Communicate clearly with your partner—if it's too intense, tell them to back off immediately",
         "If you have knee issues, be extra cautious with how far your heel is pushed toward your glutes"
       ],
       "difficulty": "Beginner"
@@ -16599,18 +16592,18 @@
         "Slowly lower the dumbbells back to the starting position"
       ],
       "form_cues": [
-        "Lead with your elbows\u2014imagine someone is pulling your elbows up with strings",
+        "Lead with your elbows—imagine someone is pulling your elbows up with strings",
         "At the top, squeeze your shoulder blades together like you're crushing a grape between them",
-        "Keep your arms perpendicular to your body\u2014think 'T-shape' at the top of the movement",
-        "Maintain a slight elbow bend throughout\u2014don't lock out or curl the weight"
+        "Keep your arms perpendicular to your body—think 'T-shape' at the top of the movement",
+        "Maintain a slight elbow bend throughout—don't lock out or curl the weight"
       ],
       "common_mistakes": [
-        "Using too much weight and swinging\u2014this should be a controlled isolation move with light dumbbells",
-        "Raising the arms too high\u2014stop when arms are parallel to the floor",
-        "Shrugging the shoulders or using traps\u2014focus on rear delts, keep shoulders down"
+        "Using too much weight and swinging—this should be a controlled isolation move with light dumbbells",
+        "Raising the arms too high—stop when arms are parallel to the floor",
+        "Shrugging the shoulders or using traps—focus on rear delts, keep shoulders down"
       ],
       "injury_prevention_tips": [
-        "Start with very light weight (5-10 lbs)\u2014rear delts are small muscles and this angle is challenging",
+        "Start with very light weight (5-10 lbs)—rear delts are small muscles and this angle is challenging",
         "If you feel shoulder pain or impingement, reduce range of motion or lower the weight"
       ],
       "difficulty": "Beginner"
@@ -16635,24 +16628,24 @@
       "beginner_friendly_instructions": [
         "Lie face up on a flat bench holding dumbbells, starting with them on your thighs",
         "Bring the dumbbells to your sides with arms extended and palms facing your thighs (neutral grip)",
-        "Lower your arms down toward the floor as far as comfortable with a slight elbow bend\u2014lock your upper arms here",
+        "Lower your arms down toward the floor as far as comfortable with a slight elbow bend—lock your upper arms here",
         "Curl the dumbbells up while rotating your wrists so palms face up, squeezing your biceps at the top",
         "Slowly return to the starting position with arms extended down at your sides"
       ],
       "form_cues": [
-        "Your upper arms stay frozen in that lowered position\u2014think of them as being bolted down at your sides",
-        "As you curl, rotate your wrists like you're showing someone your palms\u2014this is a supinating curl",
+        "Your upper arms stay frozen in that lowered position—think of them as being bolted down at your sides",
+        "As you curl, rotate your wrists like you're showing someone your palms—this is a supinating curl",
         "At the top, squeeze your biceps hard like you're trying to make them touch your forearms",
-        "Keep your elbows locked at your sides\u2014if they drift forward or up, you're using too much weight"
+        "Keep your elbows locked at your sides—if they drift forward or up, you're using too much weight"
       ],
       "common_mistakes": [
-        "Moving the upper arms during the curl\u2014only the forearms should move from a fixed elbow position",
-        "Not rotating the wrists fully\u2014the supination is key to maximizing bicep activation",
-        "Using momentum or arching the back\u2014stay flat on the bench with controlled movement"
+        "Moving the upper arms during the curl—only the forearms should move from a fixed elbow position",
+        "Not rotating the wrists fully—the supination is key to maximizing bicep activation",
+        "Using momentum or arching the back—stay flat on the bench with controlled movement"
       ],
       "injury_prevention_tips": [
-        "Don't lower your arms too far at the start if you have shoulder issues\u2014find a comfortable stretch point",
-        "Start with lighter weight than standing curls\u2014this stretched position is more challenging"
+        "Don't lower your arms too far at the start if you have shoulder issues—find a comfortable stretch point",
+        "Start with lighter weight than standing curls—this stretched position is more challenging"
       ],
       "difficulty": "Beginner"
     },
@@ -17094,22 +17087,22 @@
       ],
       "secondary_muscles": [],
       "beginner_friendly_instructions": [
-        "Place one resistance band around both ankles and another around both knees\u2014they should be tight when your feet are shoulder-width apart",
+        "Place one resistance band around both ankles and another around both knees—they should be tight when your feet are shoulder-width apart",
         "Stand tall with feet shoulder-width apart, slight bend in your knees, and hands on your hips or out for balance",
         "Take short, controlled steps forward by lifting one foot and placing it down, alternating left and right feet",
         "After 10-15 steps forward, reverse direction and walk backward the same distance back to your starting point",
-        "Keep constant tension on the bands throughout\u2014don't let your knees collapse inward"
+        "Keep constant tension on the bands throughout—don't let your knees collapse inward"
       ],
       "form_cues": [
-        "Push your knees out against the band like you're trying to snap it\u2014maintain that outward pressure the entire time",
-        "Take baby steps\u2014think 'heel to toe' placement, not giant strides",
-        "Keep your hips level like you're balancing a tray of drinks on your pelvis\u2014no side-to-side tilting",
-        "Imagine you're walking through thick mud\u2014slow, deliberate, and controlled movements"
+        "Push your knees out against the band like you're trying to snap it—maintain that outward pressure the entire time",
+        "Take baby steps—think 'heel to toe' placement, not giant strides",
+        "Keep your hips level like you're balancing a tray of drinks on your pelvis—no side-to-side tilting",
+        "Imagine you're walking through thick mud—slow, deliberate, and controlled movements"
       ],
       "common_mistakes": [
-        "Letting the knees cave inward when stepping\u2014you must actively push out against the bands constantly",
-        "Taking steps that are too big\u2014this reduces glute activation and increases the risk of losing balance",
-        "Standing too upright with locked knees\u2014maintain a slight athletic squat position throughout"
+        "Letting the knees cave inward when stepping—you must actively push out against the bands constantly",
+        "Taking steps that are too big—this reduces glute activation and increases the risk of losing balance",
+        "Standing too upright with locked knees—maintain a slight athletic squat position throughout"
       ],
       "injury_prevention_tips": [
         "Start with lighter resistance bands to master the movement pattern before progressing",
@@ -17145,18 +17138,18 @@
         "Grip gymnastic rings using a false grip (base of palms on top of the rings) and hang with arms fully extended",
         "Pull yourself up explosively by driving your elbows down to your sides, pulling the rings to your armpits",
         "As you reach the top of the pull-up, roll your shoulders forward aggressively and drive your elbows straight back behind you",
-        "This transition puts you above the rings\u2014now extend your elbows completely to press yourself up into a full dip lockout",
+        "This transition puts you above the rings—now extend your elbows completely to press yourself up into a full dip lockout",
         "Lower yourself back down with control, reversing the movement"
       ],
       "form_cues": [
-        "The false grip is key\u2014your wrists should be bent over the top of the rings, not hanging below them",
-        "At the transition, think 'pull, roll, press'\u2014it's one fluid explosive movement, not three separate moves",
-        "Lean back slightly at the start of the pull to generate momentum\u2014then snap your hips forward at the transition",
-        "The transition is like doing a chest roll\u2014your shoulders come forward over the rings aggressively"
+        "The false grip is key—your wrists should be bent over the top of the rings, not hanging below them",
+        "At the transition, think 'pull, roll, press'—it's one fluid explosive movement, not three separate moves",
+        "Lean back slightly at the start of the pull to generate momentum—then snap your hips forward at the transition",
+        "The transition is like doing a chest roll—your shoulders come forward over the rings aggressively"
       ],
       "common_mistakes": [
-        "Using a regular grip instead of false grip\u2014this makes the transition nearly impossible",
-        "Not pulling high enough before attempting the transition\u2014you need to get the rings to armpit level",
+        "Using a regular grip instead of false grip—this makes the transition nearly impossible",
+        "Not pulling high enough before attempting the transition—you need to get the rings to armpit level",
         "Trying to muscle through with pure strength instead of using the hip snap and momentum"
       ],
       "injury_prevention_tips": [
@@ -17191,23 +17184,23 @@
       "beginner_friendly_instructions": [
         "Load the machine and position yourself with your back against the pad, shoulders under the shoulder pads",
         "Place your feet on the platform 3 inches apart or less with toes slightly pointed out",
-        "Disengage the safety bars and straighten your legs without locking your knees\u2014this is your starting position",
+        "Disengage the safety bars and straighten your legs without locking your knees—this is your starting position",
         "Lower the weight by bending your knees until your thighs go slightly below parallel (just past 90 degrees)",
         "Drive through your heels to push back up to the starting position, squeezing your quads at the top"
       ],
       "form_cues": [
-        "Keep your back flat against the pad like you're glued to it\u2014don't let it peel off",
-        "Your head stays up looking forward\u2014imagine balancing a book on your head",
-        "Drive through your heels like you're pushing the platform away from you\u2014think 'leg press the world away'",
-        "At the bottom, your knees should track over your toes\u2014imagine they're on train tracks going straight forward"
+        "Keep your back flat against the pad like you're glued to it—don't let it peel off",
+        "Your head stays up looking forward—imagine balancing a book on your head",
+        "Drive through your heels like you're pushing the platform away from you—think 'leg press the world away'",
+        "At the bottom, your knees should track over your toes—imagine they're on train tracks going straight forward"
       ],
       "common_mistakes": [
-        "Letting the knees travel too far forward past the toes\u2014this puts excessive stress on the knee joints",
-        "Bouncing at the bottom\u2014control the descent and pause briefly before pushing back up",
-        "Locking out the knees at the top\u2014maintain a slight bend to keep tension on the quads"
+        "Letting the knees travel too far forward past the toes—this puts excessive stress on the knee joints",
+        "Bouncing at the bottom—control the descent and pause briefly before pushing back up",
+        "Locking out the knees at the top—maintain a slight bend to keep tension on the quads"
       ],
       "injury_prevention_tips": [
-        "Narrow stance increases quad emphasis but also knee stress\u2014start light to test your comfort level",
+        "Narrow stance increases quad emphasis but also knee stress—start light to test your comfort level",
         "If you feel knee pain, widen your stance slightly or don't go as deep"
       ],
       "difficulty": "Intermediate"
@@ -17235,25 +17228,25 @@
       ],
       "beginner_friendly_instructions": [
         "Sit in the leg press machine and place your feet on the platform 3 inches apart or less, toes slightly out",
-        "Lower the safety bars and press the platform up until your legs are extended but not locked\u2014this is your starting position",
+        "Lower the safety bars and press the platform up until your legs are extended but not locked—this is your starting position",
         "Slowly lower the platform by bending your knees until your upper and lower legs form a 90-degree angle",
         "Drive through your heels to press the platform back to the starting position, squeezing your quads",
         "After your set, lock the safety bars back in place before exiting"
       ],
       "form_cues": [
-        "Your back stays flat against the seat\u2014imagine you're trying to leave a sweat print on the pad",
-        "Think 'heels down, toes up slightly' when pressing\u2014this maximizes quad engagement",
-        "At the top, squeeze your quads like you're flexing for a photo\u2014but don't lock your knees completely",
-        "Control the descent like you're riding an elevator down\u2014smooth and steady, not a free fall"
+        "Your back stays flat against the seat—imagine you're trying to leave a sweat print on the pad",
+        "Think 'heels down, toes up slightly' when pressing—this maximizes quad engagement",
+        "At the top, squeeze your quads like you're flexing for a photo—but don't lock your knees completely",
+        "Control the descent like you're riding an elevator down—smooth and steady, not a free fall"
       ],
       "common_mistakes": [
-        "Letting your lower back round and lift off the seat at the bottom\u2014this is dangerous for your spine",
-        "Going too deep with narrow stance\u2014stop at 90 degrees to protect your knees",
-        "Locking the knees at the top\u2014keep a slight bend to maintain tension on the muscles"
+        "Letting your lower back round and lift off the seat at the bottom—this is dangerous for your spine",
+        "Going too deep with narrow stance—stop at 90 degrees to protect your knees",
+        "Locking the knees at the top—keep a slight bend to maintain tension on the muscles"
       ],
       "injury_prevention_tips": [
-        "Narrow stance increases quad activation but also knee stress\u2014use moderate weight",
-        "Always re-engage safety bars after your set\u2014never leave the platform unsecured"
+        "Narrow stance increases quad activation but also knee stress—use moderate weight",
+        "Always re-engage safety bars after your set—never leave the platform unsecured"
       ],
       "difficulty": "Beginner"
     },
@@ -17288,18 +17281,18 @@
         "Drive through your heels to stand back up to the starting position while exhaling, squeezing your quads at the top"
       ],
       "form_cues": [
-        "Your head stays up the entire time\u2014imagine someone is pulling a string attached to the top of your head toward the ceiling",
-        "Your knees should track directly over your toes\u2014think 'knees follow the same path as your toes point'",
-        "Chest up proud like you're showing off a medal\u2014don't let your torso fold forward excessively",
-        "Drive through your heels like you're trying to push the floor away\u2014imagine the floor is your enemy"
+        "Your head stays up the entire time—imagine someone is pulling a string attached to the top of your head toward the ceiling",
+        "Your knees should track directly over your toes—think 'knees follow the same path as your toes point'",
+        "Chest up proud like you're showing off a medal—don't let your torso fold forward excessively",
+        "Drive through your heels like you're trying to push the floor away—imagine the floor is your enemy"
       ],
       "common_mistakes": [
-        "Letting the knees travel too far forward past the toes\u2014this creates an imaginary line from your knee to your toes that should be perpendicular",
-        "Looking down instead of up\u2014this throws off your balance and can round your back",
-        "Rising with your hips first instead of pushing evenly\u2014this makes it a 'good morning' instead of a squat"
+        "Letting the knees travel too far forward past the toes—this creates an imaginary line from your knee to your toes that should be perpendicular",
+        "Looking down instead of up—this throws off your balance and can round your back",
+        "Rising with your hips first instead of pushing evenly—this makes it a 'good morning' instead of a squat"
       ],
       "injury_prevention_tips": [
-        "Narrow stance emphasizes quads but increases knee stress\u2014ensure proper form before loading heavy",
+        "Narrow stance emphasizes quads but increases knee stress—ensure proper form before loading heavy",
         "Use a squat rack with safety bars set just below your lowest squat depth for safety"
       ],
       "difficulty": "Intermediate"
@@ -17332,18 +17325,18 @@
         "If needed, use a resistance band, partner assistance, or push off a box to help complete the rep"
       ],
       "form_cues": [
-        "Your body is one solid plank from knees to head\u2014don't bend at the hips or let your butt stick out",
-        "Lower yourself like you're a falling tree\u2014slow, controlled, and in one straight line",
-        "At the bottom, your hamstrings should feel like they're about to snap\u2014that's the stretch you want",
+        "Your body is one solid plank from knees to head—don't bend at the hips or let your butt stick out",
+        "Lower yourself like you're a falling tree—slow, controlled, and in one straight line",
+        "At the bottom, your hamstrings should feel like they're about to snap—that's the stretch you want",
         "Pull yourself back up by squeezing your hamstrings and glutes like you're trying to crush walnuts"
       ],
       "common_mistakes": [
-        "Bending at the hips instead of keeping the body straight\u2014this turns it into a different exercise",
-        "Dropping down too fast without control\u2014the eccentric (lowering) phase is crucial for hamstring development",
-        "Not going deep enough\u2014you need to challenge the full range of motion for maximum benefit"
+        "Bending at the hips instead of keeping the body straight—this turns it into a different exercise",
+        "Dropping down too fast without control—the eccentric (lowering) phase is crucial for hamstring development",
+        "Not going deep enough—you need to challenge the full range of motion for maximum benefit"
       ],
       "injury_prevention_tips": [
-        "This is an extremely difficult exercise\u2014most people need assistance at first, use bands or a partner",
+        "This is an extremely difficult exercise—most people need assistance at first, use bands or a partner",
         "If you feel hamstring cramping, slow down and ensure you're properly warmed up and hydrated"
       ],
       "difficulty": "Advanced"
@@ -17370,18 +17363,18 @@
         "Switch to the other side and repeat the process"
       ],
       "form_cues": [
-        "Stay completely OFF the spine\u2014imagine the spine is a danger zone and you're only working the muscles to the sides",
-        "Use very light pressure\u2014your neck is delicate, so think 'gentle massage' not 'deep tissue assault'",
-        "Move in tiny increments\u2014think 'millimeter by millimeter', not rolling back and forth rapidly",
-        "Breathe deeply when you find trigger points\u2014exhaling helps the muscles release tension"
+        "Stay completely OFF the spine—imagine the spine is a danger zone and you're only working the muscles to the sides",
+        "Use very light pressure—your neck is delicate, so think 'gentle massage' not 'deep tissue assault'",
+        "Move in tiny increments—think 'millimeter by millimeter', not rolling back and forth rapidly",
+        "Breathe deeply when you find trigger points—exhaling helps the muscles release tension"
       ],
       "common_mistakes": [
-        "Rolling directly on the spine\u2014this can cause serious injury to cervical vertebrae",
-        "Using too much pressure\u2014the neck muscles are small and delicate, less is more",
-        "Moving too quickly without pausing on tight spots\u2014slow and deliberate is more effective"
+        "Rolling directly on the spine—this can cause serious injury to cervical vertebrae",
+        "Using too much pressure—the neck muscles are small and delicate, less is more",
+        "Moving too quickly without pausing on tight spots—slow and deliberate is more effective"
       ],
       "injury_prevention_tips": [
-        "NEVER roll directly on your spine\u2014always work the muscles to the sides",
+        "NEVER roll directly on your spine—always work the muscles to the sides",
         "If you have any neck injuries or conditions, consult a professional before attempting this"
       ],
       "difficulty": "Beginner"
@@ -17408,25 +17401,25 @@
       ],
       "beginner_friendly_instructions": [
         "Lie back on a flat bench and grab a barbell with a medium-width grip, unracking it to hold straight over your neck",
-        "With arms locked, position the bar directly above your neck (not chest)\u2014this is your starting position",
+        "With arms locked, position the bar directly above your neck (not chest)—this is your starting position",
         "Slowly lower the bar down until it lightly touches your neck while breathing in",
         "After a brief pause, press the bar back up to the starting position while breathing out, squeezing your chest",
         "Lock your arms at the top, hold for one second, then repeat"
       ],
       "form_cues": [
-        "The bar path is straight up and down over your neck\u2014not an arc toward your chest",
-        "Lower the bar twice as slow as you press it up\u2014think 'slow down, explode up'",
-        "At the bottom, the bar should barely kiss your neck\u2014don't rest the weight on your throat",
+        "The bar path is straight up and down over your neck—not an arc toward your chest",
+        "Lower the bar twice as slow as you press it up—think 'slow down, explode up'",
+        "At the bottom, the bar should barely kiss your neck—don't rest the weight on your throat",
         "Squeeze your chest at the top like you're crushing a can between your pecs"
       ],
       "common_mistakes": [
-        "Using too much weight\u2014this is a dangerous exercise that requires strict control and lighter loads",
-        "Lowering too fast or bouncing the bar off your neck\u2014this can cause serious injury",
-        "Arching your back excessively\u2014keep your back flat on the bench"
+        "Using too much weight—this is a dangerous exercise that requires strict control and lighter loads",
+        "Lowering too fast or bouncing the bar off your neck—this can cause serious injury",
+        "Arching your back excessively—keep your back flat on the bench"
       ],
       "injury_prevention_tips": [
-        "Use significantly lighter weight than regular bench press\u2014this is a high-risk movement",
-        "ALWAYS use a spotter for this exercise\u2014if you fail, the bar is on your throat, which is extremely dangerous"
+        "Use significantly lighter weight than regular bench press—this is a high-risk movement",
+        "ALWAYS use a spotter for this exercise—if you fail, the bar is on your throat, which is extremely dangerous"
       ],
       "difficulty": "Intermediate"
     },
@@ -17457,15 +17450,15 @@
         "Alternate sides, breathing out as you crunch up and breathing in as you lower down"
       ],
       "form_cues": [
-        "Think 'elbow to opposite knee'\u2014you're rotating and crunching diagonally, not straight up",
+        "Think 'elbow to opposite knee'—you're rotating and crunching diagonally, not straight up",
         "At the top, squeeze your obliques hard like you're wringing out a wet towel on your side",
-        "Your lower back stays pressed to the floor\u2014don't arch or let it lift",
-        "Move with control\u2014think 'twist and crunch' not 'flail and swing'"
+        "Your lower back stays pressed to the floor—don't arch or let it lift",
+        "Move with control—think 'twist and crunch' not 'flail and swing'"
       ],
       "common_mistakes": [
-        "Pulling on your neck with your hand\u2014your hand is just there for light support, not to yank your head",
-        "Not rotating enough\u2014this should be a diagonal twisting motion, not a straight crunch",
-        "Using momentum instead of controlled contraction\u2014slow and deliberate works the obliques better"
+        "Pulling on your neck with your hand—your hand is just there for light support, not to yank your head",
+        "Not rotating enough—this should be a diagonal twisting motion, not a straight crunch",
+        "Using momentum instead of controlled contraction—slow and deliberate works the obliques better"
       ],
       "injury_prevention_tips": [
         "Keep your lower back pressed to the floor throughout to protect your spine",
@@ -17492,25 +17485,25 @@
       "secondary_muscles": [],
       "beginner_friendly_instructions": [
         "Lie on your right side with legs stacked on top of each other and knees slightly bent",
-        "Place your left hand behind your head for light support\u2014this is your starting position",
+        "Place your left hand behind your head for light support—this is your starting position",
         "Crunch your left elbow up toward your hip by contracting your left oblique muscles",
         "Crunch as high as possible, hold the contraction for one second, then slowly lower back down",
         "Complete all reps on one side, then switch to the other side"
       ],
       "form_cues": [
-        "Think of your oblique as a zipper\u2014you're zipping up your side by crunching your ribs toward your hip",
-        "At the top, imagine you're trying to make your elbow and hip kiss\u2014maximum squeeze",
-        "Your bottom arm and legs stay still\u2014only your upper torso moves",
-        "Breathe out forcefully as you crunch up\u2014this helps engage the obliques harder"
+        "Think of your oblique as a zipper—you're zipping up your side by crunching your ribs toward your hip",
+        "At the top, imagine you're trying to make your elbow and hip kiss—maximum squeeze",
+        "Your bottom arm and legs stay still—only your upper torso moves",
+        "Breathe out forcefully as you crunch up—this helps engage the obliques harder"
       ],
       "common_mistakes": [
-        "Pulling on your head with your hand\u2014use minimal assistance, let your obliques do the work",
-        "Rolling backward or forward instead of crunching straight up\u2014maintain side-lying position",
-        "Not holding the contraction at the top\u2014the squeeze is where the magic happens"
+        "Pulling on your head with your hand—use minimal assistance, let your obliques do the work",
+        "Rolling backward or forward instead of crunching straight up—maintain side-lying position",
+        "Not holding the contraction at the top—the squeeze is where the magic happens"
       ],
       "injury_prevention_tips": [
         "If you feel neck strain, rest your head on your bottom arm instead of lifting it",
-        "Move slowly and with control\u2014jerking movements can strain the obliques or neck"
+        "Move slowly and with control—jerking movements can strain the obliques or neck"
       ],
       "difficulty": "Beginner"
     },
@@ -17963,15 +17956,15 @@
         "Repeat for all reps on one side before switching"
       ],
       "form_cues": [
-        "Press 'up and out' at an angle\u2014not straight overhead\u2014like you're drawing a diagonal line to the side",
-        "Keep your eyes on the bell throughout\u2014where your eyes go, the bell follows safely",
-        "Squeeze everything tight\u2014imagine your entire body is one solid, braced pillar from feet to fist",
-        "Your free arm can extend out for balance\u2014think of yourself as a human letter 'T' at the top"
+        "Press 'up and out' at an angle—not straight overhead—like you're drawing a diagonal line to the side",
+        "Keep your eyes on the bell throughout—where your eyes go, the bell follows safely",
+        "Squeeze everything tight—imagine your entire body is one solid, braced pillar from feet to fist",
+        "Your free arm can extend out for balance—think of yourself as a human letter 'T' at the top"
       ],
       "common_mistakes": [
-        "Pressing straight overhead instead of up and out to the side\u2014this changes the shoulder engagement pattern",
-        "Leaning away from the weight excessively\u2014keep your torso relatively upright with minimal side bend",
-        "Not bracing the core\u2014this causes energy leaks and reduces pressing power"
+        "Pressing straight overhead instead of up and out to the side—this changes the shoulder engagement pattern",
+        "Leaning away from the weight excessively—keep your torso relatively upright with minimal side bend",
+        "Not bracing the core—this causes energy leaks and reduces pressing power"
       ],
       "injury_prevention_tips": [
         "Master the standard kettlebell press before attempting this variation",
@@ -18004,18 +17997,18 @@
         "Complete all reps on one side before switching"
       ],
       "form_cues": [
-        "Your elbow stays out to the side like you're making a 'goalpost' with your arm\u2014don't tuck it in",
-        "Press in a slight arc\u2014think 'up and slightly forward' to finish overhead with the bell stacked over your shoulder",
-        "Brace your entire body like you're about to get punched\u2014create full-body tension",
-        "At the top, your bicep should be close to your ear\u2014imagine showing off your armpit to the ceiling"
+        "Your elbow stays out to the side like you're making a 'goalpost' with your arm—don't tuck it in",
+        "Press in a slight arc—think 'up and slightly forward' to finish overhead with the bell stacked over your shoulder",
+        "Brace your entire body like you're about to get punched—create full-body tension",
+        "At the top, your bicep should be close to your ear—imagine showing off your armpit to the ceiling"
       ],
       "common_mistakes": [
-        "Tucking the elbow in instead of keeping it out\u2014this defeats the purpose of the 'para' position",
-        "Using momentum or leaning back to press\u2014this should be a strict, controlled press",
-        "Not maintaining wrist alignment\u2014the wrist should stay neutral, not bent back excessively"
+        "Tucking the elbow in instead of keeping it out—this defeats the purpose of the 'para' position",
+        "Using momentum or leaning back to press—this should be a strict, controlled press",
+        "Not maintaining wrist alignment—the wrist should stay neutral, not bent back excessively"
       ],
       "injury_prevention_tips": [
-        "This elbow-out position can be tough on shoulders\u2014start lighter than your standard press",
+        "This elbow-out position can be tough on shoulders—start lighter than your standard press",
         "If you feel shoulder pinching, reduce weight or switch to a more neutral elbow position"
       ],
       "difficulty": "Advanced"
@@ -18047,18 +18040,18 @@
         "Lower the kettlebell back to your shoulder and repeat"
       ],
       "form_cues": [
-        "Think 'dip and drive'\u2014a quick knee bend followed by an explosive hip and leg extension",
-        "Your torso stays vertical during the dip\u2014imagine you're in a phone booth and can't lean forward or back",
-        "The leg drive does most of the work\u2014your arm just guides and locks out the weight",
-        "Time the press with the jump\u2014as your heels leave the ground, the bell shoots up"
+        "Think 'dip and drive'—a quick knee bend followed by an explosive hip and leg extension",
+        "Your torso stays vertical during the dip—imagine you're in a phone booth and can't lean forward or back",
+        "The leg drive does most of the work—your arm just guides and locks out the weight",
+        "Time the press with the jump—as your heels leave the ground, the bell shoots up"
       ],
       "common_mistakes": [
-        "Dipping too deep or too shallow\u2014a quarter squat dip is perfect, like loading a jump",
-        "Leaning forward during the dip\u2014this turns it into a front squat instead of a vertical drive",
-        "Pressing before the leg drive\u2014the sequence is dip, drive, then press as one fluid motion"
+        "Dipping too deep or too shallow—a quarter squat dip is perfect, like loading a jump",
+        "Leaning forward during the dip—this turns it into a front squat instead of a vertical drive",
+        "Pressing before the leg drive—the sequence is dip, drive, then press as one fluid motion"
       ],
       "injury_prevention_tips": [
-        "Start lighter than your strict press\u2014you'll be surprised how much the legs help",
+        "Start lighter than your strict press—you'll be surprised how much the legs help",
         "Land softly after each rep to protect your knees and ankles"
       ],
       "difficulty": "Advanced"
@@ -18087,19 +18080,19 @@
         "Complete all reps on one side before switching"
       ],
       "form_cues": [
-        "Think 'elbow to back pocket'\u2014drive your elbow straight back, not out to the side",
-        "Your shoulder blade should move\u2014at the top, squeeze it like you're crushing a grape between your shoulder blade and spine",
-        "Keep your back flat like a tabletop\u2014imagine balancing a cup of water on your lower back",
-        "Your hips and torso stay still\u2014no twisting or rotating, just the arm moves"
+        "Think 'elbow to back pocket'—drive your elbow straight back, not out to the side",
+        "Your shoulder blade should move—at the top, squeeze it like you're crushing a grape between your shoulder blade and spine",
+        "Keep your back flat like a tabletop—imagine balancing a cup of water on your lower back",
+        "Your hips and torso stay still—no twisting or rotating, just the arm moves"
       ],
       "common_mistakes": [
-        "Rotating the torso to help pull\u2014this turns it into a momentum exercise instead of a lat isolation move",
-        "Pulling with your bicep instead of your back\u2014lead with the elbow, not the hand",
-        "Rounding the back\u2014maintain that flat back position throughout the entire set"
+        "Rotating the torso to help pull—this turns it into a momentum exercise instead of a lat isolation move",
+        "Pulling with your bicep instead of your back—lead with the elbow, not the hand",
+        "Rounding the back—maintain that flat back position throughout the entire set"
       ],
       "injury_prevention_tips": [
-        "If your lower back gets tired, reduce weight or take breaks\u2014form is more important than load",
-        "Don't jerk or swing the weight\u2014smooth and controlled protects your spine"
+        "If your lower back gets tired, reduce weight or take breaks—form is more important than load",
+        "Don't jerk or swing the weight—smooth and controlled protects your spine"
       ],
       "difficulty": "Intermediate"
     },
@@ -18133,18 +18126,18 @@
         "Lower back down and repeat"
       ],
       "form_cues": [
-        "Think 'hip snap, punch through'\u2014explosive hip extension launches the bell, then you punch up to catch it",
-        "The movement is all about hip power\u2014your arm is just guiding the kettlebell, not muscling it up",
-        "At the catch, your arm should 'punch through' the bell\u2014imagine breaking through a ceiling above you",
-        "The bell should float\u2014if done right, there's a weightless moment at the transition where you rotate and lock out"
+        "Think 'hip snap, punch through'—explosive hip extension launches the bell, then you punch up to catch it",
+        "The movement is all about hip power—your arm is just guiding the kettlebell, not muscling it up",
+        "At the catch, your arm should 'punch through' the bell—imagine breaking through a ceiling above you",
+        "The bell should float—if done right, there's a weightless moment at the transition where you rotate and lock out"
       ],
       "common_mistakes": [
-        "Pulling with the arm instead of driving with the hips\u2014this is a lower body power move, not an arm curl",
-        "Banging the bell on your wrist at the top\u2014rotate your hand earlier and punch through smoothly",
-        "Not fully extending the hips\u2014you need maximum hip snap for the bell to have enough momentum"
+        "Pulling with the arm instead of driving with the hips—this is a lower body power move, not an arm curl",
+        "Banging the bell on your wrist at the top—rotate your hand earlier and punch through smoothly",
+        "Not fully extending the hips—you need maximum hip snap for the bell to have enough momentum"
       ],
       "injury_prevention_tips": [
-        "Master kettlebell swings first\u2014the snatch is essentially a swing with an overhead catch",
+        "Master kettlebell swings first—the snatch is essentially a swing with an overhead catch",
         "Start with a light bell to learn the timing of the hand rotation and overhead punch"
       ],
       "difficulty": "Advanced"
@@ -18179,19 +18172,19 @@
         "Stand back up with the weight still overhead, bring your feet together, then lower to repeat"
       ],
       "form_cues": [
-        "Think 'dip, drive, drop, stand'\u2014four distinct phases in one fluid movement",
-        "The split catch is like doing a mini-lunge\u2014one foot shoots forward, one back, as you lock out overhead",
-        "Your back leg lands on the ball of the foot, front foot flat\u2014like a fighter's stance",
-        "Keep the kettlebell locked overhead as you recover to standing\u2014imagine it's glued to the ceiling"
+        "Think 'dip, drive, drop, stand'—four distinct phases in one fluid movement",
+        "The split catch is like doing a mini-lunge—one foot shoots forward, one back, as you lock out overhead",
+        "Your back leg lands on the ball of the foot, front foot flat—like a fighter's stance",
+        "Keep the kettlebell locked overhead as you recover to standing—imagine it's glued to the ceiling"
       ],
       "common_mistakes": [
-        "Not dropping low enough in the split\u2014you need to actively drop under the weight, not just press it up",
-        "Landing with feet too narrow\u2014your split should be wide enough for stability",
-        "Pressing before driving with the legs\u2014the leg drive should propel the bell most of the way up"
+        "Not dropping low enough in the split—you need to actively drop under the weight, not just press it up",
+        "Landing with feet too narrow—your split should be wide enough for stability",
+        "Pressing before driving with the legs—the leg drive should propel the bell most of the way up"
       ],
       "injury_prevention_tips": [
         "Practice the split position (lunge stance) separately to build stability before adding the overhead component",
-        "Master the push press first\u2014the split jerk adds a catching element that requires more coordination"
+        "Master the push press first—the split jerk adds a catching element that requires more coordination"
       ],
       "difficulty": "Advanced"
     },
@@ -18222,18 +18215,18 @@
         "Lower the kettlebell back down and repeat"
       ],
       "form_cues": [
-        "Think 'squat, explode, drop, stand'\u2014it's a powerful jump with an overhead catch in a split stance",
-        "The entire movement is one uninterrupted flow\u2014don't pause at the shoulder, drive straight to overhead",
-        "Your arm should be locked out as you land in the split\u2014not still pressing",
+        "Think 'squat, explode, drop, stand'—it's a powerful jump with an overhead catch in a split stance",
+        "The entire movement is one uninterrupted flow—don't pause at the shoulder, drive straight to overhead",
+        "Your arm should be locked out as you land in the split—not still pressing",
         "Imagine you're doing a jump squat but finishing in a lunge position with weight overhead"
       ],
       "common_mistakes": [
-        "Pausing at the shoulder like a clean\u2014this should be one continuous upward motion",
-        "Not fully extending before dropping into the split\u2014you need maximum upward drive first",
-        "Landing with feet too close together\u2014a proper split stance gives you stability under the weight"
+        "Pausing at the shoulder like a clean—this should be one continuous upward motion",
+        "Not fully extending before dropping into the split—you need maximum upward drive first",
+        "Landing with feet too close together—a proper split stance gives you stability under the weight"
       ],
       "injury_prevention_tips": [
-        "This is an advanced movement\u2014master regular kettlebell snatches and split jerks first",
+        "This is an advanced movement—master regular kettlebell snatches and split jerks first",
         "Use a light weight until the coordination of the split catch becomes natural"
       ],
       "difficulty": "Advanced"
@@ -18259,18 +18252,18 @@
         "Swing the kettlebell back between your legs by hinging at the hips, keeping your back flat",
         "Explosively snap your hips forward and squeeze your glutes to swing the kettlebell up to chest/shoulder height",
         "Let the kettlebell swing back down between your legs under control, then repeat the hip snap",
-        "Your arm stays relatively straight throughout\u2014it's a pendulum, not a curl"
+        "Your arm stays relatively straight throughout—it's a pendulum, not a curl"
       ],
       "form_cues": [
-        "Think 'hip hinge, not squat'\u2014your hips shoot back and snap forward powerfully, knees bend slightly",
-        "Squeeze your glutes at the top like you're trying to crack a walnut\u2014this is what drives the swing",
-        "Your arm is just a rope\u2014imagine the kettlebell is attached to your hips and your arm is just holding on",
-        "At the top, the bell should float momentarily at chest/shoulder height\u2014if it's going higher, you're using too much arm"
+        "Think 'hip hinge, not squat'—your hips shoot back and snap forward powerfully, knees bend slightly",
+        "Squeeze your glutes at the top like you're trying to crack a walnut—this is what drives the swing",
+        "Your arm is just a rope—imagine the kettlebell is attached to your hips and your arm is just holding on",
+        "At the top, the bell should float momentarily at chest/shoulder height—if it's going higher, you're using too much arm"
       ],
       "common_mistakes": [
-        "Squatting instead of hinging\u2014this turns it into a quad exercise instead of a hip hinge pattern",
-        "Pulling with the arm instead of driving with the hips\u2014your arm just guides, hips power the swing",
-        "Letting the bell drop too low on the backswing\u2014your forearm should touch your inner thigh at the bottom"
+        "Squatting instead of hinging—this turns it into a quad exercise instead of a hip hinge pattern",
+        "Pulling with the arm instead of driving with the hips—your arm just guides, hips power the swing",
+        "Letting the bell drop too low on the backswing—your forearm should touch your inner thigh at the bottom"
       ],
       "injury_prevention_tips": [
         "Master the hip hinge pattern with a lighter weight before going heavy",
@@ -18301,23 +18294,23 @@
       "beginner_friendly_instructions": [
         "Position a barbell in a landmine or corner, load weight on the free end",
         "Stand next to the bar and grab the collar (near the weight) with one hand, then stand up with the weight",
-        "Assume a bent-knee athletic stance with hips back, chest up, and arm extended\u2014this is your starting position",
+        "Assume a bent-knee athletic stance with hips back, chest up, and arm extended—this is your starting position",
         "Pull the bar to your side by retracting your shoulder blade and bending your elbow, keeping the bar close to your body",
         "Pause briefly at the top, then lower back to the starting position with control"
       ],
       "form_cues": [
-        "Think 'elbow to hip'\u2014drive your elbow straight back toward your hip, not out to the side",
-        "Your shoulder blade moves first\u2014retract it before your elbow even bends, like you're starting a lawnmower",
-        "Keep your torso still and strong\u2014imagine you're a statue from the waist up, only your arm moves",
-        "At the top, squeeze your lat hard\u2014imagine crushing an orange in your armpit on the working side"
+        "Think 'elbow to hip'—drive your elbow straight back toward your hip, not out to the side",
+        "Your shoulder blade moves first—retract it before your elbow even bends, like you're starting a lawnmower",
+        "Keep your torso still and strong—imagine you're a statue from the waist up, only your arm moves",
+        "At the top, squeeze your lat hard—imagine crushing an orange in your armpit on the working side"
       ],
       "common_mistakes": [
-        "Jerking or using momentum\u2014this should be a slow, controlled pull with a strong contraction at the top",
-        "Rotating the torso to help\u2014keep your chest facing forward, no twisting",
-        "Not pulling high enough\u2014get the bar all the way to your hip for full lat engagement"
+        "Jerking or using momentum—this should be a slow, controlled pull with a strong contraction at the top",
+        "Rotating the torso to help—keep your chest facing forward, no twisting",
+        "Not pulling high enough—get the bar all the way to your hip for full lat engagement"
       ],
       "injury_prevention_tips": [
-        "Start with lighter weight than you think\u2014the leverage is different from dumbbell rows",
+        "Start with lighter weight than you think—the leverage is different from dumbbell rows",
         "Keep your lower back neutral and core braced throughout to protect your spine"
       ],
       "difficulty": "Intermediate"
@@ -18343,24 +18336,24 @@
       ],
       "beginner_friendly_instructions": [
         "Stand in a staggered athletic stance holding a medicine ball in one hand on the same side as your back leg",
-        "Wind up by raising the ball overhead while extending through your hips, knees, and ankles\u2014get tall and loaded",
+        "Wind up by raising the ball overhead while extending through your hips, knees, and ankles—get tall and loaded",
         "Explosively flex your shoulders, spine, and hips to slam the ball into the ground directly in front of you with maximum force",
         "Catch the ball on the bounce and immediately reset for the next rep",
         "Complete all reps on one side before switching"
       ],
       "form_cues": [
-        "Think 'reach and smash'\u2014get as tall as possible at the top, then explode downward with everything you have",
-        "At the top, you should be on your toes reaching high\u2014like you're trying to touch the ceiling",
-        "The slam is a full-body crunch\u2014shoulders, core, and hips all flex together to generate maximum power",
-        "Aim for the same spot on the floor each time\u2014about one foot in front of your lead foot"
+        "Think 'reach and smash'—get as tall as possible at the top, then explode downward with everything you have",
+        "At the top, you should be on your toes reaching high—like you're trying to touch the ceiling",
+        "The slam is a full-body crunch—shoulders, core, and hips all flex together to generate maximum power",
+        "Aim for the same spot on the floor each time—about one foot in front of your lead foot"
       ],
       "common_mistakes": [
-        "Not extending fully at the top\u2014you need that full stretch to generate maximum power on the slam",
-        "Slamming with just your arm\u2014this is a full-body explosive movement from head to toe",
-        "Standing too upright on the catch\u2014stay athletic and ready, knees slightly bent"
+        "Not extending fully at the top—you need that full stretch to generate maximum power on the slam",
+        "Slamming with just your arm—this is a full-body explosive movement from head to toe",
+        "Standing too upright on the catch—stay athletic and ready, knees slightly bent"
       ],
       "injury_prevention_tips": [
-        "Use a ball designed for slamming\u2014regular medicine balls can break and cause injury",
+        "Use a ball designed for slamming—regular medicine balls can break and cause injury",
         "Brace your core on the slam to protect your lower back from the explosive flexion"
       ],
       "difficulty": "Intermediate"
@@ -18837,18 +18830,18 @@
         "Slowly return the handle upward with control, stopping just before the weights touch to maintain tension"
       ],
       "form_cues": [
-        "Think 'elbow to hip pocket'\u2014drive your elbow straight down toward your side, not backward",
-        "Imagine you're pulling your elbow through the floor\u2014this mental cue helps engage the lat fully",
+        "Think 'elbow to hip pocket'—drive your elbow straight down toward your side, not backward",
+        "Imagine you're pulling your elbow through the floor—this mental cue helps engage the lat fully",
         "At the bottom, squeeze your lat hard like you're crushing an orange in your armpit",
-        "Keep your torso relatively still\u2014a slight lean back is okay, but don't rock back and forth"
+        "Keep your torso relatively still—a slight lean back is okay, but don't rock back and forth"
       ],
       "common_mistakes": [
-        "Pulling with your bicep instead of your lat\u2014lead with the elbow, the hand just holds on",
-        "Leaning back excessively to use momentum\u2014this reduces lat activation",
-        "Letting the weight fully return at the top\u2014stop just before the stack touches to keep constant tension"
+        "Pulling with your bicep instead of your lat—lead with the elbow, the hand just holds on",
+        "Leaning back excessively to use momentum—this reduces lat activation",
+        "Letting the weight fully return at the top—stop just before the stack touches to keep constant tension"
       ],
       "injury_prevention_tips": [
-        "Start lighter than bilateral pulldowns\u2014the single arm requires more stability and control",
+        "Start lighter than bilateral pulldowns—the single arm requires more stability and control",
         "If your shoulder feels unstable, reduce weight or use your free hand to brace your working side"
       ],
       "difficulty": "Beginner"
@@ -18879,18 +18872,18 @@
         "Complete all reps on one arm, then switch sides"
       ],
       "form_cues": [
-        "Your upper arm is a statue\u2014only your forearm moves from the elbow joint, nothing else",
-        "Think 'hammer down'\u2014you're driving your forearm straight up like pounding a nail into the ceiling",
-        "The pronated grip (palm facing feet) hits the tricep differently\u2014imagine pouring water forward at the top",
+        "Your upper arm is a statue—only your forearm moves from the elbow joint, nothing else",
+        "Think 'hammer down'—you're driving your forearm straight up like pounding a nail into the ceiling",
+        "The pronated grip (palm facing feet) hits the tricep differently—imagine pouring water forward at the top",
         "At the top, lock out completely and squeeze your tricep like you're flexing for a photo"
       ],
       "common_mistakes": [
-        "Letting your upper arm drift forward or backward\u2014keep it perpendicular to your body the entire time",
-        "Not going through full range\u2014lower until the dumbbell is near your ear, then fully extend",
-        "Rushing the movement\u2014slow and controlled gets better tricep activation than fast and sloppy"
+        "Letting your upper arm drift forward or backward—keep it perpendicular to your body the entire time",
+        "Not going through full range—lower until the dumbbell is near your ear, then fully extend",
+        "Rushing the movement—slow and controlled gets better tricep activation than fast and sloppy"
       ],
       "injury_prevention_tips": [
-        "Use lighter weight than you think\u2014this isolation position is harder than it looks",
+        "Use lighter weight than you think—this isolation position is harder than it looks",
         "If you feel elbow discomfort, slightly adjust your grip angle or reduce weight"
       ],
       "difficulty": "Beginner"
@@ -18922,15 +18915,15 @@
         "Complete all reps on one side before switching"
       ],
       "form_cues": [
-        "The supinated grip (palm facing you) changes the tricep emphasis\u2014imagine showing yourself your palm at the top",
-        "Your upper arm stays frozen\u2014pretend it's bolted in place, only your forearm moves",
-        "Think 'press up and squeeze'\u2014drive the dumbbell straight up and lock out hard",
-        "At the bottom, control the descent\u2014don't let gravity pull the weight down"
+        "The supinated grip (palm facing you) changes the tricep emphasis—imagine showing yourself your palm at the top",
+        "Your upper arm stays frozen—pretend it's bolted in place, only your forearm moves",
+        "Think 'press up and squeeze'—drive the dumbbell straight up and lock out hard",
+        "At the bottom, control the descent—don't let gravity pull the weight down"
       ],
       "common_mistakes": [
-        "Allowing the upper arm to move\u2014this reduces tricep isolation and makes it less effective",
-        "Not achieving full lockout at the top\u2014extend completely to maximize tricep contraction",
-        "Using momentum instead of muscle\u2014smooth, controlled reps are key"
+        "Allowing the upper arm to move—this reduces tricep isolation and makes it less effective",
+        "Not achieving full lockout at the top—extend completely to maximize tricep contraction",
+        "Using momentum instead of muscle—smooth, controlled reps are key"
       ],
       "injury_prevention_tips": [
         "Start with the same or lighter weight than the pronated version to test comfort",
@@ -18966,15 +18959,15 @@
         "Switch sides and repeat"
       ],
       "form_cues": [
-        "Think 'lift and arch'\u2014as your foot goes up, your chest comes up too, creating a bow shape with your body",
-        "Pull your foot toward your glutes while lifting\u2014imagine trying to touch your foot to your head",
+        "Think 'lift and arch'—as your foot goes up, your chest comes up too, creating a bow shape with your body",
+        "Pull your foot toward your glutes while lifting—imagine trying to touch your foot to your head",
         "Your chest should lift off the ground like someone is pulling it up with a string",
-        "Breathe deeply throughout\u2014don't hold your breath even though the stretch is intense"
+        "Breathe deeply throughout—don't hold your breath even though the stretch is intense"
       ],
       "common_mistakes": [
-        "Only lifting the leg without lifting the chest\u2014you need both for the full stretch",
-        "Cranking the knee too aggressively\u2014pull gently to avoid knee strain",
-        "Holding your breath\u2014steady breathing helps you relax into the stretch"
+        "Only lifting the leg without lifting the chest—you need both for the full stretch",
+        "Cranking the knee too aggressively—pull gently to avoid knee strain",
+        "Holding your breath—steady breathing helps you relax into the stretch"
       ],
       "injury_prevention_tips": [
         "If you have lower back issues, limit how high you lift or skip this stretch",
@@ -18999,23 +18992,23 @@
       ],
       "beginner_friendly_instructions": [
         "Grab a pull-up bar with one hand using an overhand grip (palm facing away)",
-        "Keep your feet on the floor or on a step\u2014you're not fully hanging, just partially loading that arm",
+        "Keep your feet on the floor or on a step—you're not fully hanging, just partially loading that arm",
         "Allow most of your weight to hang from that hand, feeling the stretch in your lat and shoulder",
         "Hold for 10-20 seconds while breathing normally, then switch to the other side"
       ],
       "form_cues": [
-        "Think 'active hang'\u2014keep some engagement in your shoulder, don't let it fully relax and shrug up",
+        "Think 'active hang'—keep some engagement in your shoulder, don't let it fully relax and shrug up",
         "Your shoulder should be packed down (pulled down away from your ear), not hanging loosely",
-        "Use your feet to modulate the stretch\u2014more weight on feet for less intensity, less weight for deeper stretch",
+        "Use your feet to modulate the stretch—more weight on feet for less intensity, less weight for deeper stretch",
         "Imagine your lat is lengthening like a rubber band being stretched"
       ],
       "common_mistakes": [
-        "Letting your shoulder shrug all the way up to your ear\u2014maintain some active control",
-        "Putting all your weight on the hang immediately\u2014gradually increase the load as you adapt",
-        "Not breathing\u2014keep steady, relaxed breathing throughout the hold"
+        "Letting your shoulder shrug all the way up to your ear—maintain some active control",
+        "Putting all your weight on the hang immediately—gradually increase the load as you adapt",
+        "Not breathing—keep steady, relaxed breathing throughout the hold"
       ],
       "injury_prevention_tips": [
-        "Start with minimal weight transfer\u2014keep most weight on your feet at first",
+        "Start with minimal weight transfer—keep most weight on your feet at first",
         "If you feel sharp shoulder pain, reduce the load or consult a professional"
       ],
       "difficulty": "Beginner"
@@ -19047,18 +19040,18 @@
         "Hold for 20-30 seconds, then switch legs"
       ],
       "form_cues": [
-        "Think 'hug your knee'\u2014pull it close to your chest like you're giving your knee a hug",
-        "The extended leg should stay flat on the ground\u2014press it down to feel a hip flexor stretch too",
-        "Breathe deeply and relax into the stretch\u2014each exhale allows you to pull slightly closer",
-        "Your lower back should flatten against the floor\u2014this is a lower back release stretch"
+        "Think 'hug your knee'—pull it close to your chest like you're giving your knee a hug",
+        "The extended leg should stay flat on the ground—press it down to feel a hip flexor stretch too",
+        "Breathe deeply and relax into the stretch—each exhale allows you to pull slightly closer",
+        "Your lower back should flatten against the floor—this is a lower back release stretch"
       ],
       "common_mistakes": [
-        "Grabbing on top of the kneecap\u2014this can compress the joint, hold behind the knee instead",
-        "Lifting the extended leg off the ground\u2014keep it flat to maximize the stretch benefit",
-        "Holding your breath\u2014steady breathing helps you relax deeper into the stretch"
+        "Grabbing on top of the kneecap—this can compress the joint, hold behind the knee instead",
+        "Lifting the extended leg off the ground—keep it flat to maximize the stretch benefit",
+        "Holding your breath—steady breathing helps you relax deeper into the stretch"
       ],
       "injury_prevention_tips": [
-        "Pull gently and gradually\u2014no jerking or forcing the knee closer",
+        "Pull gently and gradually—no jerking or forcing the knee closer",
         "If you feel sharp pain in the knee or hip, reduce the intensity or skip this stretch"
       ],
       "difficulty": "Beginner"
@@ -19094,19 +19087,19 @@
         "Drive through your front heel to return to standing, leading with your chest and hips"
       ],
       "form_cues": [
-        "Your front knee should track over your toes\u2014imagine it's following a train track straight forward",
-        "At the bottom, your chest should be directly above the middle of your front thigh\u2014don't lean too far forward",
-        "Think 'sit back and down'\u2014load your front hip like you're sitting into a chair",
-        "Drive through your front heel like you're pushing the floor away\u2014this maximizes quad and glute engagement"
+        "Your front knee should track over your toes—imagine it's following a train track straight forward",
+        "At the bottom, your chest should be directly above the middle of your front thigh—don't lean too far forward",
+        "Think 'sit back and down'—load your front hip like you're sitting into a chair",
+        "Drive through your front heel like you're pushing the floor away—this maximizes quad and glute engagement"
       ],
       "common_mistakes": [
-        "Letting the front knee cave inward\u2014push it out in line with your toes throughout",
-        "Leaning too far forward\u2014keep your torso relatively upright with chest proud",
-        "Not going deep enough\u2014your front thigh should reach parallel for full range"
+        "Letting the front knee cave inward—push it out in line with your toes throughout",
+        "Leaning too far forward—keep your torso relatively upright with chest proud",
+        "Not going deep enough—your front thigh should reach parallel for full range"
       ],
       "injury_prevention_tips": [
-        "This is an advanced movement\u2014master Bulgarian split squats without weight first",
-        "Use significantly lighter weight than regular squats\u2014the single leg makes it much harder"
+        "This is an advanced movement—master Bulgarian split squats without weight first",
+        "Use significantly lighter weight than regular squats—the single leg makes it much harder"
       ],
       "difficulty": "Advanced"
     },
@@ -19138,19 +19131,19 @@
         "Lower back to the starting position and repeat"
       ],
       "form_cues": [
-        "Think 'flip and catch'\u2014there's a weightless moment where you release the handle and catch the ball portion",
-        "The power comes from your hips\u2014snap them forward explosively to launch the kettlebell up",
-        "Your palms should be facing up to catch the bell\u2014imagine you're catching a basketball",
-        "Trust the timing\u2014don't grip too long or you'll miss the flip"
+        "Think 'flip and catch'—there's a weightless moment where you release the handle and catch the ball portion",
+        "The power comes from your hips—snap them forward explosively to launch the kettlebell up",
+        "Your palms should be facing up to catch the bell—imagine you're catching a basketball",
+        "Trust the timing—don't grip too long or you'll miss the flip"
       ],
       "common_mistakes": [
-        "Not releasing the handle early enough\u2014you need to let go at shoulder height for the flip to work",
-        "Using arm strength instead of hip power\u2014this is a hip hinge explosive movement",
-        "Catching the bell too low\u2014it should flip and land in your palms at chest height"
+        "Not releasing the handle early enough—you need to let go at shoulder height for the flip to work",
+        "Using arm strength instead of hip power—this is a hip hinge explosive movement",
+        "Catching the bell too low—it should flip and land in your palms at chest height"
       ],
       "injury_prevention_tips": [
         "Practice with a light kettlebell until the timing of the release and catch becomes natural",
-        "This is an advanced kettlebell skill\u2014master regular cleans first"
+        "This is an advanced kettlebell skill—master regular cleans first"
       ],
       "difficulty": "Advanced"
     },
@@ -19176,25 +19169,25 @@
       ],
       "beginner_friendly_instructions": [
         "Secure your feet (using a partner, equipment, or tucking under something) and lie back with knees bent",
-        "Hold a weight plate or dumbbell with both hands against your chest\u2014this is your starting position",
+        "Hold a weight plate or dumbbell with both hands against your chest—this is your starting position",
         "Flex your hips and spine to sit up from the floor, bringing your torso toward your knees",
         "As you reach the top of the sit-up, press the weight straight overhead until your arms are fully extended",
         "Lower the weight back to your chest as you slowly lower back down, stopping just before touching the floor"
       ],
       "form_cues": [
-        "Think 'sit up, press up'\u2014two movements flowing together in one rep",
-        "Your abs do the sit-up, your shoulders/triceps do the press\u2014separate but sequential",
+        "Think 'sit up, press up'—two movements flowing together in one rep",
+        "Your abs do the sit-up, your shoulders/triceps do the press—separate but sequential",
         "At the top, you should be sitting upright with the weight locked out overhead like a trophy",
-        "Control the descent\u2014don't just fall backward, use your abs to lower with control"
+        "Control the descent—don't just fall backward, use your abs to lower with control"
       ],
       "common_mistakes": [
-        "Pressing the weight before reaching the top\u2014complete the sit-up first, then press",
-        "Letting your back touch the floor between reps\u2014stop just short to keep tension on your abs",
-        "Using momentum to swing up\u2014this should be a controlled sit-up with an overhead press"
+        "Pressing the weight before reaching the top—complete the sit-up first, then press",
+        "Letting your back touch the floor between reps—stop just short to keep tension on your abs",
+        "Using momentum to swing up—this should be a controlled sit-up with an overhead press"
       ],
       "injury_prevention_tips": [
-        "Start with a light weight\u2014even 10-25 lbs is challenging when combined with a sit-up",
-        "If you have lower back issues, this exercise may not be appropriate\u2014consult a professional"
+        "Start with a light weight—even 10-25 lbs is challenging when combined with a sit-up",
+        "If you have lower back issues, this exercise may not be appropriate—consult a professional"
       ],
       "difficulty": "Advanced"
     },
@@ -19219,23 +19212,23 @@
       "beginner_friendly_instructions": [
         "Set the cable pulleys to a height above your shoulders with equal weight on each side",
         "Stand in the middle and grab each handle with an underhand grip (palms facing up), arms fully extended out to the sides parallel to the floor",
-        "Your body should be positioned evenly between the handles with feet shoulder-width apart\u2014this is your starting position",
+        "Your body should be positioned evenly between the handles with feet shoulder-width apart—this is your starting position",
         "Squeeze your biceps and curl both handles toward your head by bending your elbows, keeping upper arms parallel to floor",
         "Slowly extend your arms back to the starting position while inhaling, keeping your entire body still except your forearms"
       ],
       "form_cues": [
-        "At the peak contraction, your forearms should touch your biceps\u2014think 'squeeze and hold'",
-        "Your upper arms stay completely parallel to the floor\u2014imagine they're resting on invisible shelves",
-        "Think 'double biceps pose'\u2014at the top, you're flexing like a bodybuilder on stage",
-        "Only your forearms move\u2014from elbows down, everything else is frozen in place"
+        "At the peak contraction, your forearms should touch your biceps—think 'squeeze and hold'",
+        "Your upper arms stay completely parallel to the floor—imagine they're resting on invisible shelves",
+        "Think 'double biceps pose'—at the top, you're flexing like a bodybuilder on stage",
+        "Only your forearms move—from elbows down, everything else is frozen in place"
       ],
       "common_mistakes": [
-        "Letting your upper arms drop or move forward\u2014they must stay parallel to the floor throughout",
-        "Leaning or shifting your body to help curl\u2014your torso stays completely still",
-        "Not achieving full contraction\u2014curl until your forearms touch your biceps for maximum squeeze"
+        "Letting your upper arms drop or move forward—they must stay parallel to the floor throughout",
+        "Leaning or shifting your body to help curl—your torso stays completely still",
+        "Not achieving full contraction—curl until your forearms touch your biceps for maximum squeeze"
       ],
       "injury_prevention_tips": [
-        "Use light weight\u2014this is an isolation exercise with poor leverage, so don't go heavy",
+        "Use light weight—this is an isolation exercise with poor leverage, so don't go heavy",
         "If you feel shoulder discomfort, lower the pulley height slightly or reduce weight"
       ],
       "difficulty": "Beginner"
@@ -24216,7 +24209,7 @@
         "Stand holding dumbbells at your sides with a slight elbow bend",
         "Rep 1: Raise the weights directly in front of you to shoulder height, then move them out to your sides, then lower",
         "Rep 2: Raise the weights out to your sides first, then bring them to the front, then lower",
-        "Alternate this pattern: front\u2192sides\u2192down, then sides\u2192front\u2192down",
+        "Alternate this pattern: front→sides→down, then sides→front→down",
         "Keep movements smooth and controlled throughout"
       ],
       "form_cues": [
@@ -30135,9 +30128,7 @@
       "primary_muscles": [
         "middle back"
       ],
-      "secondary_muscles": [
-        "middle back"
-      ],
+      "secondary_muscles": [],
       "beginner_friendly_instructions": [
         "Stand or sit upright and clasp your hands together in front of you with thumbs pointing down",
         "Round your shoulders forward as you reach your clasped hands away from your body",

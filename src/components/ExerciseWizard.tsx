@@ -43,6 +43,7 @@ const ExerciseWizard = ({ exercise, open, onOpenChange, onComplete }: ExerciseWi
         repRange: exercise?.repRange || '',
         formCues: exercise?.formCues || '',
         tutorialUrl: exercise?.tutorialUrl || '',
+        personalNotes: exercise?.personalNotes || '',
         inLibrary: exercise?.inLibrary || false,
     });
 
@@ -56,6 +57,7 @@ const ExerciseWizard = ({ exercise, open, onOpenChange, onComplete }: ExerciseWi
                 repRange: exercise?.repRange || '',
                 formCues: exercise?.formCues || '',
                 tutorialUrl: exercise?.tutorialUrl || '',
+                personalNotes: exercise?.personalNotes || '',
                 inLibrary: exercise?.inLibrary || false,
             });
             setStep(1);
@@ -198,12 +200,12 @@ const ExerciseWizard = ({ exercise, open, onOpenChange, onComplete }: ExerciseWi
                                         </p>
                                     </div>
                                     <div className="space-y-4">
-                                        <Label htmlFor="formCues" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Form Cues / Personal Notes</Label>
+                                        <Label htmlFor="personalNotes" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Your Personal Notes</Label>
                                         <Textarea
-                                            id="formCues"
-                                            placeholder="e.g. Elbows at 45°, feel it in your chest"
-                                            value={formData.formCues}
-                                            onChange={e => setFormData({ ...formData, formCues: e.target.value })}
+                                            id="personalNotes"
+                                            placeholder="Add your own tips, cues, or reminders for this exercise..."
+                                            value={formData.personalNotes}
+                                            onChange={e => setFormData({ ...formData, personalNotes: e.target.value })}
                                             className="bg-white/5 border-white/10 h-32 rounded-3xl p-5"
                                         />
                                     </div>
