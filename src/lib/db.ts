@@ -71,6 +71,27 @@ export interface Workout {
     duration?: number;
 }
 
+export interface RoutineExercise {
+    exerciseId: number;
+    exerciseName: string;
+    sets: number;
+    reps: string; // e.g., "8-12" or "10"
+    restSeconds: number;
+    order: number;
+    notes?: string;
+}
+
+export interface Routine {
+    id?: string; // Supabase UUID
+    userId: string; // Supabase user ID
+    localUserId: number; // Local Dexie user ID
+    name: string;
+    description?: string;
+    exercises: RoutineExercise[];
+    createdAt: string;
+    updatedAt: string;
+}
+
 // --- Muscle Groups (matching body highlighter slugs) ---
 export const MUSCLE_GROUPS = [
     'abs',
@@ -111,12 +132,14 @@ const db = new Dexie('ProLiftsDB') as Dexie & {
     users: EntityTable<UserProfile, 'id'>;
     exercises: EntityTable<Exercise, 'id'>;
     workouts: EntityTable<Workout, 'id'>;
+    routines: EntityTable<Routine, 'id'>;
 };
 
-db.version(5).stores({
+db.version(6).stores({
     users: '++id, name',
     exercises: '++id, name, *primaryMuscles, equipment, inLibrary, source, category, *aliases',
     workouts: '++id, userId, date, splitType',
+    routines: 'id, userId, localUserId, name',
 });
 
 export { db };

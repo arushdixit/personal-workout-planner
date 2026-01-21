@@ -4,6 +4,7 @@ import WorkoutHero from '@/components/WorkoutHero';
 import ExercisePreviewCard from '@/components/ExercisePreviewCard';
 import ProgressChart from '@/components/ProgressChart';
 import Library from '@/pages/Library';
+import Routines from '@/pages/Routines';
 import { User, Trophy, Target, LogOut, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -110,6 +111,8 @@ const Index = () => {
         )}
 
         {activeTab === 'library' && <Library />}
+
+        {activeTab === 'routines' && <Routines />}
 
         {activeTab === 'progress' && (
           <div className="space-y-6 animate-slide-up">
