@@ -1,0 +1,197 @@
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import RestTimer from '@/components/RestTimer';
+
+describe('RestTimer - Timer Functionality', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+        vi.runOnlyPendingTimers();
+        vi.useRealTimers();
+    });
+
+    it('renders with initial duration', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={90} onComplete={onComplete} onSkip={onSkip} />);
+        
+        expect(screen.getByText(/Rest Time/i)).toBeInTheDocument();
+        expect(screen.getByText('1:30')).toBeInTheDocument();
+    });
+
+    it('counts down from initial duration', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={90} onComplete={onComplete} onSkip={onSkip} />);
+        
+        vi.advanceTimersByTime(5000);
+        
+        expect(screen.getByText('1:25')).toBeInTheDocument();
+    });
+
+    it('calls onComplete when timer reaches zero', async () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={5} onComplete={onComplete} onSkip={onSkip} />);
+        
+        vi.advanceTimersByTime(5000);
+        
+        await waitFor(() => {
+            expect(onComplete).toHaveBeenCalled();
+        });
+    });
+
+    it('displays minutes and seconds correctly', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={150} onComplete={onComplete} onSkip={onSkip} />);
+        
+        expect(screen.getByText('2:30')).toBeInTheDocument();
+        
+        vi.advanceTimersByTime(60000);
+        expect(screen.getByText('1:30')).toBeInTheDocument();
+    });
+});
+
+describe('RestTimer - Skip Functionality', () => {
+    it('calls onSkip when skip button is clicked', async () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={90} onComplete={onComplete} onSkip={onSkip} />);
+        
+        const skipButton = screen.getByText(/Skip/i);
+        fireEvent.click(skipButton);
+        
+        expect(onSkip).toHaveBeenCalled();
+    });
+
+    it('stops timer after skipping', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={90} onComplete={onComplete} onSkip={onSkip} />);
+        
+        const skipButton = screen.getByText(/Skip/i);
+        fireEvent.click(skipButton);
+        
+        vi.advanceTimersByTime(10000);
+        
+        expect(screen.getByText('1:30')).toBeInTheDocument();
+        expect(onComplete).not.toHaveBeenCalled();
+    });
+});
+
+describe('RestTimer - Time Adjustments', () => {
+    it('decrements time by 15 seconds when minus button clicked', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={90} onComplete={onComplete} onSkip={onSkip} />);
+        
+        const minusButton = screen.getByRole('button').closest('div')?.querySelector('button');
+        const minusButtons = screen.getAllByText(/-15s/i);
+        fireEvent.click(minusButtons[0]);
+        
+        expect(screen.getByText('1:15')).toBeInTheDocument();
+    });
+
+    it('increments time by 15 seconds when plus button clicked', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={90} onComplete={onComplete} onSkip={onSkip} />);
+        
+        const plusButtons = screen.getAllByText(/\+15s/i);
+        fireEvent.click(plusButtons[0]);
+        
+        expect(screen.getByText('1:45')).toBeInTheDocument();
+    });
+
+    it('prevents time from going below zero', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={20} onComplete={onComplete} onSkip={onSkip} />);
+        
+        const minusButtons = screen.getAllByText(/-15s/i);
+        fireEvent.click(minusButtons[0]); // 20 -> 5
+        fireEvent.click(minusButtons[0]); // 5 -> 0
+        
+        expect(screen.getByText('0:00')).toBeInTheDocument();
+    });
+
+    it('updates current duration when adjusting', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={90} onComplete={onComplete} onSkip={onSkip} />);
+        
+        const plusButtons = screen.getAllByText(/\+15s/i);
+        fireEvent.click(plusButtons[0]); // 90 -> 105
+        
+        vi.advanceTimersByTime(95000); // Should be at 10s now
+        
+        expect(screen.getByText('0:10')).toBeInTheDocument();
+    });
+});
+
+describe('RestTimer - Progress Display', () => {
+    it('shows circular progress animation', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={90} onComplete={onComplete} onSkip={onSkip} />);
+        
+        const progressCircle = screen.getByRole('graphics-document') || document.querySelector('circle');
+        expect(progressCircle).toBeInTheDocument();
+    });
+
+    it('updates progress as time decreases', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={90} onComplete={onComplete} onSkip={onSkip} />);
+        
+        const initialOffset = document.querySelector('circle')?.getAttribute('stroke-dashoffset');
+        vi.advanceTimersByTime(45000);
+        
+        const updatedOffset = document.querySelector('circle')?.getAttribute('stroke-dashoffset');
+        expect(updatedOffset).not.toBe(initialOffset);
+    });
+});
+
+describe('RestTimer - Edge Cases', () => {
+    it('handles zero duration gracefully', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={0} onComplete={onComplete} onSkip={onSkip} />);
+        
+        expect(screen.getByText('0:00')).toBeInTheDocument();
+    });
+
+    it('handles very short durations', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={5} onComplete={onComplete} onSkip={onSkip} />);
+        
+        expect(screen.getByText('0:05')).toBeInTheDocument();
+    });
+
+    it('handles very long durations', () => {
+        const onComplete = vi.fn();
+        const onSkip = vi.fn();
+        
+        render(<RestTimer duration={600} onComplete={onComplete} onSkip={onSkip} />);
+        
+        expect(screen.getByText('10:00')).toBeInTheDocument();
+    });
+});

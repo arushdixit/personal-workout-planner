@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { createPortal } from 'react-dom';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface ExerciseDetailProps {
     exercise: Exercise;
@@ -22,6 +22,14 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
     const { currentUser } = useUser();
     const gender = currentUser?.gender || 'male';
     const [activeTab, setActiveTab] = useState<Tab>('instructions');
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    // Focus the modal when it opens
+    useEffect(() => {
+        if (open && dialogRef.current) {
+            dialogRef.current.focus();
+        }
+    }, [open]);
 
     if (!open && !exercise?.name) return null;
 
@@ -34,10 +42,17 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
     const injuryPreventionTips = exercise?.injuryPreventionTips || [];
 
     const content = (
-        <div className={cn(
-            "fixed top-0 left-0 right-0 bottom-0 z-[9999] bg-background flex flex-col focus:outline-none overflow-hidden transition-all duration-300",
-            open ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
-        )}>
+        <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${exercise.name} details`}
+            tabIndex={-1}
+            className={cn(
+                "fixed top-0 left-0 right-0 bottom-0 z-50 bg-background flex flex-col focus:outline-none overflow-hidden transition-all duration-300",
+                open ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
+            )}
+        >
             {/* Header */}
             <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 z-50 bg-background border-b border-white/5">
                 <button

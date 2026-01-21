@@ -12,15 +12,18 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { CacheStatus, CacheStatusState } from '@/components/CacheStatus';
 import { toast } from 'sonner';
 import { useUser } from '@/context/UserContext';
 import {
     fetchRoutines,
-    deleteRoutine,
+    deleteRoutineOptimistic,
     duplicateRoutine,
-    refreshRoutines
+    refreshRoutines,
+    getCacheStatus,
 } from '@/lib/routineCache';
-import { getSupabaseUserId } from '@/lib/supabaseClient';
+import { getSupabaseUserId as fetchSupabaseUserId, type Routine as SupabaseRoutine } from '@/lib/supabaseClient';
+import { startBackgroundSync } from '@/lib/syncManager';
 import type { Routine } from '@/lib/db';
 import RoutineBuilder from '@/components/RoutineBuilder';
 import { cn } from '@/lib/utils';
@@ -33,17 +36,59 @@ const Routines = () => {
     const [editingRoutine, setEditingRoutine] = useState<Routine | undefined>();
     const [deleteTarget, setDeleteTarget] = useState<Routine | null>(null);
     const [supabaseUserId, setSupabaseUserId] = useState<string>('');
+    const [cacheState, setCacheState] = useState<CacheStatusState>('fresh');
+    const [lastSynced, setLastSynced] = useState<string>('');
+    const [pendingSync, setPendingSync] = useState(0);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     useEffect(() => {
         loadRoutines();
+        startBackgroundSync();
+        setupCacheStatusListener();
+
+        return () => {
+            startBackgroundSync();
+        };
     }, [currentUser?.id]);
+
+    const setupCacheStatusListener = async () => {
+        if (!currentUser?.id) return;
+
+        const updateCacheStatus = async () => {
+            try {
+                const userId = await fetchSupabaseUserId();
+                setSupabaseUserId(userId);
+                const status = await getCacheStatus(userId);
+
+                if (status.pendingSync > 0) {
+                    setCacheState('needsSync');
+                } else if (status.isStale) {
+                    setCacheState('stale');
+                } else if (status.isFresh) {
+                    setCacheState('fresh');
+                } else {
+                    setCacheState('error');
+                }
+
+                setLastSynced(status.lastSynced || '');
+                setPendingSync(status.pendingSync);
+            } catch (err) {
+                console.error('Failed to update cache status:', err);
+            }
+        };
+
+        updateCacheStatus();
+        const interval = setInterval(updateCacheStatus, 10000);
+
+        return () => clearInterval(interval);
+    };
 
     const loadRoutines = async () => {
         if (!currentUser?.id) return;
 
         setLoading(true);
         try {
-            const userId = await getSupabaseUserId(currentUser.id);
+            const userId = await fetchSupabaseUserId();
             setSupabaseUserId(userId);
             const data = await fetchRoutines(userId);
             setRoutines(data);
@@ -52,6 +97,26 @@ const Routines = () => {
             toast.error('Failed to load routines');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleRefresh = async () => {
+        if (!currentUser?.id) return;
+
+        setIsRefreshing(true);
+        try {
+            const userId = await fetchSupabaseUserId();
+            const data = await refreshRoutines(userId);
+            setRoutines(data);
+            setCacheState('fresh');
+            setLastSynced(new Date().toISOString());
+            toast.success('Routines refreshed');
+        } catch (err) {
+            console.error('Failed to refresh routines:', err);
+            toast.error('Failed to refresh routines');
+            setCacheState('error');
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -64,10 +129,12 @@ const Routines = () => {
         if (!deleteTarget?.id) return;
 
         try {
-            await deleteRoutine(deleteTarget.id);
+            await deleteRoutineOptimistic(deleteTarget.id);
             toast.success('Routine deleted');
             setDeleteTarget(null);
-            loadRoutines();
+            
+            const updatedRoutines = routines.filter(r => r.id !== deleteTarget.id);
+            setRoutines(updatedRoutines);
         } catch (err) {
             console.error('Failed to delete routine:', err);
             toast.error('Failed to delete routine');
@@ -78,9 +145,10 @@ const Routines = () => {
         if (!routine.id || !currentUser?.id) return;
 
         try {
-            await duplicateRoutine(routine.id, supabaseUserId, currentUser.id);
+            const newRoutine = await duplicateRoutine(routine.id, supabaseUserId, currentUser.id);
             toast.success('Routine duplicated');
-            loadRoutines();
+            
+            setRoutines(prev => [...prev, newRoutine]);
         } catch (err) {
             console.error('Failed to duplicate routine:', err);
             toast.error('Failed to duplicate routine');
@@ -99,12 +167,11 @@ const Routines = () => {
     };
 
     const calculateEstimatedTime = (routine: Routine): number => {
-        // Estimate: (sets * 30 seconds per set) + rest time
         return routine.exercises.reduce((total, ex) => {
-            const workTime = ex.sets * 30; // 30 seconds per set
+            const workTime = ex.sets * 30;
             const restTime = ex.sets * ex.restSeconds;
             return total + workTime + restTime;
-        }, 0) / 60; // Convert to minutes
+        }, 0) / 60;
     };
 
     if (loading) {
@@ -126,13 +193,21 @@ const Routines = () => {
             />
         ) : (
         <div className="space-y-6 animate-slide-up pb-20">
-            {/* Header */}
             <div className="flex items-center justify-between">
-                <div>
+                <div className="flex-1">
                     <h1 className="text-2xl font-bold">My Routines</h1>
-                    <p className="text-muted-foreground text-sm">
-                        {routines.length} {routines.length === 1 ? 'routine' : 'routines'}
-                    </p>
+                    <div className="flex items-center gap-3 mt-1">
+                        <p className="text-muted-foreground text-sm">
+                            {routines.length} {routines.length === 1 ? 'routine' : 'routines'}
+                        </p>
+                        <CacheStatus
+                            state={cacheState}
+                            lastSynced={lastSynced}
+                            pendingSync={pendingSync}
+                            onRefresh={handleRefresh}
+                            isRefreshing={isRefreshing}
+                        />
+                    </div>
                 </div>
                 <Button
                     variant="default"
@@ -144,7 +219,6 @@ const Routines = () => {
                 </Button>
             </div>
 
-            {/* Routines List */}
             {routines.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                     <Dumbbell className="w-12 h-12 mx-auto mb-4 opacity-50" />
@@ -199,7 +273,6 @@ const Routines = () => {
                 </div>
             )}
 
-            {/* Delete Confirmation */}
             <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
                 <AlertDialogContent className="glass border-white/10">
                     <AlertDialogHeader>

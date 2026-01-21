@@ -9,7 +9,7 @@ import { User, Trophy, Target, LogOut, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useUser } from '@/context/UserContext';
-import { db, Exercise } from '@/lib/db';
+import { db, Exercise, Routine } from '@/lib/db';
 
 const SPLITS: Record<string, string[]> = {
   PPL: ['Push', 'Pull', 'Legs'],
@@ -31,16 +31,59 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState('today');
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeRoutine, setActiveRoutine] = useState<any>(null);
 
   const splitDays = SPLITS[currentUser?.activeSplit || 'PPL'];
   const todayIndex = new Date().getDay() % splitDays.length;
   const todayType = splitDays[todayIndex];
 
   useEffect(() => {
+    // Load the most recent routine for the user
+    const loadActiveRoutine = async () => {
+      setLoading(true);
+      if (!currentUser) {
+        setLoading(false);
+        return;
+      }
+      try {
+        let routines: Routine[] = [];
+
+        // Try to load by Supabase user ID first
+        if (currentUser.supabaseUserId) {
+          routines = await db.routines
+            .where('userId')
+            .equals(currentUser.supabaseUserId)
+            .toArray();
+        }
+
+        // If no routines found, try loading by local user ID (for local-only users)
+        if (routines.length === 0 && currentUser.id) {
+          routines = await db.routines
+            .where('localUserId')
+            .equals(currentUser.id)
+            .toArray();
+        }
+
+        if (routines.length > 0) {
+          // Get the most recently used routine
+          const recent = routines.sort((a, b) => 
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          )[0];
+          setActiveRoutine(recent);
+        }
+      } catch (err) {
+        console.error('Failed to load routine:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadActiveRoutine();
+  }, [currentUser?.id, currentUser?.supabaseUserId]);
+
+  useEffect(() => {
     // Don't auto-load exercises - let user build their workout from scratch
-    setLoading(false);
     setExercises([]);
-  }, [todayType, currentUser?.id]);
+  }, [todayType]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -64,8 +107,8 @@ const Index = () => {
         {activeTab === 'today' && (
           <>
             <div className="animate-slide-up">
-              <h1 className="text-2xl font-bold mb-2">{getGreeting()}</h1>
-              <p className="text-muted-foreground mb-6">Today's focus: <span className="text-primary font-medium">{todayType} Day</span></p>
+              <h1 className="text-2xl font-bold mb-2">{getGreeting()}, {currentUser?.name}</h1>
+              <p className="text-muted-foreground mb-6">{activeRoutine?.name || ''}</p>
             </div>
 
             <div className="space-y-3">
@@ -86,7 +129,10 @@ const Index = () => {
                 </div>
               ))}
               {exercises.length === 0 && (
-                <div className="glass-card p-8 text-center space-y-4 animate-slide-up">
+                <button
+                  onClick={() => setActiveTab('routines')}
+                  className="glass-card p-8 text-center space-y-4 animate-slide-up w-full cursor-pointer hover:border-primary/30 transition-colors"
+                >
                   <div className="w-16 h-16 mx-auto rounded-full gradient-red flex items-center justify-center glow-red">
                     <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -95,16 +141,13 @@ const Index = () => {
                   <div>
                     <h3 className="text-lg font-semibold mb-1">No exercises yet</h3>
                     <p className="text-muted-foreground text-sm mb-4">
-                      Build your {todayType} workout by adding exercises from the Library
+                      Pick a routine to get started
                     </p>
-                    <button
-                      onClick={() => setActiveTab('library')}
-                      className="text-primary hover:underline font-medium"
-                    >
-                      Go to Library →
-                    </button>
+                    <span className="text-primary hover:underline font-medium">
+                      Browse routines →
+                    </span>
                   </div>
-                </div>
+                </button>
               )}
             </div>
           </>

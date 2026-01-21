@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { createRoutine, updateRoutine } from '@/lib/routineCache';
+import { createRoutineOptimistic, updateRoutineOptimistic } from '@/lib/routineCache';
 import { type Routine, type RoutineExercise } from '@/lib/db';
 import { db, Exercise, MUSCLE_GROUPS, EQUIPMENT_TYPES } from '@/lib/db';
 import { Card, CardContent } from '@/components/ui/card';
@@ -107,7 +107,7 @@ const RoutineBuilder = ({
         setExercises(reordered);
     };
 
-    const handleUpdateExercise = (index: number, field: keyof RoutineExercise, value: any) => {
+    const handleUpdateExercise = (index: number, field: keyof RoutineExercise, value: RoutineExercise[keyof RoutineExercise]) => {
         const updated = [...exercises];
         updated[index] = { ...updated[index], [field]: value };
         setExercises(updated);
@@ -126,19 +126,19 @@ const RoutineBuilder = ({
 
         setSaving(true);
         try {
-            const routineData: Omit<Routine, 'id' | 'created_at' | 'updated_at'> = {
-                user_id: supabaseUserId,
-                local_user_id: localUserId,
+            const routineData: Omit<Routine, 'id' | 'createdAt' | 'updatedAt'> = {
+                userId: supabaseUserId,
+                localUserId: localUserId,
                 name: name.trim(),
                 description: '',
                 exercises,
             };
 
             if (routine?.id) {
-                await updateRoutine({ ...routineData, id: routine.id });
+                await updateRoutineOptimistic({ ...routineData, id: routine.id, createdAt: routine.createdAt, updatedAt: routine.updatedAt });
                 toast.success('Routine updated');
             } else {
-                await createRoutine(routineData);
+                await createRoutineOptimistic(routineData, supabaseUserId, localUserId);
                 toast.success('Routine created');
             }
 
@@ -152,51 +152,42 @@ const RoutineBuilder = ({
     };
 
     return (
-        <div className="min-h-[100dvh] flex flex-col gap-6 animate-slide-up">
+        <div className="min-h-[100dvh] flex flex-col overflow-hidden animate-slide-up">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-shrink-0 px-4 py-3 border-b border-white/10">
                 <div className="flex items-center gap-3">
                     <Button variant="ghost" size="icon" onClick={onCancel} aria-label="Back">
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
-                    <div>
-                        <h1 className="text-2xl font-bold">{routine ? 'Edit Routine' : 'Create New Routine'}</h1>
-                        <p className="text-xs text-muted-foreground">Build your routine by adding exercises below</p>
-                    </div>
+                    <h1 className="text-lg font-semibold">{routine ? 'Edit' : 'Create'} Routine</h1>
                 </div>
-                <div className="flex gap-2">
-                    <Button
-                        variant="outline"
-                        onClick={onCancel}
-                        className="border-white/10"
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={handleSave}
-                        disabled={saving}
-                        className="gradient-red glow-red border-none"
-                    >
-                        <Save className="w-4 h-4 mr-2" />
-                        {saving ? 'Saving...' : 'Save Routine'}
-                    </Button>
-                </div>
+                <Button
+                    onClick={handleSave}
+                    disabled={saving}
+                    size="icon"
+                    className="gradient-red glow-red border-none"
+                    aria-label="Save Routine"
+                >
+                    <Save className="w-5 h-5" />
+                </Button>
             </div>
 
-            {/* Routine Name */}
-            <div className="space-y-2">
-                <Label htmlFor="routine-name">Routine Name</Label>
-                <Input
-                    id="routine-name"
-                    placeholder="e.g., Push Day, Full Body Workout"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="bg-white/5 border-white/10"
-                />
-            </div>
+            {/* Scrollable content */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-6 space-y-6">
+                {/* Routine Name */}
+                <div className="space-y-2">
+                    <Label htmlFor="routine-name">Routine Name</Label>
+                    <Input
+                        id="routine-name"
+                        placeholder="e.g., Push Day, Full Body Workout"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="bg-white/5 border-white/10"
+                    />
+                </div>
 
-            {/* Builder layout: left = selected exercises, right = global exercise list */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Builder layout: left = selected exercises, right = global exercise list */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Selected exercises */}
                 <div className="space-y-3">
                     <h2 className="text-lg font-semibold">Selected Exercises</h2>
@@ -283,7 +274,7 @@ const RoutineBuilder = ({
                         </Select>
                     </div>
 
-                    <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="space-y-2">
                         {loading ? (
                             <div className="flex items-center justify-center py-12">
                                 <div className="w-8 h-8 gradient-red rounded-full animate-pulse-glow" />
@@ -326,6 +317,7 @@ const RoutineBuilder = ({
                         )}
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );

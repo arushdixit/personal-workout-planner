@@ -94,6 +94,18 @@ export interface Routine {
     syncedAt?: string; // Last successful sync timestamp
 }
 
+export interface SyncOperation {
+    id?: number;
+    type: 'create' | 'update' | 'delete';
+    entityType: 'routine' | 'workout' | 'exercise';
+    entityId: string;
+    data: any;
+    attempts: number;
+    lastAttempt?: string;
+    status: 'pending' | 'retrying' | 'failed';
+    createdAt: string;
+}
+
 // --- Muscle Groups (matching body highlighter slugs) ---
 export const MUSCLE_GROUPS = [
     'abs',
@@ -135,13 +147,15 @@ const db = new Dexie('ProLiftsDB') as Dexie & {
     exercises: EntityTable<Exercise, 'id'>;
     workouts: EntityTable<Workout, 'id'>;
     routines: EntityTable<Routine, 'id'>;
+    syncQueue: EntityTable<SyncOperation, 'id'>;
 };
 
-db.version(7).stores({
+db.version(8).stores({
     users: '++id, name, supabaseUserId',
     exercises: '++id, name, *primaryMuscles, equipment, inLibrary, source, category, *aliases',
     workouts: '++id, userId, date, splitType',
     routines: 'id, userId, localUserId, name',
+    syncQueue: '++id, type, entityType, entityId, status, createdAt',
 });
 
 export { db };

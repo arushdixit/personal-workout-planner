@@ -479,9 +479,19 @@ const Library = () => {
                 exercise={viewingExercise || ({} as Exercise)}
                 open={!!viewingExercise}
                 onOpenChange={(open) => {
-                    if (!open) setViewingExercise(undefined);
+                    if (!open) {
+                        // Blur any focused element before closing
+                        if (document.activeElement) {
+                            (document.activeElement as HTMLElement).blur();
+                        }
+                        setViewingExercise(undefined);
+                    }
                 }}
                 onEdit={viewingExercise?.source === 'exercemus' && view === 'my' ? () => {
+                    // Blur focus before opening wizard to prevent aria-hidden conflicts
+                    if (document.activeElement) {
+                        (document.activeElement as HTMLElement).blur();
+                    }
                     setEditingExercise(viewingExercise);
                     setShowWizard(true);
                 } : undefined}
