@@ -90,15 +90,6 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
                 )}
             </div>
 
-            {/* Exercise Metadata */}
-            <div className="flex-shrink-0 px-6 pt-6 pb-4">
-                <p className="text-sm text-muted-foreground">
-                    {exercise.category && `${exercise.category.charAt(0).toUpperCase() + exercise.category.slice(1)} • `}
-                    {exercise.equipment}
-                    {exercise.difficulty && ` • ${exercise.difficulty}`}
-                </p>
-            </div>
-
             {/* Tabs */}
             <div className="flex-shrink-0 flex gap-2 px-6 border-b border-white/5">
                 <button
