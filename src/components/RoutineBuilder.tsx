@@ -1,25 +1,20 @@
-import { useState, useEffect } from 'react';
-import { Plus, X, ChevronUp, ChevronDown, Save } from 'lucide-react';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-} from '@/components/ui/dialog';
+import { useState, useEffect, useMemo } from 'react';
+import { Plus, X, ChevronUp, ChevronDown, Save, ArrowLeft, Search, Filter, Dumbbell, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { createRoutine, updateRoutine, type Routine, type RoutineExercise } from '@/lib/supabaseClient';
-import ExerciseSelector from '@/components/ExerciseSelector';
+import { createRoutine, updateRoutine } from '@/lib/routineCache';
+import { type Routine, type RoutineExercise } from '@/lib/db';
+import { db, Exercise, MUSCLE_GROUPS, EQUIPMENT_TYPES } from '@/lib/db';
+import { Card, CardContent } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 interface RoutineBuilderProps {
     routine?: Routine;
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
+    onCancel: () => void;
     onComplete: () => void;
     supabaseUserId: string;
     localUserId: number;
@@ -27,29 +22,53 @@ interface RoutineBuilderProps {
 
 const RoutineBuilder = ({
     routine,
-    open,
-    onOpenChange,
+    onCancel,
     onComplete,
     supabaseUserId,
     localUserId,
 }: RoutineBuilderProps) => {
     const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
     const [exercises, setExercises] = useState<RoutineExercise[]>([]);
-    const [showExerciseSelector, setShowExerciseSelector] = useState(false);
     const [saving, setSaving] = useState(false);
+
+    // Inline global exercise list state
+    const [allExercises, setAllExercises] = useState<Exercise[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState('');
+    const [filterMuscle, setFilterMuscle] = useState<string>('all');
+    const [filterEquipment, setFilterEquipment] = useState<string>('all');
 
     useEffect(() => {
         if (routine) {
             setName(routine.name);
-            setDescription(routine.description || '');
             setExercises(routine.exercises);
         } else {
             setName('');
-            setDescription('');
             setExercises([]);
         }
-    }, [routine, open]);
+    }, [routine]);
+
+    useEffect(() => {
+        const load = async () => {
+            setLoading(true);
+            try {
+                const all = await db.exercises.toArray();
+                setAllExercises(all);
+            } finally {
+                setLoading(false);
+            }
+        };
+        load();
+    }, []);
+
+    const filteredGlobalExercises = useMemo(() => {
+        return allExercises.filter(ex => {
+            const matchesSearch = ex.name.toLowerCase().includes(search.toLowerCase());
+            const matchesMuscle = filterMuscle === 'all' || ex.primaryMuscles.includes(filterMuscle);
+            const matchesEquipment = filterEquipment === 'all' || ex.equipment === filterEquipment;
+            return matchesSearch && matchesMuscle && matchesEquipment;
+        });
+    }, [allExercises, search, filterMuscle, filterEquipment]);
 
     const handleAddExercise = (exerciseId: number, exerciseName: string) => {
         const newExercise: RoutineExercise = {
@@ -62,7 +81,6 @@ const RoutineBuilder = ({
             notes: '',
         };
         setExercises([...exercises, newExercise]);
-        setShowExerciseSelector(false);
     };
 
     const handleRemoveExercise = (index: number) => {
@@ -112,7 +130,7 @@ const RoutineBuilder = ({
                 user_id: supabaseUserId,
                 local_user_id: localUserId,
                 name: name.trim(),
-                description: description.trim(),
+                description: '',
                 exercises,
             };
 
@@ -134,187 +152,182 @@ const RoutineBuilder = ({
     };
 
     return (
-        <>
-            <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="glass border-white/10 max-w-2xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
-                        <DialogTitle>{routine ? 'Edit Routine' : 'Create New Routine'}</DialogTitle>
-                    </DialogHeader>
+        <div className="min-h-[100dvh] flex flex-col gap-6 animate-slide-up">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <Button variant="ghost" size="icon" onClick={onCancel} aria-label="Back">
+                        <ArrowLeft className="w-5 h-5" />
+                    </Button>
+                    <div>
+                        <h1 className="text-2xl font-bold">{routine ? 'Edit Routine' : 'Create New Routine'}</h1>
+                        <p className="text-xs text-muted-foreground">Build your routine by adding exercises below</p>
+                    </div>
+                </div>
+                <div className="flex gap-2">
+                    <Button
+                        variant="outline"
+                        onClick={onCancel}
+                        className="border-white/10"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="gradient-red glow-red border-none"
+                    >
+                        <Save className="w-4 h-4 mr-2" />
+                        {saving ? 'Saving...' : 'Save Routine'}
+                    </Button>
+                </div>
+            </div>
 
-                    <div className="space-y-4">
-                        {/* Routine Name */}
-                        <div className="space-y-2">
-                            <Label htmlFor="routine-name">Routine Name</Label>
-                            <Input
-                                id="routine-name"
-                                placeholder="e.g., Push Day, Full Body Workout"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="bg-white/5 border-white/10"
-                            />
+            {/* Routine Name */}
+            <div className="space-y-2">
+                <Label htmlFor="routine-name">Routine Name</Label>
+                <Input
+                    id="routine-name"
+                    placeholder="e.g., Push Day, Full Body Workout"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="bg-white/5 border-white/10"
+                />
+            </div>
+
+            {/* Builder layout: left = selected exercises, right = global exercise list */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Selected exercises */}
+                <div className="space-y-3">
+                    <h2 className="text-lg font-semibold">Selected Exercises</h2>
+                    {exercises.length === 0 ? (
+                        <div className="text-center py-8 text-muted-foreground border border-dashed border-white/10 rounded-lg">
+                            <p className="text-sm">No exercises added yet</p>
+                            <p className="text-xs mt-1">Use the list on the right to add exercises</p>
                         </div>
-
-                        {/* Description */}
-                        <div className="space-y-2">
-                            <Label htmlFor="routine-description">Description (Optional)</Label>
-                            <Textarea
-                                id="routine-description"
-                                placeholder="Add notes about this routine..."
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                className="bg-white/5 border-white/10 min-h-[80px]"
-                            />
-                        </div>
-
-                        {/* Exercises */}
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <Label>Exercises</Label>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setShowExerciseSelector(true)}
-                                    className="border-white/10"
-                                >
-                                    <Plus className="w-4 h-4 mr-2" /> Add Exercise
-                                </Button>
-                            </div>
-
-                            {exercises.length === 0 ? (
-                                <div className="text-center py-8 text-muted-foreground border border-dashed border-white/10 rounded-lg">
-                                    <p className="text-sm">No exercises added yet</p>
-                                    <p className="text-xs mt-1">Click "Add Exercise" to get started</p>
-                                </div>
-                            ) : (
-                                <div className="space-y-3">
-                                    {exercises.map((exercise, index) => (
-                                        <div
-                                            key={index}
-                                            className="glass-card p-3 space-y-3"
-                                        >
-                                            {/* Exercise Header */}
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex-1">
-                                                    <h4 className="font-medium">{exercise.exerciseName}</h4>
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => handleMoveExercise(index, 'up')}
-                                                        disabled={index === 0}
-                                                        className="h-7 w-7"
-                                                    >
-                                                        <ChevronUp className="w-4 h-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => handleMoveExercise(index, 'down')}
-                                                        disabled={index === exercises.length - 1}
-                                                        className="h-7 w-7"
-                                                    >
-                                                        <ChevronDown className="w-4 h-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => handleRemoveExercise(index)}
-                                                        className="h-7 w-7 text-red-500 hover:text-red-400"
-                                                    >
-                                                        <X className="w-4 h-4" />
-                                                    </Button>
-                                                </div>
-                                            </div>
-
-                                            {/* Exercise Configuration */}
-                                            <div className="grid grid-cols-3 gap-2">
-                                                <div className="space-y-1">
-                                                    <Label className="text-xs">Sets</Label>
-                                                    <Input
-                                                        type="number"
-                                                        min="1"
-                                                        max="10"
-                                                        value={exercise.sets}
-                                                        onChange={(e) =>
-                                                            handleUpdateExercise(index, 'sets', parseInt(e.target.value) || 1)
-                                                        }
-                                                        className="bg-white/5 border-white/10 h-8"
-                                                    />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <Label className="text-xs">Reps</Label>
-                                                    <Input
-                                                        placeholder="8-12"
-                                                        value={exercise.reps}
-                                                        onChange={(e) =>
-                                                            handleUpdateExercise(index, 'reps', e.target.value)
-                                                        }
-                                                        className="bg-white/5 border-white/10 h-8"
-                                                    />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <Label className="text-xs">Rest (sec)</Label>
-                                                    <Input
-                                                        type="number"
-                                                        min="0"
-                                                        max="300"
-                                                        step="15"
-                                                        value={exercise.restSeconds}
-                                                        onChange={(e) =>
-                                                            handleUpdateExercise(index, 'restSeconds', parseInt(e.target.value) || 0)
-                                                        }
-                                                        className="bg-white/5 border-white/10 h-8"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Notes */}
-                                            <div className="space-y-1">
-                                                <Label className="text-xs">Notes (Optional)</Label>
-                                                <Input
-                                                    placeholder="Add notes for this exercise..."
-                                                    value={exercise.notes || ''}
-                                                    onChange={(e) =>
-                                                        handleUpdateExercise(index, 'notes', e.target.value)
-                                                    }
-                                                    className="bg-white/5 border-white/10 h-8 text-xs"
-                                                />
-                                            </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {exercises.map((exercise, index) => (
+                                <div key={index} className="glass-card p-3 space-y-3">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex-1">
+                                            <h4 className="font-medium">{exercise.exerciseName}</h4>
                                         </div>
-                                    ))}
+                                        <div className="flex gap-1">
+                                            <Button variant="ghost" size="icon" onClick={() => handleMoveExercise(index, 'up')} disabled={index === 0} className="h-7 w-7">
+                                                <ChevronUp className="w-4 h-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => handleMoveExercise(index, 'down')} disabled={index === exercises.length - 1} className="h-7 w-7">
+                                                <ChevronDown className="w-4 h-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => handleRemoveExercise(index)} className="h-7 w-7 text-red-500 hover:text-red-400">
+                                                <X className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <div className="space-y-1">
+                                            <Label className="text-xs">Sets</Label>
+                                            <Input type="number" min="1" max="10" value={exercise.sets} onChange={(e) => handleUpdateExercise(index, 'sets', parseInt(e.target.value) || 1)} className="bg-white/5 border-white/10 h-8" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <Label className="text-xs">Reps</Label>
+                                            <Input placeholder="8-12" value={exercise.reps} onChange={(e) => handleUpdateExercise(index, 'reps', e.target.value)} className="bg-white/5 border-white/10 h-8" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <Label className="text-xs">Rest (sec)</Label>
+                                            <Input type="number" min="0" max="300" step="15" value={exercise.restSeconds} onChange={(e) => handleUpdateExercise(index, 'restSeconds', parseInt(e.target.value) || 0)} className="bg-white/5 border-white/10 h-8" />
+                                        </div>
+                                    </div>
                                 </div>
-                            )}
+                            ))}
                         </div>
+                    )}
+                </div>
+
+                {/* Global exercise list */}
+                <div className="space-y-3">
+                    <h2 className="text-lg font-semibold">Global Exercises</h2>
+
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input placeholder="Search exercises..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 bg-white/5 border-white/10" />
                     </div>
 
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => onOpenChange(false)}
-                            className="border-white/10"
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onClick={handleSave}
-                            disabled={saving}
-                            className="gradient-red glow-red border-none"
-                        >
-                            <Save className="w-4 h-4 mr-2" />
-                            {saving ? 'Saving...' : 'Save Routine'}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                    <div className="flex gap-2">
+                        <Select value={filterMuscle} onValueChange={setFilterMuscle}>
+                            <SelectTrigger className="bg-white/5 border-white/10 flex-1">
+                                <Filter className="w-4 h-4 mr-2" />
+                                <SelectValue placeholder="Muscle" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Muscles</SelectItem>
+                                {MUSCLE_GROUPS.map(m => (
+                                    <SelectItem key={m} value={m} className="capitalize">{m.replace(/[_-]/g, ' ')}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
 
-            {/* Exercise Selector */}
-            <ExerciseSelector
-                open={showExerciseSelector}
-                onOpenChange={setShowExerciseSelector}
-                onSelect={handleAddExercise}
-            />
-        </>
+                        <Select value={filterEquipment} onValueChange={setFilterEquipment}>
+                            <SelectTrigger className="bg-white/5 border-white/10 flex-1">
+                                <Dumbbell className="w-4 h-4 mr-2" />
+                                <SelectValue placeholder="Equipment" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Equipment</SelectItem>
+                                {EQUIPMENT_TYPES.map(eq => (
+                                    <SelectItem key={eq} value={eq}>{eq}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                        {loading ? (
+                            <div className="flex items-center justify-center py-12">
+                                <div className="w-8 h-8 gradient-red rounded-full animate-pulse-glow" />
+                            </div>
+                        ) : (
+                            filteredGlobalExercises.map((ex) => (
+                                <Card key={ex.id} className="glass border-white/10 hover:border-primary/50 transition-all duration-300">
+                                    <CardContent className="p-3 flex items-start justify-between">
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h4 className="font-medium">{ex.name}</h4>
+                                                {ex.difficulty && (
+                                                    <Badge
+                                                        variant="outline"
+                                                        className={cn(
+                                                            "px-1.5 py-0 h-4 text-[8px] font-black uppercase tracking-tighter border-0",
+                                                            ex.difficulty === 'Beginner' && "bg-emerald-500/10 text-emerald-400",
+                                                            ex.difficulty === 'Intermediate' && "bg-blue-500/10 text-blue-400",
+                                                            ex.difficulty === 'Advanced' && "bg-orange-500/10 text-orange-400"
+                                                        )}
+                                                    >
+                                                        {ex.difficulty}
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-wrap gap-1">
+                                                {Array.from(new Set(ex.primaryMuscles)).slice(0, 3).map(m => (
+                                                    <span key={m} className="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-xs capitalize">
+                                                        {m.replace(/[_-]/g, ' ')}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <Button variant="ghost" size="sm" onClick={() => handleAddExercise(ex.id!, ex.name)}>
+                                            <PlusCircle className="w-4 h-4 mr-1" /> Add
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
 

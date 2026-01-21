@@ -7,15 +7,12 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
 import { UserProvider, useUser } from "./context/UserContext";
-import Onboarding from "./components/Onboarding";
-import ProfilePicker from "./components/ProfilePicker";
-import { useState } from "react";
+import AuthScreen from "./components/auth/AuthScreen";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const { currentUser, allUsers, loading, switchUser, refreshUsers } = useUser();
-  const [showOnboarding, setShowOnboarding] = useState(false);
+  const { currentUser, allUsers, loading, switchUser, refreshUsers, isAuthenticated } = useUser();
 
   if (loading) {
     return (
@@ -25,45 +22,28 @@ const AppContent = () => {
     );
   }
 
-  if (showOnboarding || allUsers.length === 0) {
-    return (
-      <Onboarding
-        onComplete={async () => {
-          setShowOnboarding(false);
-          await refreshUsers();
-        }}
-      />
-    );
-  }
-
-  if (!currentUser) {
-    return (
-      <ProfilePicker
-        users={allUsers}
-        onSelect={switchUser}
-        onNew={() => setShowOnboarding(true)}
-      />
-    );
+  if (!isAuthenticated || !currentUser) {
+    return <AuthScreen />;
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <UserProvider>
-        <Toaster />
-        <Sonner />
-        <AppContent />
-      </UserProvider>
+      <BrowserRouter>
+        <UserProvider>
+          <Toaster />
+          <Sonner />
+          <AppContent />
+        </UserProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

@@ -37,22 +37,9 @@ const Index = () => {
   const todayType = splitDays[todayIndex];
 
   useEffect(() => {
-    const loadExercises = async () => {
-      setLoading(true);
-      try {
-        const all = await db.exercises.toArray();
-        const targetMuscles = MUSCLE_MAPPING[todayType] || [];
-        const filtered = all.filter(ex =>
-          ex.primaryMuscles.some(m => targetMuscles.includes(m))
-        );
-        setExercises(filtered.slice(0, 6)); // Limit to 6 for today
-      } catch (err) {
-        console.error('Failed to load exercises:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadExercises();
+    // Don't auto-load exercises - let user build their workout from scratch
+    setLoading(false);
+    setExercises([]);
   }, [todayType, currentUser?.id]);
 
   const getGreeting = () => {
@@ -76,16 +63,13 @@ const Index = () => {
       <main className="flex-1 overflow-y-auto custom-scrollbar px-4 pt-6 pb-32 space-y-6">
         {activeTab === 'today' && (
           <>
-            <WorkoutHero
-              greeting={getGreeting()}
-              workoutName={`${todayType} Day`}
-              exercises={exercises.length}
-              estimatedTime={exercises.length * 8}
-              onStart={() => console.log('Start workout')}
-            />
+            <div className="animate-slide-up">
+              <h1 className="text-2xl font-bold mb-2">{getGreeting()}</h1>
+              <p className="text-muted-foreground mb-6">Today's focus: <span className="text-primary font-medium">{todayType} Day</span></p>
+            </div>
 
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold animate-slide-up">Today's Exercises</h2>
+              <h2 className="text-lg font-semibold">Today's Exercises</h2>
               {exercises.map((ex, index) => (
                 <div
                   key={ex.id}
@@ -102,9 +86,25 @@ const Index = () => {
                 </div>
               ))}
               {exercises.length === 0 && (
-                <p className="text-center py-10 text-muted-foreground italic">
-                  No exercises found for {todayType}. Complete onboarding to seed the library!
-                </p>
+                <div className="glass-card p-8 text-center space-y-4 animate-slide-up">
+                  <div className="w-16 h-16 mx-auto rounded-full gradient-red flex items-center justify-center glow-red">
+                    <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1">No exercises yet</h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      Build your {todayType} workout by adding exercises from the Library
+                    </p>
+                    <button
+                      onClick={() => setActiveTab('library')}
+                      className="text-primary hover:underline font-medium"
+                    >
+                      Go to Library →
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           </>

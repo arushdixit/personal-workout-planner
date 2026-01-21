@@ -29,7 +29,7 @@ const Library = () => {
     const [search, setSearch] = useState('');
     const [filterMuscle, setFilterMuscle] = useState<string>('all');
     const [filterEquipment, setFilterEquipment] = useState<string>('all');
-    const [view, setView] = useState<'my' | 'global'>('my');
+    const [view, setView] = useState<'my' | 'global'>('global');
     const [showWizard, setShowWizard] = useState(false);
     const [editingExercise, setEditingExercise] = useState<Exercise | undefined>();
     const [viewingExercise, setViewingExercise] = useState<Exercise | undefined>();
@@ -57,8 +57,10 @@ const Library = () => {
 
     const filteredExercises = useMemo(() => {
         return exercises.filter(ex => {
+            // When searching in 'my' view, show all exercises (both my library + global)
+            // Otherwise, filter by view
             const matchesView = view === 'my'
-                ? (ex.source !== 'exercemus' || ex.inLibrary)
+                ? (search.trim() !== '' ? true : (ex.source !== 'exercemus' || ex.inLibrary))
                 : (ex.source === 'exercemus');
 
             const matchesSearch = ex.name.toLowerCase().includes(search.toLowerCase());
@@ -314,57 +316,65 @@ const Library = () => {
                                         </p>
                                     </div>
                                     <div className="flex gap-1" onClick={e => e.stopPropagation()}>
-                                        <div className="flex gap-1">
-                                            {ex.source === 'exercemus' ? (
-                                                <>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => handleEdit(ex)}
-                                                        aria-label="Edit Note / Video"
-                                                        title="Edit Note / Video"
-                                                    >
-                                                        <Edit className="w-4 h-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => handleRemoveFromMy(ex)}
-                                                        className="text-muted-foreground hover:text-red-400"
-                                                        aria-label="Remove from My Exercises"
-                                                        title="Remove from My Exercises"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={e => {
-                                                            e.stopPropagation();
-                                                            handleEdit(ex);
-                                                        }}
-                                                        aria-label="Edit Exercise"
-                                                    >
-                                                        <Edit className="w-4 h-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={e => {
-                                                            e.stopPropagation();
-                                                            setDeleteTarget(ex);
-                                                        }}
-                                                        className="text-red-500 hover:text-red-400"
-                                                        aria-label="Delete Exercise"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
-                                                </>
-                                            )}
-                                        </div>
+                                        {ex.source === 'exercemus' && !ex.inLibrary && search.trim() !== '' ? (
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handleAddToMy(ex)}
+                                                className={cn(ex.inLibrary && "text-green-500")}
+                                                aria-label="Add to My Exercises"
+                                            >
+                                                <PlusCircle className="w-4 h-4" />
+                                            </Button>
+                                        ) : ex.source === 'exercemus' ? (
+                                            <div className="flex gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleEdit(ex)}
+                                                    aria-label="Edit Note / Video"
+                                                    title="Edit Note / Video"
+                                                >
+                                                    <Edit className="w-4 h-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleRemoveFromMy(ex)}
+                                                    className="text-muted-foreground hover:text-red-400"
+                                                    aria-label="Remove from My Exercises"
+                                                    title="Remove from My Exercises"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <div className="flex gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={e => {
+                                                        e.stopPropagation();
+                                                        handleEdit(ex);
+                                                    }}
+                                                    aria-label="Edit Exercise"
+                                                >
+                                                    <Edit className="w-4 h-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={e => {
+                                                        e.stopPropagation();
+                                                        setDeleteTarget(ex);
+                                                    }}
+                                                    className="text-red-500 hover:text-red-400"
+                                                    aria-label="Delete Exercise"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </CardContent>

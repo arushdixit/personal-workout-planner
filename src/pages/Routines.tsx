@@ -18,9 +18,10 @@ import {
     fetchRoutines,
     deleteRoutine,
     duplicateRoutine,
-    getSupabaseUserId,
-    type Routine
-} from '@/lib/supabaseClient';
+    refreshRoutines
+} from '@/lib/routineCache';
+import { getSupabaseUserId } from '@/lib/supabaseClient';
+import type { Routine } from '@/lib/db';
 import RoutineBuilder from '@/components/RoutineBuilder';
 import { cn } from '@/lib/utils';
 
@@ -92,6 +93,11 @@ const Routines = () => {
         loadRoutines();
     };
 
+    const handleBuilderCancel = () => {
+        setShowBuilder(false);
+        setEditingRoutine(undefined);
+    };
+
     const calculateEstimatedTime = (routine: Routine): number => {
         // Estimate: (sets * 30 seconds per set) + rest time
         return routine.exercises.reduce((total, ex) => {
@@ -110,6 +116,15 @@ const Routines = () => {
     }
 
     return (
+        showBuilder ? (
+            <RoutineBuilder
+                routine={editingRoutine}
+                onCancel={handleBuilderCancel}
+                onComplete={handleBuilderComplete}
+                supabaseUserId={supabaseUserId}
+                localUserId={currentUser?.id || 0}
+            />
+        ) : (
         <div className="space-y-6 animate-slide-up pb-20">
             {/* Header */}
             <div className="flex items-center justify-between">
@@ -135,10 +150,7 @@ const Routines = () => {
                     <Dumbbell className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p className="text-lg font-medium mb-2">No routines yet</p>
                     <p className="text-sm mb-4">Create your first workout routine to get started!</p>
-                    <Button
-                        onClick={() => setShowBuilder(true)}
-                        className="gradient-red glow-red border-none"
-                    >
+                    <Button onClick={() => setShowBuilder(true)} className="gradient-red glow-red border-none">
                         <Plus className="w-4 h-4 mr-2" /> Create Your First Routine
                     </Button>
                 </div>
@@ -156,9 +168,7 @@ const Routines = () => {
                                     <div className="flex-1">
                                         <h3 className="font-semibold text-lg mb-1">{routine.name}</h3>
                                         {routine.description && (
-                                            <p className="text-sm text-muted-foreground mb-3">
-                                                {routine.description}
-                                            </p>
+                                            <p className="text-sm text-muted-foreground mb-3">{routine.description}</p>
                                         )}
                                         <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
                                             <div className="flex items-center gap-1">
@@ -172,29 +182,13 @@ const Routines = () => {
                                         </div>
                                     </div>
                                     <div className="flex gap-1" onClick={e => e.stopPropagation()}>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleEdit(routine)}
-                                            aria-label="Edit Routine"
-                                        >
+                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(routine)} aria-label="Edit Routine">
                                             <Edit className="w-4 h-4" />
                                         </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleDuplicate(routine)}
-                                            aria-label="Duplicate Routine"
-                                        >
+                                        <Button variant="ghost" size="icon" onClick={() => handleDuplicate(routine)} aria-label="Duplicate Routine">
                                             <Copy className="w-4 h-4" />
                                         </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => setDeleteTarget(routine)}
-                                            className="text-red-500 hover:text-red-400"
-                                            aria-label="Delete Routine"
-                                        >
+                                        <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(routine)} className="text-red-500 hover:text-red-400" aria-label="Delete Routine">
                                             <Trash2 className="w-4 h-4" />
                                         </Button>
                                     </div>
@@ -204,19 +198,6 @@ const Routines = () => {
                     ))}
                 </div>
             )}
-
-            {/* Routine Builder Modal */}
-            <RoutineBuilder
-                routine={editingRoutine}
-                open={showBuilder}
-                onOpenChange={(open) => {
-                    setShowBuilder(open);
-                    if (!open) setEditingRoutine(undefined);
-                }}
-                onComplete={handleBuilderComplete}
-                supabaseUserId={supabaseUserId}
-                localUserId={currentUser?.id || 0}
-            />
 
             {/* Delete Confirmation */}
             <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
@@ -229,16 +210,12 @@ const Routines = () => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel className="glass">Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={handleDelete}
-                            className="bg-red-600 hover:bg-red-700"
-                        >
-                            Delete
-                        </AlertDialogAction>
+                        <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
         </div>
+        )
     );
 };
 

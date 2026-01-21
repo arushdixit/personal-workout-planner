@@ -35,40 +35,49 @@ export interface Routine {
 // --- Authentication ---
 
 /**
- * Get or create an anonymous user for the current local profile
+ * Sign Up with Email and Password
  */
-export async function getOrCreateAnonUser(localUserId: number): Promise<string> {
-    const storageKey = `supabase_anon_user_${localUserId}`;
-
-    // Check if we already have a user ID for this profile
-    const existingUserId = localStorage.getItem(storageKey);
-    if (existingUserId) {
-        return existingUserId;
-    }
-
-    // Sign in anonymously
-    const { data, error } = await supabase.auth.signInAnonymously();
-
-    if (error) {
-        console.error('Failed to sign in anonymously:', error);
-        throw error;
-    }
-
-    if (!data.user) {
-        throw new Error('No user returned from anonymous sign in');
-    }
-
-    // Store the user ID for this local profile
-    localStorage.setItem(storageKey, data.user.id);
-
-    return data.user.id;
+export async function signUp(email: string, password: string): Promise<{ user: any, error: any }> {
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+    });
+    return { user: data.user, error };
 }
 
 /**
- * Get the current Supabase user ID for a local profile
+ * Sign In with Email and Password
  */
-export async function getSupabaseUserId(localUserId: number): Promise<string> {
-    return await getOrCreateAnonUser(localUserId);
+export async function signIn(email: string, password: string): Promise<{ user: any, error: any }> {
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+    });
+    return { user: data.user, error };
+}
+
+/**
+ * Sign Out
+ */
+export async function signOut(): Promise<{ error: any }> {
+    const { error } = await supabase.auth.signOut();
+    return { error };
+}
+
+/**
+ * Get the current Supabase User
+ */
+export async function getCurrentUser(): Promise<any> {
+    const { data } = await supabase.auth.getUser();
+    return data.user;
+}
+
+/**
+ * Get the current Supabase User ID (or null if not logged in)
+ */
+export async function getSupabaseUserId(): Promise<string | null> {
+    const user = await getCurrentUser();
+    return user ? user.id : null;
 }
 
 // --- Routine CRUD Operations ---

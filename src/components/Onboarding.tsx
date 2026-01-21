@@ -10,9 +10,10 @@ import { importExercemusData } from '@/lib/exercemus';
 
 interface OnboardingProps {
     onComplete: () => void;
+    supabaseUserId?: string;
 }
 
-const Onboarding = ({ onComplete }: OnboardingProps) => {
+const Onboarding = ({ onComplete, supabaseUserId }: OnboardingProps) => {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -30,8 +31,9 @@ const Onboarding = ({ onComplete }: OnboardingProps) => {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            const newUser: Omit<UserProfile, 'id'> = {
+        const newUser: Omit<UserProfile, 'id'> = {
                 ...formData,
+                supabaseUserId,
                 onboarded: true,
                 createdAt: new Date().toISOString(),
             };

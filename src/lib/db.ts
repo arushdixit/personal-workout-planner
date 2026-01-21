@@ -13,6 +13,7 @@ export interface UserProfile {
     onboarded: boolean;
     activeSplit?: 'PPL' | 'UpperLower' | 'FullBody';
     createdAt: string;
+    supabaseUserId?: string; // Linked Supabase User ID
 }
 
 export type EquipmentType = 'Barbell' | 'Dumbbell' | 'Cable' | 'Machine' | 'Bodyweight' | 'EZ Bar' | 'Kettlebell' | 'Other';
@@ -90,6 +91,7 @@ export interface Routine {
     exercises: RoutineExercise[];
     createdAt: string;
     updatedAt: string;
+    syncedAt?: string; // Last successful sync timestamp
 }
 
 // --- Muscle Groups (matching body highlighter slugs) ---
@@ -135,8 +137,8 @@ const db = new Dexie('ProLiftsDB') as Dexie & {
     routines: EntityTable<Routine, 'id'>;
 };
 
-db.version(6).stores({
-    users: '++id, name',
+db.version(7).stores({
+    users: '++id, name, supabaseUserId',
     exercises: '++id, name, *primaryMuscles, equipment, inLibrary, source, category, *aliases',
     workouts: '++id, userId, date, splitType',
     routines: 'id, userId, localUserId, name',
