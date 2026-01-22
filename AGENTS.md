@@ -56,6 +56,23 @@ Add these in Vercel project settings:
 - `public/sw.js` - Generated service worker (in dist/)
 - `src/components/iOSInstallPrompt.tsx` - Custom iOS install UI
 
+## Vercel Speed Insights
+
+```bash
+npm install @vercel/speed-insights
+```
+
+Add to `src/main.tsx`:
+```typescript
+import { injectSpeedInsights } from "@vercel/speed-insights";
+
+if (typeof window !== 'undefined') {
+  injectSpeedInsights();
+}
+```
+
+Enable in Vercel Dashboard: Project → Speed Insights → Enable
+
 ## Running Single Tests
 
 To run a specific test file:
