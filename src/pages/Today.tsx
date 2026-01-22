@@ -6,6 +6,7 @@ import WorkoutHero from '@/components/WorkoutHero';
 import WorkoutExerciseCard from '@/components/WorkoutExerciseCard';
 import RoutineSelectorModal from '@/components/RoutineSelectorModal';
 import ExerciseDetail from '@/components/ExerciseDetail';
+import ExerciseWizard from '@/components/ExerciseWizard';
 import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
 import { determineTodaysRoutine, calculateWorkoutDuration } from '@/lib/routineCycling';
@@ -28,6 +29,8 @@ const TodayPage = (props: TodayPageProps) => {
     const [showRoutineSelector, setShowRoutineSelector] = useState(false);
     const [exerciseDetails, setExerciseDetails] = useState<Record<number, Exercise>>({});
     const [viewingExercise, setViewingExercise] = useState<Exercise | null>(null);
+    const [showWizard, setShowWizard] = useState(false);
+    const [editingExercise, setEditingExercise] = useState<Exercise | undefined>();
 
     // Load today's routine on mount
     useEffect(() => {
@@ -94,6 +97,17 @@ const TodayPage = (props: TodayPageProps) => {
         setShowRoutineSelector(false);
         // This will be handled by the parent component
         // to open the routine builder
+    };
+
+    const handleWizardComplete = async () => {
+        setShowWizard(false);
+        const editedExerciseId = editingExercise?.id;
+        setEditingExercise(undefined);
+
+        if (editedExerciseId && viewingExercise?.id === editedExerciseId) {
+            const updated = await db.exercises.get(editedExerciseId);
+            if (updated) setViewingExercise(updated);
+        }
     };
 
     const getGreeting = () => {
@@ -202,8 +216,23 @@ const TodayPage = (props: TodayPageProps) => {
                     if (!open) setViewingExercise(null);
                 }}
                 onEdit={viewingExercise?.source === 'exercemus' ? () => {
-                    // Open wizard for editing
+                    if (document.activeElement) {
+                        (document.activeElement as HTMLElement).blur();
+                    }
+                    setEditingExercise(viewingExercise);
+                    setShowWizard(true);
                 } : undefined}
+            />
+
+            {/* Exercise Wizard Modal */}
+            <ExerciseWizard
+                exercise={editingExercise}
+                open={showWizard}
+                onOpenChange={(open) => {
+                    setShowWizard(open);
+                    if (!open) setEditingExercise(undefined);
+                }}
+                onComplete={handleWizardComplete}
             />
         </div>
     );
