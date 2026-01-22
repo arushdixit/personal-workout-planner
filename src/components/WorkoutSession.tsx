@@ -84,7 +84,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
             {/* Close button */}
             <button
                 onClick={() => setShowEndDialog(true)}
-                className="fixed top-4 right-4 z-50 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+                className="fixed top-4 right-4 z-50 p-2 rounded-full bg-background hover:bg-white/10 transition-colors"
             >
                 <X className="w-5 h-5" />
             </button>
@@ -95,7 +95,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                     <span>{progress.completed}/{progress.total} sets</span>
                     <span>{Math.round((progress.completed / progress.total) * 100)}%</span>
                 </div>
-                <div className="h-2 bg-black/30 rounded-full overflow-hidden">
+                <div className="h-2 bg-background/80 backdrop-blur-md rounded-full overflow-hidden">
                     <div
                         className="h-full gradient-red transition-all duration-300"
                         style={{ width: `${(progress.completed / progress.total) * 100}%` }}

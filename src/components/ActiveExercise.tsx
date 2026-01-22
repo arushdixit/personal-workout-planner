@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Play, AlertTriangle, ChevronDown } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import AnatomyDiagram from "./AnatomyDiagram";
 import SetLogger from "./SetLogger";
 import RestTimer from "./RestTimer";
@@ -40,8 +39,8 @@ const ActiveExercise = ({
 }: ActiveExerciseProps) => {
     const { currentUser } = useUser();
     const [showRest, setShowRest] = useState(false);
-    const [detailsOpen, setDetailsOpen] = useState(false);
     const gender = currentUser?.gender || 'male';
+    const [activeTab, setActiveTab] = useState<'sets' | 'tutorial' | 'muscles'>('sets');
 
     const progress = ((currentIndex + 1) / totalExercises) * 100;
     const completedSets = exercise.sets.filter((s) => s.completed).length;
@@ -64,7 +63,7 @@ const ActiveExercise = ({
             </div>
 
             {/* Header */}
-            <div className="pt-6 px-4 pb-4">
+            <div className="relative z-30 pt-14 px-4 pb-4">
                 <div className="flex items-center justify-between mb-4">
                     <Button
                         variant="ghost"
@@ -106,15 +105,98 @@ const ActiveExercise = ({
                 </div>
             )}
 
-            {/* Anatomy / Tutorial Tabs */}
+            {/* Main Content Tabs */}
             <div className="px-4 mb-6">
-                <Tabs defaultValue="anatomy" className="w-full">
-                    <TabsList className="w-full grid grid-cols-2 mb-4">
-                        <TabsTrigger value="anatomy">Anatomy</TabsTrigger>
+                <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'sets' | 'tutorial' | 'muscles')} className="w-full">
+                    <TabsList className="w-full grid grid-cols-3 mb-6">
+                        <TabsTrigger value="sets">Sets</TabsTrigger>
                         <TabsTrigger value="tutorial">Tutorial</TabsTrigger>
+                        <TabsTrigger value="muscles">Target Muscles</TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="anatomy">
+                    <TabsContent value="sets" className="mt-0 space-y-6">
+                        <SetLogger
+                            sets={exercise.sets}
+                            onSetComplete={handleSetComplete}
+                            onAddSet={onAddSet}
+                            unit={unit}
+                            onUnitChange={onUnitChange}
+                        />
+                        <div>
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
+                                How did this feel?
+                            </label>
+                            <Textarea
+                                placeholder="Add notes about form, pain, or progress..."
+                                value={personalNote || ''}
+                                onChange={(e) => onNoteChange(e.target.value)}
+                                className="min-h-[100px]"
+                            />
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="tutorial" className="mt-0">
+                        <div className="space-y-6">
+                            {exercise.tutorialUrl && (
+                                <div className="aspect-video bg-muted rounded-xl overflow-hidden">
+                                    <iframe
+                                        src={exercise.tutorialUrl}
+                                        className="w-full h-full"
+                                        allowFullScreen
+                                    />
+                                </div>
+                            )}
+
+                            {exercise.beginnerFriendlyInstructions && exercise.beginnerFriendlyInstructions.length > 0 && (
+                                <section className="space-y-3">
+                                    <h3 className="font-semibold text-emerald-400">Beginner Friendly Tips</h3>
+                                    <div className="space-y-2">
+                                        {exercise.beginnerFriendlyInstructions.map((item, i) => (
+                                            <p key={i} className="text-sm text-muted-foreground">{item}</p>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {exercise.commonMistakes && exercise.commonMistakes.length > 0 && (
+                                <section className="space-y-3">
+                                    <h3 className="font-semibold text-orange-400">Things to Avoid</h3>
+                                    <div className="space-y-2">
+                                        {exercise.commonMistakes.map((mistake, i) => (
+                                            <p key={i} className="text-sm text-orange-100/90">{mistake}</p>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {exercise.formCues && (
+                                <section className="space-y-3">
+                                    <h3 className="font-semibold text-rose-400">Form Cues</h3>
+                                    <p className="text-sm text-white/90">{exercise.formCues}</p>
+                                </section>
+                            )}
+
+                            {exercise.injuryPreventionTips && exercise.injuryPreventionTips.length > 0 && (
+                                <section className="space-y-3">
+                                    <h3 className="font-semibold text-blue-400">Injury Prevention</h3>
+                                    <div className="space-y-2">
+                                        {exercise.injuryPreventionTips.map((tip, i) => (
+                                            <p key={i} className="text-sm text-blue-100/90">{tip}</p>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {exercise.repRange && (
+                                <div className="bg-white/5 rounded-xl p-4">
+                                    <p className="text-xs text-muted-foreground uppercase tracking-widest">Recommended Rep Range</p>
+                                    <p className="text-2xl font-bold text-rose-500">{exercise.repRange}</p>
+                                </div>
+                            )}
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="muscles" className="mt-0">
                         <div className="glass-card p-4">
                             <AnatomyDiagram
                                 selectedPrimary={exercise.primaryMuscles || []}
@@ -125,116 +207,8 @@ const ActiveExercise = ({
                             />
                         </div>
                     </TabsContent>
-
-                    <TabsContent value="tutorial">
-                        <div className="glass-card p-4">
-                            {exercise.tutorialUrl ? (
-                                <div className="aspect-video bg-muted rounded-xl flex items-center justify-center">
-                                    <iframe
-                                        src={exercise.tutorialUrl}
-                                        className="w-full h-full rounded-xl"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                    />
-                                </div>
-                            ) : (
-                                <div className="aspect-video bg-muted rounded-xl flex items-center justify-center">
-                                    <div className="text-center">
-                                        <Play className="w-12 h-12 mx-auto mb-2 text-muted-foreground" />
-                                        <p className="text-muted-foreground">No tutorial available</p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </TabsContent>
                 </Tabs>
             </div>
-
-            {/* Set logger */}
-            <div className="px-4">
-                <SetLogger
-                    sets={exercise.sets}
-                    onSetComplete={handleSetComplete}
-                    onAddSet={onAddSet}
-                    unit={unit}
-                    onUnitChange={onUnitChange}
-                />
-            </div>
-
-            {/* Personal Notes */}
-            <div className="px-4 mt-6">
-                <div className="glass-card p-4">
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">
-                        How did this feel?
-                    </label>
-                    <Textarea
-                        placeholder="Add notes about form, pain, or progress..."
-                        value={personalNote || ''}
-                        onChange={(e) => onNoteChange(e.target.value)}
-                        className="min-h-[100px]"
-                    />
-                </div>
-            </div>
-
-            {/* Collapsible Details Section */}
-            <Collapsible open={detailsOpen} onOpenChange={setDetailsOpen} className="px-4 mt-6">
-                <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium w-full">
-                    <ChevronDown className={cn(
-                        "w-4 h-4 transition-transform",
-                        detailsOpen && "rotate-180"
-                    )} />
-                    Exercise Details
-                </CollapsibleTrigger>
-                <CollapsibleContent className="mt-4">
-                    <Tabs defaultValue="tips">
-                        <TabsList className="w-full grid grid-cols-5 mb-4">
-                            <TabsTrigger value="tips">Tips</TabsTrigger>
-                            <TabsTrigger value="beginner">Beginner</TabsTrigger>
-                            <TabsTrigger value="mistakes">Mistakes</TabsTrigger>
-                            <TabsTrigger value="safety">Safety</TabsTrigger>
-                            <TabsTrigger value="form">Form</TabsTrigger>
-                        </TabsList>
-
-                        <TabsContent value="tips">
-                            <div className="glass-card p-4 space-y-2">
-                                {exercise.tips?.map((tip, i) => (
-                                    <p key={i} className="text-sm">{tip}</p>
-                                )) || <p className="text-muted-foreground text-sm">No tips available</p>}
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="beginner">
-                            <div className="glass-card p-4 space-y-2">
-                                {exercise.beginnerFriendlyInstructions?.map((item, i) => (
-                                    <p key={i} className="text-sm">{item}</p>
-                                )) || <p className="text-muted-foreground text-sm">No beginner tips</p>}
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="mistakes">
-                            <div className="glass-card p-4 space-y-2">
-                                {exercise.commonMistakes?.map((mistake, i) => (
-                                    <p key={i} className="text-sm">{mistake}</p>
-                                )) || <p className="text-muted-foreground text-sm">No common mistakes recorded</p>}
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="safety">
-                            <div className="glass-card p-4 space-y-2">
-                                {exercise.injuryPreventionTips?.map((tip, i) => (
-                                    <p key={i} className="text-sm">{tip}</p>
-                                )) || <p className="text-muted-foreground text-sm">No safety tips</p>}
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="form">
-                            <div className="glass-card p-4">
-                                <p className="text-sm">{exercise.formCues || 'No form cues available'}</p>
-                            </div>
-                        </TabsContent>
-                    </Tabs>
-                </CollapsibleContent>
-            </Collapsible>
 
             {/* Rest timer overlay */}
             {showRest && (

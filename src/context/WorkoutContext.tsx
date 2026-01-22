@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { db, WorkoutSession, WorkoutSessionExercise, WorkoutSet, Routine } from '@/lib/db';
-import { createWorkoutSession, completeWorkout as completeRemoteWorkout } from '@/lib/supabaseWorkoutClient';
+import { completeWorkout as completeRemoteWorkout } from '@/lib/supabaseWorkoutClient';
 import { updateLastCompletedRoutine } from '@/lib/routineCycling';
 import { queueWorkoutOperation } from '@/lib/workoutSyncManager';
 import { v4 as uuidv4 } from 'uuid';
@@ -99,52 +99,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     ): Promise<WorkoutSession> => {
         const now = new Date().toISOString();
         const today = now.split('T')[0];
-        const uuid = uuidv4();
 
-        const session: Omit<WorkoutSession, 'id'> = {
-            uuid,
-            userId,
-            supabaseUserId,
-            routineId: routine.id!,
-            routineName: routine.name,
-            date: today,
-            startTime: now,
-            exercises: routine.exercises.map((ex, index) => ({
-                exerciseId: ex.exerciseId,
-                exerciseName: ex.exerciseName,
-                order: ex.order,
-                sets: Array.from({ length: ex.sets }, (_, setIndex) => ({
-                    id: Date.now() + setIndex + (index * 100),
-                    setNumber: setIndex + 1,
-                    reps: parseReps(ex.reps),
-                    weight: 0,
-                    unit: 'kg',
-                    completed: false,
-                })),
-            })),
-            status: 'in_progress',
-        };
-
-        const sessionId = await createWorkoutSession({
-            user_id: supabaseUserId,
-            routine_id: routine.id!,
-            routine_name: routine.name,
-            date: today,
-            start_time: now,
-            exercises: routine.exercises.map((ex, index) => ({
-                exercise_id: ex.exerciseId,
-                exercise_name: ex.exerciseName,
-                order: ex.order,
-                sets: Array.from({ length: ex.sets }, (_, setIndex) => ({
-                    set_number: setIndex + 1,
-                    reps: parseReps(ex.reps),
-                    weight: 0,
-                    unit: 'kg' as const,
-                })),
-            })),
-        });
-        
-        // Create session object for Dexie (without uuid to avoid key path issues)
         const sessionForDexie: Omit<WorkoutSession, 'id'> & { id?: number } = {
             userId,
             supabaseUserId,
@@ -175,7 +130,6 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             uuid: uuidv4(),
         };
         
-        // Update with the uuid for sync
         await db.workout_sessions.update(localId as number, { uuid: createdSession.uuid });
         
         setActiveSession(createdSession);
@@ -183,8 +137,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         setExerciseUnitOverrides({});
         setIsRestTimerActive(false);
 
-        // Queue for sync
-        await queueWorkoutOperation('create', localId as number);
+        queueWorkoutOperation('create', localId as number).catch(console.error);
 
         return createdSession;
     }, []);
