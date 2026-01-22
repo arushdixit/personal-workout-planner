@@ -15,7 +15,12 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      includeAssets: [
+        'favicon.ico',
+        'robots.txt',
+        'apple-touch-icon.png',
+        'images/muscles/*.png'
+      ],
       manifest: {
         name: 'Pro-Lifts Fitness',
         short_name: 'Pro-Lifts',
@@ -59,7 +64,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /^https:\/\/.+\.(png|jpg|jpeg|svg|gif|webp|ico)$/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'images-cache',
+              cacheName: 'images-cache-v2',
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 30 * 24 * 60 * 60
@@ -70,7 +75,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /^https:\/\/.+\.(woff2|ttf|otf)$/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'fonts-cache',
+              cacheName: 'fonts-cache-v2',
               expiration: {
                 maxEntries: 20,
                 maxAgeSeconds: 60 * 24 * 60 * 60
@@ -81,7 +86,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /\/api\//i,
             handler: 'NetworkFirst',
             options: {
-              cacheName: 'api-cache',
+              cacheName: 'api-cache-v2',
               networkTimeoutSeconds: 3,
               expiration: {
                 maxEntries: 50,
