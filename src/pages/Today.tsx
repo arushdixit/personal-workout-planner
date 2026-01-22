@@ -9,6 +9,8 @@ import ExerciseDetail from '@/components/ExerciseDetail';
 import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
 import { determineTodaysRoutine, calculateWorkoutDuration } from '@/lib/routineCycling';
+import { fetchRoutines } from '@/lib/routineCache';
+import { getSupabaseUserId } from '@/lib/supabaseClient';
 import { db, Routine, Exercise } from '@/lib/db';
 import { cn } from '@/lib/utils';
 
@@ -54,6 +56,15 @@ const TodayPage = (props: TodayPageProps) => {
         if (!currentUser?.id) {
             setIsLoading(false);
             return;
+        }
+
+        try {
+            const supabaseUserId = await getSupabaseUserId();
+            if (supabaseUserId) {
+                await fetchRoutines(supabaseUserId, true);
+            }
+        } catch (err) {
+            console.error('Failed to sync routines from Supabase:', err);
         }
 
         const result = await determineTodaysRoutine(
