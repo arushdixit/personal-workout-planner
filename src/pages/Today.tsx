@@ -11,7 +11,6 @@ import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
 import { determineTodaysRoutine, calculateWorkoutDuration } from '@/lib/routineCycling';
 import { fetchRoutines } from '@/lib/routineCache';
-import { getSupabaseUserId } from '@/lib/supabaseClient';
 import { db, Routine, Exercise } from '@/lib/db';
 import { cn } from '@/lib/utils';
 
@@ -61,13 +60,8 @@ const TodayPage = (props: TodayPageProps) => {
             return;
         }
 
-        try {
-            const supabaseUserId = await getSupabaseUserId();
-            if (supabaseUserId) {
-                await fetchRoutines(supabaseUserId);
-            }
-        } catch (err) {
-            console.error('Failed to sync routines from Supabase:', err);
+        if (currentUser.supabaseUserId) {
+            await fetchRoutines(currentUser.supabaseUserId);
         }
 
         const result = await determineTodaysRoutine(
