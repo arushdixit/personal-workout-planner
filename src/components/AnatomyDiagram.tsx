@@ -115,6 +115,8 @@ const AnatomyDiagram = ({
         <svg
           viewBox={view === 'front' ? "0 0 724 1448" : "724 0 724 1448"}
           className="w-full h-full"
+          role="img"
+          aria-label={`Human body ${view} view showing muscle groups`}
         >
           {/* Base Body Outline (Simplified background) */}
           <g fill="#1a1a1a" stroke="#ffffff10" strokeWidth="2">

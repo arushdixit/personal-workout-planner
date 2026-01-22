@@ -1,101 +1,97 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { act } from 'react';
 import Library from '../pages/Library';
 import { db } from '../lib/db';
+import { renderWithProviders, setupTestDB, seedTestExercise, createMockUser } from './test-utils';
 
-// Mock the importExercemusData to avoid loading large JSON in tests
 vi.mock('../lib/exercemus', () => ({
-    importExercemusData: vi.fn(() => Promise.resolve()),
+  importExercemusData: vi.fn(() => Promise.resolve()),
 }));
 
+const mockUser = createMockUser();
+
 describe('Library Page', () => {
-    beforeEach(async () => {
-        // Clear and seed the database before each test
-        await db.exercises.clear();
-        await db.exercises.add({
-            id: 1,
-            name: 'Bench Press',
-            primaryMuscles: ['chest'],
-            secondaryMuscles: ['triceps'],
-            equipment: 'Barbell',
-            source: 'local',
-            inLibrary: true
-        });
-        await db.exercises.add({
-            id: 2,
-            name: 'Global Pushup',
-            primaryMuscles: ['chest'],
-            secondaryMuscles: ['triceps'],
-            equipment: 'Bodyweight',
-            source: 'exercemus',
-            inLibrary: false
-        });
+  beforeEach(async () => {
+    await setupTestDB();
+    await seedTestExercise({
+      id: 1,
+      name: 'Bench Press',
+      primaryMuscles: ['chest'],
+      secondaryMuscles: ['triceps'],
+      equipment: 'Barbell',
+      source: 'local',
+      inLibrary: true,
+    });
+    await seedTestExercise({
+      id: 2,
+      name: 'Global Pushup',
+      primaryMuscles: ['chest'],
+      secondaryMuscles: ['triceps'],
+      equipment: 'Bodyweight',
+      source: 'exercemus',
+      inLibrary: false,
+    });
+  });
+
+  it('renders My Exercises by default', async () => {
+    act(() => {
+      renderWithProviders(<Library />);
     });
 
-    it('renders My Exercises by default', async () => {
-        render(<Library />);
+    const exercise = await screen.findByText('Bench Press', {}, { timeout: 3000 });
+    expect(exercise).toBeInTheDocument();
 
-        const exercise = await screen.findByText('Bench Press', {}, { timeout: 3000 });
-        expect(exercise).toBeInTheDocument();
+    expect(screen.getByLabelText('Edit Exercise')).toBeInTheDocument();
+    expect(screen.getByLabelText('Delete Exercise')).toBeInTheDocument();
 
-        // Bench Press is local, should have Edit and Delete labels
-        expect(screen.getByLabelText('Edit Exercise')).toBeInTheDocument();
-        expect(screen.getByLabelText('Delete Exercise')).toBeInTheDocument();
+    expect(screen.queryByText('Global Pushup')).not.toBeInTheDocument();
+  });
 
-        // Global Pushup should NOT be in "My Exercises" because inLibrary is false
-        expect(screen.queryByText('Global Pushup')).not.toBeInTheDocument();
+  it('switches to Global Library and shows the global exercise', async () => {
+    act(() => {
+      renderWithProviders(<Library />);
     });
 
-    it('switches to Global Library and shows the global exercise', async () => {
-        render(<Library />);
+    const globalTab = await screen.findByText(/Global Library/i);
+    fireEvent.click(globalTab);
 
-        const globalTab = await screen.findByText(/Global Library/i);
-        fireEvent.click(globalTab);
+    const globalExercise = await screen.findByText('Global Pushup', {}, { timeout: 3000 });
+    expect(globalExercise).toBeInTheDocument();
 
-        const globalExercise = await screen.findByText('Global Pushup', {}, { timeout: 3000 });
-        expect(globalExercise).toBeInTheDocument();
+    expect(screen.getByLabelText('Add to My Exercises')).toBeInTheDocument();
+    expect(screen.queryByText('Bench Press')).not.toBeInTheDocument();
+  });
 
-        // Should show "Add to My Exercises" button
-        expect(screen.getByLabelText('Add to My Exercises')).toBeInTheDocument();
-
-        // Should NOT show Bench Press in Global Library view (because source is 'local')
-        expect(screen.queryByText('Bench Press')).not.toBeInTheDocument();
+  it('adds and removes a global exercise', async () => {
+    act(() => {
+      renderWithProviders(<Library />);
     });
 
-    it('adds and removes a global exercise', async () => {
-        render(<Library />);
+    fireEvent.click(await screen.findByText(/Global Library/i));
+    await screen.findByText('Global Pushup');
 
-        // Switch to Global Library
-        fireEvent.click(await screen.findByText(/Global Library/i));
-        await screen.findByText('Global Pushup');
+    const addButton = screen.getByLabelText('Add to My Exercises');
+    fireEvent.click(addButton);
 
-        // Click Add button
-        const addButton = screen.getByLabelText('Add to My Exercises');
-        fireEvent.click(addButton);
-
-        // Verify it was added (inLibrary) in our DB
-        await waitFor(async () => {
-            const ex = await db.exercises.get(2);
-            expect(ex?.inLibrary).toBe(true);
-        });
-
-        // Should now show "Added" label
-        expect(await screen.findByLabelText('Added')).toBeInTheDocument();
-
-        // Switch back to My Exercises
-        fireEvent.click(await screen.findByText(/My Exercises/i));
-        expect(await screen.findByText('Global Pushup')).toBeInTheDocument();
-
-        // Click Remove button (trash icon labeled "Remove from My Exercises")
-        const removeButton = screen.getByLabelText('Remove from My Exercises');
-        fireEvent.click(removeButton);
-
-        // Verify it was removed (un-inLibrary)
-        await waitFor(async () => {
-            const ex = await db.exercises.get(2);
-            expect(ex?.inLibrary).toBe(false);
-        });
-
-        expect(screen.queryByText('Global Pushup')).not.toBeInTheDocument();
+    await waitFor(async () => {
+      const ex = await db.exercises.get(2);
+      expect(ex?.inLibrary).toBe(true);
     });
+
+    expect(await screen.findByLabelText('Added')).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByText(/My Exercises/i));
+    expect(await screen.findByText('Global Pushup')).toBeInTheDocument();
+
+    const removeButton = screen.getByLabelText('Remove from My Exercises');
+    fireEvent.click(removeButton);
+
+    await waitFor(async () => {
+      const ex = await db.exercises.get(2);
+      expect(ex?.inLibrary).toBe(false);
+    });
+
+    expect(screen.queryByText('Global Pushup')).not.toBeInTheDocument();
+  });
 });

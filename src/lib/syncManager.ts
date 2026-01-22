@@ -12,10 +12,10 @@ import {
     canRetryImmediately,
     QueuedOperation,
 } from './syncQueue';
+import { processWorkoutSyncQueue } from './workoutSyncManager';
 import { toast } from 'sonner';
 
 let isProcessing = false;
-let syncInterval: NodeJS.Timeout | null = null;
 
 export async function processSyncQueue(): Promise<void> {
     if (isProcessing) {
@@ -34,21 +34,24 @@ export async function processSyncQueue(): Promise<void> {
             return;
         }
 
-        console.log(`[SyncManager] Processing ${operations.length} operations`);
+        const routineOps = operations.filter(op => op.entityType === 'routine');
 
-        for (const operation of operations) {
+        if (routineOps.length === 0) {
+            console.log('[SyncManager] No routine operations to process (workout ops handled separately)');
+            return;
+        }
+
+        console.log(`[SyncManager] Processing ${routineOps.length} routine operations`);
+
+        for (const operation of routineOps) {
             if (!canRetryImmediately(operation)) {
                 continue;
             }
 
             try {
-                console.log(`[SyncManager] Processing ${operation.type} ${operation.entityType}:${operation.entityId}`);
+                console.log(`[SyncManager] Processing routine ${operation.type}:${operation.entityId}`);
 
-                if (operation.entityType === 'routine') {
-                    await processRoutineOperation(operation);
-                } else {
-                    console.warn(`[SyncManager] Unsupported entity type: ${operation.entityType}`);
-                }
+                await processRoutineOperation(operation);
             } catch (error) {
                 console.error(`[SyncManager] Failed to process operation ${operation.id}:`, error);
 
@@ -58,7 +61,7 @@ export async function processSyncQueue(): Promise<void> {
                 await updateOperationStatus(operation.id, newStatus, newAttempts);
 
                 if (newStatus === 'failed') {
-                    toast.error(`Failed to sync ${operation.entityType}: ${operation.data.name || operation.entityId}`);
+                    toast.error(`Failed to sync routine: ${operation.data.name || operation.entityId}`);
                 }
             }
         }
@@ -160,32 +163,9 @@ async function processDeleteRoutine(operation: QueuedOperation): Promise<void> {
     }
 }
 
-export function startBackgroundSync(intervalMs: number = 30000): void {
-    if (syncInterval) {
-        console.log('[SyncManager] Background sync already running');
-        return;
-    }
-
-    console.log('[SyncManager] Starting background sync...');
-    syncInterval = setInterval(() => {
-        processSyncQueue();
-    }, intervalMs);
-
-    processSyncQueue();
-}
-
-export function stopBackgroundSync(): void {
-    if (syncInterval) {
-        clearInterval(syncInterval);
-        syncInterval = null;
-        console.log('[SyncManager] Stopped background sync');
-    }
-}
-
-export function isSyncInProgress(): boolean {
-    return isProcessing;
-}
-
 export async function triggerImmediateSync(): Promise<void> {
-    await processSyncQueue();
+    await Promise.all([
+        processSyncQueue(),
+        processWorkoutSyncQueue(),
+    ]);
 }

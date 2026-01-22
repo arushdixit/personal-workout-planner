@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Plus, X, ChevronUp, ChevronDown, Save, ArrowLeft, Search, Filter, Dumbbell, PlusCircle } from 'lucide-react';
+import { Plus, X, ChevronUp, ChevronDown, Save, ArrowLeft, Search, Filter, Dumbbell, PlusCircle, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import ExerciseDetail from './ExerciseDetail';
 
 interface RoutineBuilderProps {
     routine?: Routine;
@@ -37,6 +38,8 @@ const RoutineBuilder = ({
     const [search, setSearch] = useState('');
     const [filterMuscle, setFilterMuscle] = useState<string>('all');
     const [filterEquipment, setFilterEquipment] = useState<string>('all');
+    const [selectedExerciseDetail, setSelectedExerciseDetail] = useState<Exercise | null>(null);
+    const [showExerciseDetail, setShowExerciseDetail] = useState(false);
 
     useEffect(() => {
         if (routine) {
@@ -75,12 +78,45 @@ const RoutineBuilder = ({
             exerciseId,
             exerciseName,
             sets: 3,
-            reps: '8-12',
+            reps: '12',
             restSeconds: 90,
             order: exercises.length,
             notes: '',
         };
         setExercises([...exercises, newExercise]);
+    };
+
+    const isExerciseSelected = (exerciseId: number) => {
+        return exercises.some(ex => ex.exerciseId === exerciseId);
+    };
+
+    const handleToggleExercise = (exercise: Exercise) => {
+        if (isExerciseSelected(exercise.id!)) {
+            // Remove the exercise
+            handleRemoveExerciseByExerciseId(exercise.id!);
+        } else {
+            // Add the exercise
+            handleAddExercise(exercise.id!, exercise.name);
+        }
+    };
+
+    const handleRemoveExerciseByExerciseId = (exerciseId: number) => {
+        const updated = exercises.filter(ex => ex.exerciseId !== exerciseId);
+        // Reorder remaining exercises
+        const reordered = updated.map((ex, i) => ({ ...ex, order: i }));
+        setExercises(reordered);
+    };
+
+    const handleShowExerciseDetail = (exercise: Exercise) => {
+        setSelectedExerciseDetail(exercise);
+        setShowExerciseDetail(true);
+    };
+
+    const handleExerciseDetailChange = (open: boolean) => {
+        setShowExerciseDetail(open);
+        if (!open) {
+            setSelectedExerciseDetail(null);
+        }
     };
 
     const handleRemoveExercise = (index: number) => {
@@ -281,9 +317,9 @@ const RoutineBuilder = ({
                             </div>
                         ) : (
                             filteredGlobalExercises.map((ex) => (
-                                <Card key={ex.id} className="glass border-white/10 hover:border-primary/50 transition-all duration-300">
+                                <Card key={ex.id} className="glass border-white/10 hover:border-primary/50 transition-all duration-300 cursor-pointer" onClick={() => handleShowExerciseDetail(ex)}>
                                     <CardContent className="p-3 flex items-start justify-between">
-                                        <div>
+                                        <div className="flex-1">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <h4 className="font-medium">{ex.name}</h4>
                                                 {ex.difficulty && (
@@ -308,8 +344,29 @@ const RoutineBuilder = ({
                                                 ))}
                                             </div>
                                         </div>
-                                        <Button variant="ghost" size="sm" onClick={() => handleAddExercise(ex.id!, ex.name)}>
-                                            <PlusCircle className="w-4 h-4 mr-1" /> Add
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm" 
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleToggleExercise(ex);
+                                            }}
+                                            className={cn(
+                                                "transition-all",
+                                                isExerciseSelected(ex.id!) 
+                                                    ? "bg-green-500/20 text-green-400 hover:bg-green-500/30 active:bg-green-500/30" 
+                                                    : "hover:bg-transparent active:bg-accent"
+                                            )}
+                                        >
+                                            {isExerciseSelected(ex.id!) ? (
+                                                <>
+                                                    <Check className="w-4 h-4 mr-1" /> Added
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <PlusCircle className="w-4 h-4 mr-1" /> Add
+                                                </>
+                                            )}
                                         </Button>
                                     </CardContent>
                                 </Card>
@@ -319,8 +376,17 @@ const RoutineBuilder = ({
                 </div>
             </div>
             </div>
+
+            {/* Exercise Detail Modal */}
+            {selectedExerciseDetail && (
+                <ExerciseDetail
+                    exercise={selectedExerciseDetail}
+                    open={showExerciseDetail}
+                    onOpenChange={handleExerciseDetailChange}
+                />
+            )}
         </div>
     );
-};
+}
 
 export default RoutineBuilder;

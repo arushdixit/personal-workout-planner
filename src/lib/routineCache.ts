@@ -7,7 +7,7 @@ import {
     duplicateRoutine as duplicateRoutineRemote
 } from './supabaseClient';
 import { addToSyncQueue, getPendingCount } from './syncQueue';
-import { processSyncQueue } from './syncManager';
+import { triggerImmediateSync } from './syncManager';
 
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
@@ -166,8 +166,6 @@ export async function createRoutine(routine: Omit<Routine, 'id' | 'created_at' |
         syncedAt: new Date().toISOString(),
     });
 
-    processSyncQueue();
-
     return { ...remoteRoutine, userId: remoteRoutine.user_id, localUserId: remoteRoutine.local_user_id, createdAt: remoteRoutine.created_at || new Date().toISOString(), updatedAt: remoteRoutine.updated_at || new Date().toISOString() } as Routine;
 }
 
@@ -218,8 +216,6 @@ export async function updateRoutine(routine: Routine): Promise<Routine> {
         syncedAt: new Date().toISOString(),
     });
 
-    processSyncQueue();
-
     return { ...remoteRoutine, userId: remoteRoutine.user_id, localUserId: remoteRoutine.local_user_id, createdAt: remoteRoutine.created_at || routine.createdAt, updatedAt: remoteRoutine.updated_at || routine.updatedAt } as Routine;
 }
 
@@ -245,6 +241,7 @@ export async function deleteRoutine(routineId: string): Promise<void> {
     await deleteRoutineRemote(routineId);
     console.log('[Cache] Deleted routine from remote:', routineId);
     await db.routines.delete(routineId);
+    triggerImmediateSync();
 }
 
 export async function duplicateRoutine(routineId: string, userId: string, localUserId: number): Promise<Routine> {

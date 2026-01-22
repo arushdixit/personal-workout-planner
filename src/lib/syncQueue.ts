@@ -1,7 +1,7 @@
 import { db, SyncOperation } from './db';
 
 export type SyncType = 'create' | 'update' | 'delete';
-export type EntityType = 'routine' | 'workout' | 'exercise';
+export type EntityType = 'routine' | 'workout' | 'exercise' | 'workout_session' | 'workout_set';
 
 export interface QueuedOperation extends SyncOperation {
     id: number;

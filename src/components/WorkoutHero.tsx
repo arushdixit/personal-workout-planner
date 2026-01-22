@@ -32,11 +32,11 @@ const WorkoutHero = ({
         
         <div className="flex items-center gap-4 mb-6">
           <div className="flex items-center gap-2 text-white/90">
-            <Flame className="w-4 h-4" />
+            <Flame aria-label="Number of exercises" className="w-4 h-4" role="img" />
             <span className="text-sm font-medium">{exercises} exercises</span>
           </div>
           <div className="flex items-center gap-2 text-white/90">
-            <Clock className="w-4 h-4" />
+            <Clock aria-label="Estimated time" className="w-4 h-4" role="img" />
             <span className="text-sm font-medium">~{estimatedTime} min</span>
           </div>
         </div>

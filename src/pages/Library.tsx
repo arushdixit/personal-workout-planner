@@ -20,10 +20,14 @@ import { toast } from 'sonner';
 import { db, Exercise, MUSCLE_GROUPS, EQUIPMENT_TYPES } from '@/lib/db';
 import ExerciseWizard from '@/components/ExerciseWizard';
 import ExerciseDetail from '@/components/ExerciseDetail';
+import RoutineSelectorModal from '@/components/RoutineSelectorModal';
+import RoutineBuilder from '@/components/RoutineBuilder';
 import { cn } from '@/lib/utils';
 import { importExercemusData } from '@/lib/exercemus';
+import { useUser } from '@/context/UserContext';
 
 const Library = () => {
+    const { currentUser } = useUser();
     const [exercises, setExercises] = useState<Exercise[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -35,6 +39,10 @@ const Library = () => {
     const [viewingExercise, setViewingExercise] = useState<Exercise | undefined>();
     const [deleteTarget, setDeleteTarget] = useState<Exercise | null>(null);
     const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+    
+    // NEW: Routine selector state
+    const [showRoutineSelector, setShowRoutineSelector] = useState(false);
+    const [selectedExerciseForAdd, setSelectedExerciseForAdd] = useState<Exercise | null>(null);
 
     const loadExercises = async () => {
         setLoading(true);
@@ -139,15 +147,27 @@ const Library = () => {
     };
 
     const handleAddToMy = async (ex: Exercise) => {
-        if (!ex.id) return;
-        try {
-            await db.exercises.update(ex.id, { inLibrary: true });
-            toast.success(`${ex.name} added to your exercises!`);
+        setSelectedExerciseForAdd(ex);
+        setShowRoutineSelector(true);
+    };
+
+    const handleRoutineSelect = (routineId: string) => {
+        // This would typically add the exercise to the selected routine
+        // For now, we'll just show a toast
+        toast.success(`Exercise added to routine`);
+        setShowRoutineSelector(false);
+        setSelectedExerciseForAdd(null);
+        
+        // Mark the exercise as in library
+        if (selectedExerciseForAdd?.id) {
+            db.exercises.update(selectedExerciseForAdd.id, { inLibrary: true });
             loadExercises();
-        } catch (err) {
-            console.error('Failed to add exercise:', err);
-            toast.error('Failed to add exercise');
         }
+    };
+
+    const handleCreateNewRoutine = () => {
+        setShowRoutineSelector(false);
+        toast.info('Navigate to Routines page to create a new routine');
     };
 
     const handleRemoveFromMy = async (ex: Exercise) => {
@@ -517,6 +537,28 @@ const Library = () => {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
+            {/* Routine Selector Modal */}
+            <RoutineSelectorModal
+                open={showRoutineSelector}
+                onOpenChange={setShowRoutineSelector}
+                onSelect={(routine) => {
+                    // Add exercise to routine and mark as in library
+                    toast.success(`${selectedExerciseForAdd?.name} added to ${routine.name}`);
+                    if (selectedExerciseForAdd?.id) {
+                        db.exercises.update(selectedExerciseForAdd.id, { inLibrary: true });
+                    }
+                    loadExercises();
+                    setShowRoutineSelector(false);
+                    setSelectedExerciseForAdd(null);
+                }}
+                onCreateNew={() => {
+                    setShowRoutineSelector(false);
+                    // Open RoutineBuilder page or navigate to it
+                    // For now, just show a toast
+                    toast.info('Navigate to Routines page to create a new routine');
+                }}
+            />
 
         </div>
     );

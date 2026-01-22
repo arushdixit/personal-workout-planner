@@ -13,7 +13,10 @@ export interface UserProfile {
     onboarded: boolean;
     activeSplit?: 'PPL' | 'UpperLower' | 'FullBody';
     createdAt: string;
-    supabaseUserId?: string; // Linked Supabase User ID
+    supabaseUserId?: string;
+    unitPreference?: 'kg' | 'lbs';
+    lastCompletedRoutineId?: string;
+    lastWorkoutDate?: string;
 }
 
 export type EquipmentType = 'Barbell' | 'Dumbbell' | 'Cable' | 'Machine' | 'Bodyweight' | 'EZ Bar' | 'Kettlebell' | 'Other';
@@ -49,10 +52,39 @@ export interface Exercise {
 }
 
 export interface WorkoutSet {
+    id: number;
+    setNumber: number;
     reps: number;
     weight: number;
     unit: 'kg' | 'lbs';
     completed: boolean;
+    completedAt?: string;
+    rpe?: number;
+    feedback?: string;
+}
+
+export interface WorkoutSessionExercise {
+    exerciseId: number;
+    exerciseName: string;
+    order: number;
+    sets: WorkoutSet[];
+    personalNote?: string;
+}
+
+export interface WorkoutSession {
+    id?: number;
+    uuid?: string;
+    userId: number;
+    supabaseUserId: string;
+    routineId: string;
+    routineName: string;
+    date: string;
+    startTime: string;
+    endTime?: string;
+    duration?: number;
+    exercises: WorkoutSessionExercise[];
+    status: 'in_progress' | 'completed' | 'abandoned';
+    syncedAt?: string;
 }
 
 export interface WorkoutExercise {
@@ -97,7 +129,7 @@ export interface Routine {
 export interface SyncOperation {
     id?: number;
     type: 'create' | 'update' | 'delete';
-    entityType: 'routine' | 'workout' | 'exercise';
+    entityType: 'routine' | 'workout' | 'exercise' | 'workout_session' | 'workout_set';
     entityId: string;
     data: any;
     attempts: number;
@@ -147,14 +179,16 @@ const db = new Dexie('ProLiftsDB') as Dexie & {
     exercises: EntityTable<Exercise, 'id'>;
     workouts: EntityTable<Workout, 'id'>;
     routines: EntityTable<Routine, 'id'>;
+    workout_sessions: EntityTable<WorkoutSession, 'id'>;
     syncQueue: EntityTable<SyncOperation, 'id'>;
 };
 
-db.version(8).stores({
-    users: '++id, name, supabaseUserId',
+db.version(9).stores({
+    users: '++id, name, supabaseUserId, lastCompletedRoutineId, lastWorkoutDate',
     exercises: '++id, name, *primaryMuscles, equipment, inLibrary, source, category, *aliases',
     workouts: '++id, userId, date, splitType',
     routines: 'id, userId, localUserId, name',
+    workout_sessions: '++id, uuid, userId, supabaseUserId, routineId, date, status',
     syncQueue: '++id, type, entityType, entityId, status, createdAt',
 });
 

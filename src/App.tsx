@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
 import { UserProvider, useUser } from "./context/UserContext";
+import { WorkoutProvider } from "./context/WorkoutContext";
 import AuthScreen from "./components/auth/AuthScreen";
 
 const queryClient = new QueryClient();
@@ -27,10 +28,12 @@ const AppContent = () => {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <WorkoutProvider>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </WorkoutProvider>
   );
 };
 

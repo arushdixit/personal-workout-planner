@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { RadioGroup } from '@/components/ui/radio-group';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import EmailVerification from './EmailVerification';
 
 export default function Signup() {
   const { signUp } = useUser();
@@ -20,6 +21,8 @@ export default function Signup() {
   const [weight, setWeight] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [emailVerificationPending, setEmailVerificationPending] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,13 +37,24 @@ export default function Signup() {
         height: parseFloat(height),
         weight: parseFloat(weight),
       });
-      navigate('/');
+      setVerificationEmail(email);
+      setEmailVerificationPending(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Signup failed');
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const handleBackToLogin = () => {
+    setEmailVerificationPending(false);
+    setVerificationEmail('');
+    navigate(-1);
+  };
+
+  if (emailVerificationPending) {
+    return <EmailVerification email={verificationEmail} onBackToLogin={handleBackToLogin} />;
+  }
 
   return (
     <Card className="w-full max-w-md p-8 bg-card/50 backdrop-blur-sm">

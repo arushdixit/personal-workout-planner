@@ -23,7 +23,7 @@ import {
     getCacheStatus,
 } from '@/lib/routineCache';
 import { getSupabaseUserId as fetchSupabaseUserId, type Routine as SupabaseRoutine } from '@/lib/supabaseClient';
-import { startBackgroundSync } from '@/lib/syncManager';
+import { triggerImmediateSync } from '@/lib/syncManager';
 import type { Routine } from '@/lib/db';
 import RoutineBuilder from '@/components/RoutineBuilder';
 import { cn } from '@/lib/utils';
@@ -40,25 +40,39 @@ const Routines = () => {
     const [lastSynced, setLastSynced] = useState<string>('');
     const [pendingSync, setPendingSync] = useState(0);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [userIdLoaded, setUserIdLoaded] = useState(false);
 
     useEffect(() => {
         loadRoutines();
-        startBackgroundSync();
-        setupCacheStatusListener();
+        triggerImmediateSync();
 
         return () => {
-            startBackgroundSync();
+            triggerImmediateSync();
         };
     }, [currentUser?.id]);
 
-    const setupCacheStatusListener = async () => {
-        if (!currentUser?.id) return;
+    useEffect(() => {
+        if (!currentUser?.supabaseUserId) {
+            const loadUserId = async () => {
+                const userId = await fetchSupabaseUserId();
+                if (userId) {
+                    setSupabaseUserId(userId);
+                }
+                setUserIdLoaded(true);
+            };
+            loadUserId();
+        } else {
+            setSupabaseUserId(currentUser.supabaseUserId);
+            setUserIdLoaded(true);
+        }
+    }, [currentUser?.supabaseUserId]);
+
+    const setupCacheStatusListener = () => {
+        if (!supabaseUserId) return;
 
         const updateCacheStatus = async () => {
             try {
-                const userId = await fetchSupabaseUserId();
-                setSupabaseUserId(userId);
-                const status = await getCacheStatus(userId);
+                const status = await getCacheStatus(supabaseUserId);
 
                 if (status.pendingSync > 0) {
                     setCacheState('needsSync');
@@ -78,10 +92,19 @@ const Routines = () => {
         };
 
         updateCacheStatus();
-        const interval = setInterval(updateCacheStatus, 10000);
+        const interval = setInterval(updateCacheStatus, 30000);
 
         return () => clearInterval(interval);
     };
+
+    useEffect(() => {
+        if (userIdLoaded && supabaseUserId) {
+            const cleanup = setupCacheStatusListener();
+            return () => {
+                if (cleanup) cleanup();
+            };
+        }
+    }, [userIdLoaded, supabaseUserId]);
 
     const loadRoutines = async () => {
         if (!currentUser?.id) return;
@@ -111,6 +134,7 @@ const Routines = () => {
             setCacheState('fresh');
             setLastSynced(new Date().toISOString());
             toast.success('Routines refreshed');
+            triggerImmediateSync();
         } catch (err) {
             console.error('Failed to refresh routines:', err);
             toast.error('Failed to refresh routines');

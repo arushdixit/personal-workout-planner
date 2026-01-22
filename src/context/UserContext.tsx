@@ -50,6 +50,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setIsAuthenticated(!!user);
             console.log('[Auth] State change:', { event, user: user?.id });
 
+            if (event === 'TOKEN_REFRESHED') {
+                console.log('[Auth] Token refreshed, skipping database reload');
+                return;
+            }
+
             if (user) {
                 setLoading(true);
                 try {
