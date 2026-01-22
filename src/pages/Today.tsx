@@ -64,7 +64,7 @@ const TodayPage = (props: TodayPageProps) => {
         try {
             const supabaseUserId = await getSupabaseUserId();
             if (supabaseUserId) {
-                await fetchRoutines(supabaseUserId, true);
+                await fetchRoutines(supabaseUserId);
             }
         } catch (err) {
             console.error('Failed to sync routines from Supabase:', err);
