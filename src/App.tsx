@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import { UserProvider, useUser } from "./context/UserContext";
 import { WorkoutProvider } from "./context/WorkoutContext";
 import AuthScreen from "./components/auth/AuthScreen";
+import { IOSInstallPrompt } from "./components/iOSInstallPrompt";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => (
         <UserProvider>
           <Toaster />
           <Sonner />
+          <IOSInstallPrompt />
           <AppContent />
         </UserProvider>
       </BrowserRouter>

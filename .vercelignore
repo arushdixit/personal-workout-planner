@@ -1,0 +1,44 @@
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+
+# Git and IDE
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+*.sw?
+
+# Local development data
+users/
+exercises/
+workouts/
+settings/
+_pouch_*
+*.local
+
+# Documentation
+*.md
+archive/
+WARP.md
+PRD.md
+README.md
+AGENTS.md
+
+# Screenshots and references
+images/
+EXERCISE_IMAGES_STRATEGY.md
+IMAGE_ASSETS_REQUIREMENTS.md
+MUSCLE_IMAGES_DOWNLOAD_GUIDE.md
+UI_UPDATE_SUMMARY.md
+TEST_REFACTORING_SUMMARY.md
+
+# Node
+node_modules/
+dist-ssr
+*.local
+
+# Build output (we use dist/ instead)
+dist/

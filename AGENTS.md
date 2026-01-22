@@ -14,6 +14,48 @@ npm run test:watch   # Run tests in watch mode
 npm run preview      # Preview production build
 ```
 
+## Vercel Deployment
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Login to Vercel
+vercel login
+
+# Deploy to preview
+vercel
+
+# Deploy to production
+vercel --prod
+```
+
+### Environment Variables (Vercel Dashboard)
+Add these in Vercel project settings:
+- `VITE_SUPABASE_URL` - Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` - Supabase anonymous key
+
+## PWA Configuration
+
+### iOS Safari PWA Features
+- `apple-mobile-web-app-capable` - Enables fullscreen mode on iOS
+- `apple-mobile-web-app-status-bar-style` - Set to "black" for immersive experience
+- `apple-mobile-web-app-title` - App name shown under home screen icon
+- `IOSInstallPrompt` component - Shows custom install instructions for iOS users
+
+### Service Worker Caching Strategy
+- **Images:** CacheFirst with 30-day expiration
+- **Fonts:** CacheFirst with 60-day expiration  
+- **API calls:** NetworkFirst with 3s timeout, 5-minute cache
+- **Static assets:** Pre-cached at build time by Workbox
+
+### PWA Files
+- `index.html` - Contains iOS/Android meta tags
+- `vite.config.ts` - VitePWA plugin configuration
+- `public/manifest.webmanifest` - Generated PWA manifest (in dist/)
+- `public/sw.js` - Generated service worker (in dist/)
+- `src/components/iOSInstallPrompt.tsx` - Custom iOS install UI
+
 ## Running Single Tests
 
 To run a specific test file:
