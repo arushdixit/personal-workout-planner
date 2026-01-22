@@ -22,7 +22,7 @@ import {
     refreshRoutines,
     getCacheStatus,
 } from '@/lib/routineCache';
-import { getSupabaseUserId as fetchSupabaseUserId, type Routine as SupabaseRoutine } from '@/lib/supabaseClient';
+import { type Routine as SupabaseRoutine } from '@/lib/supabaseClient';
 import { triggerImmediateSync } from '@/lib/syncManager';
 import type { Routine } from '@/lib/db';
 import RoutineBuilder from '@/components/RoutineBuilder';
@@ -40,7 +40,6 @@ const Routines = () => {
     const [lastSynced, setLastSynced] = useState<string>('');
     const [pendingSync, setPendingSync] = useState(0);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [userIdLoaded, setUserIdLoaded] = useState(false);
 
     useEffect(() => {
         loadRoutines();
@@ -52,18 +51,8 @@ const Routines = () => {
     }, [currentUser?.id]);
 
     useEffect(() => {
-        if (!currentUser?.supabaseUserId) {
-            const loadUserId = async () => {
-                const userId = await fetchSupabaseUserId();
-                if (userId) {
-                    setSupabaseUserId(userId);
-                }
-                setUserIdLoaded(true);
-            };
-            loadUserId();
-        } else {
+        if (currentUser?.supabaseUserId) {
             setSupabaseUserId(currentUser.supabaseUserId);
-            setUserIdLoaded(true);
         }
     }, [currentUser?.supabaseUserId]);
 
@@ -98,20 +87,24 @@ const Routines = () => {
     };
 
     useEffect(() => {
-        if (userIdLoaded && supabaseUserId) {
+        if (supabaseUserId) {
             const cleanup = setupCacheStatusListener();
             return () => {
                 if (cleanup) cleanup();
             };
         }
-    }, [userIdLoaded, supabaseUserId]);
+    }, [supabaseUserId]);
 
     const loadRoutines = async () => {
         if (!currentUser?.id) return;
 
         setLoading(true);
         try {
-            const userId = await fetchSupabaseUserId();
+            const userId = currentUser.supabaseUserId;
+            if (!userId) {
+                setLoading(false);
+                return;
+            }
             setSupabaseUserId(userId);
             const data = await fetchRoutines(userId);
             setRoutines(data);
@@ -124,12 +117,11 @@ const Routines = () => {
     };
 
     const handleRefresh = async () => {
-        if (!currentUser?.id) return;
+        if (!currentUser?.id || !currentUser.supabaseUserId) return;
 
         setIsRefreshing(true);
         try {
-            const userId = await fetchSupabaseUserId();
-            const data = await refreshRoutines(userId);
+            const data = await refreshRoutines(currentUser.supabaseUserId);
             setRoutines(data);
             setCacheState('fresh');
             setLastSynced(new Date().toISOString());
