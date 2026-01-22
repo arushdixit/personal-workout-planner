@@ -18,9 +18,7 @@ const Index = () => {
   const [workoutRoutineId, setWorkoutRoutineId] = useState<string | null>(null);
 
   const handleStartWorkout = () => {
-    if (activeSession) {
-      setWorkoutRoutineId(activeSession.routineId);
-    }
+    setWorkoutRoutineId(activeSession?.routineId || 'today');
   };
 
   const handleViewExercise = (exerciseId: number) => {
