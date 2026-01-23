@@ -90,8 +90,7 @@ const TodayPage = (props: TodayPageProps) => {
     };
 
     const handleCreateNewRoutine = () => {
-        setShowRoutineSelector(false);
-        // Navigate to routines tab and show the routine builder
+        // Navigate directly to routines tab and show the routine builder
         if (onNavigateToRoutines) {
             onNavigateToRoutines();
         }
@@ -160,7 +159,7 @@ const TodayPage = (props: TodayPageProps) => {
                         <p className="text-muted-foreground text-sm mb-4">
                             Create a routine to get started with your workouts
                         </p>
-                        <Button onClick={() => setShowRoutineSelector(true)}>
+                        <Button onClick={handleCreateNewRoutine}>
                             Create Routine
                         </Button>
                     </div>
@@ -171,7 +170,7 @@ const TodayPage = (props: TodayPageProps) => {
             {todaysRoutine && (
                 <Button 
                     variant="ghost" 
-                    onClick={() => setShowRoutineSelector(true)}
+                    onClick={handleCreateNewRoutine}
                     className="w-full justify-between"
                 >
                     <span>Change Routine</span>
