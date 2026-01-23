@@ -28,11 +28,15 @@ import type { Routine } from '@/lib/db';
 import RoutineBuilder from '@/components/RoutineBuilder';
 import { cn } from '@/lib/utils';
 
-const Routines = () => {
+interface RoutinesProps {
+    showBuilderOnLoad?: boolean;
+}
+
+const Routines = ({ showBuilderOnLoad = false }: RoutinesProps) => {
     const { currentUser } = useUser();
     const [routines, setRoutines] = useState<Routine[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showBuilder, setShowBuilder] = useState(false);
+    const [showBuilder, setShowBuilder] = useState(showBuilderOnLoad);
     const [editingRoutine, setEditingRoutine] = useState<Routine | undefined>();
     const [deleteTarget, setDeleteTarget] = useState<Routine | null>(null);
     const [supabaseUserId, setSupabaseUserId] = useState<string>('');

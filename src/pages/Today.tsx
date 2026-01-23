@@ -16,10 +16,12 @@ import { cn } from '@/lib/utils';
 
 interface TodayPageProps {
     onStartWorkout: () => void;
+    onViewExercise?: (exerciseId: number) => void;
+    onNavigateToRoutines?: () => void;
 }
 
 const TodayPage = (props: TodayPageProps) => {
-    const { onStartWorkout } = props;
+    const { onStartWorkout, onNavigateToRoutines } = props;
     const { currentUser } = useUser();
     const { activeSession, startWorkout } = useWorkout();
     
@@ -89,8 +91,10 @@ const TodayPage = (props: TodayPageProps) => {
 
     const handleCreateNewRoutine = () => {
         setShowRoutineSelector(false);
-        // This will be handled by the parent component
-        // to open the routine builder
+        // Navigate to routines tab and show the routine builder
+        if (onNavigateToRoutines) {
+            onNavigateToRoutines();
+        }
     };
 
     const handleWizardComplete = async () => {

@@ -16,6 +16,7 @@ const Index = () => {
   const { activeSession } = useWorkout();
   const [activeTab, setActiveTab] = useState('today');
   const [workoutRoutineId, setWorkoutRoutineId] = useState<string | null>(null);
+  const [showRoutineBuilder, setShowRoutineBuilder] = useState(false);
 
   const handleStartWorkout = () => {
     setWorkoutRoutineId(activeSession?.routineId || 'today');
@@ -29,6 +30,19 @@ const Index = () => {
 
   const handleCloseWorkout = () => {
     setWorkoutRoutineId(null);
+  };
+
+  const handleNavigateToRoutines = () => {
+    setActiveTab('routines');
+    setShowRoutineBuilder(true);
+  };
+
+  // Reset showRoutineBuilder when switching away from routines tab
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    if (tab !== 'routines') {
+      setShowRoutineBuilder(false);
+    }
   };
 
   // Show workout session if active
@@ -48,12 +62,13 @@ const Index = () => {
           <TodayPage
             onStartWorkout={handleStartWorkout}
             onViewExercise={handleViewExercise}
+            onNavigateToRoutines={handleNavigateToRoutines}
           />
         )}
 
         {activeTab === 'library' && <Library />}
 
-        {activeTab === 'routines' && <Routines />}
+        {activeTab === 'routines' && <Routines showBuilderOnLoad={showRoutineBuilder} />}
 
         {activeTab === 'progress' && (
           <div className="space-y-6 animate-slide-up">
@@ -116,7 +131,7 @@ const Index = () => {
       </main>
 
       <div className="flex-shrink-0">
-        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+        <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
       </div>
     </div>
   );
