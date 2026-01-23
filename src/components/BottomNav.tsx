@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { Home, Dumbbell, TrendingUp, User, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +31,7 @@ interface BottomNavProps {
 }
 
 const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const tabs = [
     { id: "today", icon: Home, label: "Today" },
     { id: "routines", icon: ClipboardList, label: "Routines" },
@@ -37,6 +39,11 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
     { id: "progress", icon: TrendingUp, label: "Progress" },
     { id: "profile", icon: User, label: "Profile" },
   ];
+
+  const handleTabClick = (tabId: string) => {
+    setSearchParams({ tab: tabId });
+    onTabChange(tabId);
+  };
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/10">
@@ -47,7 +54,7 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
             icon={tab.icon}
             label={tab.label}
             active={activeTab === tab.id}
-            onClick={() => onTabChange(tab.id)}
+            onClick={() => handleTabClick(tab.id)}
           />
         ))}
       </div>

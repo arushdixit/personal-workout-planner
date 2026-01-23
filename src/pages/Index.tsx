@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
 import Library from '@/pages/Library';
 import Routines from '@/pages/Routines';
@@ -14,9 +15,17 @@ import { useWorkout } from '@/context/WorkoutContext';
 const Index = () => {
   const { currentUser, allUsers, switchUser, logout } = useUser();
   const { activeSession } = useWorkout();
-  const [activeTab, setActiveTab] = useState('today');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(() => 
+    searchParams.get('tab') || 'today'
+  );
   const [workoutRoutineId, setWorkoutRoutineId] = useState<string | null>(null);
   const [showRoutineBuilder, setShowRoutineBuilder] = useState(false);
+
+  // Sync URL with navigation state
+  useEffect(() => {
+    setSearchParams({ tab: activeTab });
+  }, [activeTab, setSearchParams]);
 
   const handleStartWorkout = () => {
     setWorkoutRoutineId(activeSession?.routineId || 'today');
