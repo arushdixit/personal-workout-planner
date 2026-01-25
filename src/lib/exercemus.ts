@@ -79,6 +79,13 @@ export async function importExercemusData() {
         const module = await import('./enriched-exercemus-data.json');
         const data = module.default || module;
 
+        console.log(`JSON loaded successfully, keys: ${Object.keys(data).join(', ')}`);
+        if (data.exercises) {
+            console.log(`Found ${data.exercises.length} exercises in JSON`);
+        } else {
+            console.error('No exercises key found in loaded data');
+        }
+
         if (!data || !data.exercises) {
             console.error('Invalid Exercemus data format:', data);
             return;

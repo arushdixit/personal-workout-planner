@@ -1,8 +1,8 @@
 # Pro-Lifts Fitness PWA - Product Requirements Document (PRD)
 
-**Version:** 2.1 (Comprehensive)  
-**Last Updated:** 2026-01-13  
-**Status:** 🟢 Finalized  
+**Version:** 2.2 (Refined)  
+**Last Updated:** 2026-01-25  
+**Status:** 🔵 Active Development  
 **Product Owner:** Arush Dixit  
 **Design Vision:** Premium, High-Performance, Sleek Dark Mode (Pro-Athlete Aesthetic)
 
@@ -144,10 +144,10 @@ A 5-step setup wizard:
 
 ## 9. Technical Architecture
 
-*   **Offline-First:** PouchDB (Local) ↔ CouchDB (Self-Hosted Sync).
-*   **Stack:** Next.js / Vite + React + TypeScript + Vanilla CSS (Glassmorphism).
+*   **Offline-First:** Dexie.js (Local IndexedDB) ↔ Supabase (Cloud Sync).
+*   **Stack:** React + TypeScript + Vite + Shadcn UI.
 *   **PWA:** Service Workers for < 1s offline load.
-*   **Sync Logic:** WiFi-only sync (or VPN) to home server; no cloud storage costs.
+*   **Sync Logic:** Background synchronization via Supabase Auth and Database.
 
 ---
 

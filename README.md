@@ -5,20 +5,20 @@ A premium, offline-first progressive web app for elite-level workout tracking. B
 ## Key Features
 
 - **Pro-Athlete Aesthetic:** Sleek dark mode with "Racing Red" glassmorphic UI.
-- **Offline-First:** Track your workouts at the gym with zero internet. Powered by **PouchDB**.
-- **Self-Hosted Sync:** Sync data to your own home server via **CouchDB** (Zero cloud costs).
-- **Dual Profile System:** Seamlessly toggle between two independent user profiles.
+- **Offline-First:** Track your workouts with zero internet. Powered by **Dexie.js** (IndexedDB).
+- **Cloud Sync:** Securely sync your data across devices using **Supabase**.
+- **Dual Profile System:** Seamlessly toggle between independent user profiles.
 - **Science-Based Progression:** Automated weight suggestions based on the "2-Week Consistency" rule.
 - **Interactive Anatomy:** High-fidelity SVG muscle highlighting for every exercise.
-- **AI Insights:** Form correction and superset generation powered by **OpenRouter**.
+- **Exercise Library:** 800+ professional exercises with tutorial videos and form cues.
 
 ## Tech Stack
 
 - **Frontend:** React + TypeScript + Vite
 - **Styling:** Tailwind CSS + Vanilla CSS (Glassmorphism)
-- **Database:** PouchDB (Local) & CouchDB (Sync)
-- **Testing:** Vitest + React Testing Library
+- **Database:** Dexie.js (Local) & Supabase (Sync)
 - **PWA:** Vite PWA Plugin
+- **Deployment:** Vercel
 
 ## 🏃 Getting Started
 
