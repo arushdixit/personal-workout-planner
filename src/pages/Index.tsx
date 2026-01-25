@@ -16,7 +16,7 @@ const Index = () => {
   const { currentUser, allUsers, switchUser, logout } = useUser();
   const { activeSession } = useWorkout();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState(() => 
+  const [activeTab, setActiveTab] = useState(() =>
     searchParams.get('tab') || 'today'
   );
   const workoutId = searchParams.get('workoutId');
@@ -29,15 +29,20 @@ const Index = () => {
     setActiveTab(tabFromURL);
   }, [searchParams]);
 
+  // Ensure exercise data is present even if user skips Library/Onboarding
+  useEffect(() => {
+    import('@/lib/exercemus').then(m => m.importExercemusData()).catch(console.error);
+  }, []);
+
   // Update URL when activeTab changes from user interaction
   useEffect(() => {
     const currentParams = new URLSearchParams(searchParams.toString());
     const tabFromURL = currentParams.get('tab');
-    
+
     // Only update URL if activeTab differs from URL
     if (tabFromURL !== activeTab) {
       currentParams.set('tab', activeTab);
-      
+
       // Clear tab-specific parameters when switching tabs
       if (activeTab !== 'workout') {
         currentParams.delete('workoutId');
@@ -50,7 +55,7 @@ const Index = () => {
         currentParams.delete('builder');
         currentParams.delete('routineId');
       }
-      
+
       setSearchParams(currentParams);
     }
   }, [activeTab]);
@@ -129,7 +134,7 @@ const Index = () => {
         )}
 
         {activeTab === 'library' && (
-          <Library 
+          <Library
             selectedExerciseId={exerciseId}
             onOpenExercise={(id: number) => {
               const currentParams = new URLSearchParams(searchParams.toString());
@@ -151,8 +156,8 @@ const Index = () => {
         )}
 
         {activeTab === 'routines' && (
-          <Routines 
-            showBuilderOnLoad={showBuilder} 
+          <Routines
+            showBuilderOnLoad={showBuilder}
             selectedRoutineId={searchParams.get('routineId')}
             onViewRoutine={handleViewRoutine}
             onCloseEditor={handleCloseRoutineEditor}
@@ -179,15 +184,15 @@ const Index = () => {
         )}
 
         {activeTab === 'workout' && workoutId && (
-        <div className="min-h-[100dvh] flex flex-col">
-          <WorkoutSession
-            routineId={workoutId}
-            onClose={handleCloseWorkout}
-          />
-        </div>
-      )}
+          <div className="min-h-[100dvh] flex flex-col">
+            <WorkoutSession
+              routineId={workoutId}
+              onClose={handleCloseWorkout}
+            />
+          </div>
+        )}
 
-      {activeTab === 'profile' && (
+        {activeTab === 'profile' && (
           <div className="space-y-6 animate-slide-up">
             <div className="glass-card p-6 text-center">
               <div className="w-24 h-24 mx-auto mb-4 rounded-full gradient-red flex items-center justify-center glow-red">

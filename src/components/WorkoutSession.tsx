@@ -43,7 +43,15 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
         const loadExerciseDetail = async () => {
             if (selectedIndex === null || !activeSession) return;
             const currentEx = activeSession.exercises[selectedIndex];
-            const exercise = await db.exercises.get(currentEx.exerciseId);
+
+            // Try by ID first
+            let exercise = await db.exercises.get(currentEx.exerciseId);
+
+            // Fallback to name-based lookup if ID doesn't match
+            if (!exercise && currentEx.exerciseName) {
+                exercise = await db.exercises.where('name').equalsIgnoreCase(currentEx.exerciseName).first();
+            }
+
             setExerciseDetail(exercise || null);
         };
         loadExerciseDetail();

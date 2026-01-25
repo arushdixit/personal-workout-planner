@@ -123,13 +123,16 @@ export async function importExercemusData() {
 
         // Insert in chunks to avoid blocking or memory issues
         const chunkSize = 100;
+        let insertedCount = 0;
         for (let i = 0; i < validExercises.length; i += chunkSize) {
             const chunk = validExercises.slice(i, i + chunkSize);
             await db.exercises.bulkAdd(chunk);
+            insertedCount += chunk.length;
+            console.log(`Progress: ${insertedCount}/${validExercises.length} exercises imported`);
         }
 
         console.log('Exercemus enrichment import complete.');
     } catch (err) {
-        console.error('Failed to import Exercemus data:', err);
+        console.error('CRITICAL: Failed to import Exercemus data:', err);
     }
 }

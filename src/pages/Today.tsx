@@ -24,7 +24,7 @@ const TodayPage = (props: TodayPageProps) => {
     const { onStartWorkout, onViewExercise, onNavigateToRoutines } = props;
     const { currentUser } = useUser();
     const { activeSession, startWorkout } = useWorkout();
-    
+
     const [todaysRoutine, setTodaysRoutine] = useState<Routine | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [showRoutineSelector, setShowRoutineSelector] = useState(false);
@@ -45,7 +45,14 @@ const TodayPage = (props: TodayPageProps) => {
         const loadExerciseDetails = async () => {
             const details: Record<number, Exercise> = {};
             for (const ex of todaysRoutine.exercises) {
-                const exercise = await db.exercises.get(ex.exerciseId);
+                // Try by ID first
+                let exercise = await db.exercises.get(ex.exerciseId);
+
+                // Fallback to searching by name if ID fails (handles ID shifts on library refreshes)
+                if (!exercise && ex.exerciseName) {
+                    exercise = await db.exercises.where('name').equalsIgnoreCase(ex.exerciseName).first();
+                }
+
                 if (exercise) {
                     details[ex.exerciseId] = exercise;
                 }
@@ -114,8 +121,8 @@ const TodayPage = (props: TodayPageProps) => {
         return 'Good evening';
     };
 
-    const estimatedTime = todaysRoutine 
-        ? calculateWorkoutDuration(todaysRoutine) 
+    const estimatedTime = todaysRoutine
+        ? calculateWorkoutDuration(todaysRoutine)
         : 0;
 
     const exerciseCount = todaysRoutine?.exercises.length || 0;
@@ -168,9 +175,9 @@ const TodayPage = (props: TodayPageProps) => {
 
             {/* Change Routine Button */}
             {todaysRoutine && (
-                <Button 
-                    variant="ghost" 
-                    onClick={handleCreateNewRoutine}
+                <Button
+                    variant="ghost"
+                    onClick={() => setShowRoutineSelector(true)}
                     className="w-full justify-between"
                 >
                     <span>Change Routine</span>
