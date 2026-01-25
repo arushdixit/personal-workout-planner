@@ -132,7 +132,7 @@ export const MinimizedRestTimer = () => {
   return (
     <div
       onClick={() => setMinimizedRest(false)}
-      className="fixed bottom-24 right-4 z-[100] flex items-center gap-3 bg-red-600 px-4 py-3 rounded-2xl shadow-lg shadow-red-600/20 animate-in slide-in-from-right duration-300 active:scale-95 transition-transform"
+      className="fixed bottom-36 right-4 z-[100] flex items-center gap-3 bg-red-600 px-4 py-3 rounded-2xl shadow-lg shadow-red-600/20 animate-in slide-in-from-right duration-300 active:scale-95 transition-transform cursor-pointer hover:bg-red-500"
     >
       <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
         <Timer className="w-5 h-5 text-white animate-pulse" />

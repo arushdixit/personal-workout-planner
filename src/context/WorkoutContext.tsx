@@ -122,7 +122,6 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         userId: number,
         supabaseUserId: string
     ): Promise<WorkoutSession> => {
-        // Clear any existing in-progress sessions first to avoid duplicates
         await db.workout_sessions
             .where('userId')
             .equals(userId)
@@ -182,89 +181,95 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         unit: 'kg' | 'lbs'
     ) => {
         if (!activeSession) return;
-
         const session = await db.workout_sessions.get(activeSession.id!);
         if (!session) return;
 
-        const exercise = session.exercises[exerciseIndex];
-        const setIndex = exercise?.sets.findIndex(s => s.id === setId);
-
-        if (setIndex !== undefined && setIndex !== -1 && exercise) {
-            exercise.sets[setIndex] = {
-                ...exercise.sets[setIndex],
-                weight,
-                reps,
-                unit,
-                completed: true,
-                completedAt: new Date().toISOString(),
+        const updatedExercises = session.exercises.map((ex, idx) => {
+            if (idx !== exerciseIndex) return ex;
+            return {
+                ...ex,
+                sets: ex.sets.map(s => {
+                    if (s.id !== setId) return s;
+                    return {
+                        ...s,
+                        weight,
+                        reps,
+                        unit,
+                        completed: true,
+                        completedAt: new Date().toISOString(),
+                    };
+                })
             };
+        });
 
-            await db.workout_sessions.update(session.id!, { exercises: session.exercises });
-            setActiveSession({ ...session, exercises: session.exercises });
+        await db.workout_sessions.update(session.id!, { exercises: updatedExercises });
+        setActiveSession({ ...session, exercises: updatedExercises });
 
-            // Show rest timer
-            setRestTimeLeft(90); // Default 90s
-            setIsRestTimerActive(true);
-            setIsRestTimerMinimized(false);
+        setRestTimeLeft(90);
+        setIsRestTimerActive(true);
+        setIsRestTimerMinimized(false);
 
-            // Queue for sync
-            await queueWorkoutOperation('set_complete', session.id!, { setId, reps, weight });
-        }
+        await queueWorkoutOperation('set_complete', session.id!, { setId, reps, weight });
     }, [activeSession]);
 
     const addExtraSet = useCallback((exerciseIndex: number) => {
         if (!activeSession) return;
 
-        const session = activeSession;
-        const exercise = session.exercises[exerciseIndex];
-        if (!exercise) return;
+        const updatedExercises = activeSession.exercises.map((ex, idx) => {
+            if (idx !== exerciseIndex) return ex;
 
-        const newSetNumber = exercise.sets.length + 1;
-        const unit = exerciseUnitOverrides[exercise.exerciseId] || 'kg';
+            const newSetNumber = ex.sets.length + 1;
+            const unit = exerciseUnitOverrides[ex.exerciseId] || 'kg';
+            const newSet: WorkoutSet = {
+                id: Date.now(),
+                setNumber: newSetNumber,
+                reps: parseReps('10'),
+                weight: 0,
+                unit,
+                completed: false,
+            };
 
-        const newSet: WorkoutSet = {
-            id: Date.now(),
-            setNumber: newSetNumber,
-            reps: parseReps('10'), // Default
-            weight: 0,
-            unit,
-            completed: false,
-        };
+            return {
+                ...ex,
+                sets: [...ex.sets, newSet]
+            };
+        });
 
-        exercise.sets.push(newSet);
-
-        db.workout_sessions.update(session.id!, { exercises: session.exercises });
-        setActiveSession({ ...session, exercises: session.exercises });
+        db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
+        setActiveSession({ ...activeSession, exercises: updatedExercises });
     }, [activeSession, exerciseUnitOverrides]);
 
     const removeExtraSet = useCallback((exerciseIndex: number) => {
         if (!activeSession) return;
 
-        const session = activeSession;
-        const exercise = session.exercises[exerciseIndex];
+        const exercise = activeSession.exercises[exerciseIndex];
         if (!exercise || exercise.sets.length === 0) return;
 
-        // Only remove if last set is not completed
         const lastSet = exercise.sets[exercise.sets.length - 1];
         if (lastSet.completed) return;
 
-        exercise.sets.pop();
+        const updatedExercises = activeSession.exercises.map((ex, idx) => {
+            if (idx !== exerciseIndex) return ex;
+            return {
+                ...ex,
+                sets: ex.sets.slice(0, -1)
+            };
+        });
 
-        db.workout_sessions.update(session.id!, { exercises: session.exercises });
-        setActiveSession({ ...session, exercises: session.exercises });
+        db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
+        setActiveSession({ ...activeSession, exercises: updatedExercises });
     }, [activeSession]);
 
     const updatePersonalNote = useCallback((exerciseIndex: number, note: string) => {
         if (!activeSession) return;
 
-        const session = activeSession;
-        const exercise = session.exercises[exerciseIndex];
-        if (!exercise) return;
+        const updatedExercises = activeSession.exercises.map((ex, idx) => {
+            if (idx !== exerciseIndex) return ex;
+            return { ...ex, personalNote: note };
+        });
 
-        exercise.personalNote = note;
-
-        db.workout_sessions.update(session.id!, { exercises: session.exercises });
-        setActiveSession({ ...session, exercises: session.exercises });
+        db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
+        setActiveSession({ ...activeSession, exercises: updatedExercises });
     }, [activeSession]);
 
     const nextExercise = useCallback(() => {
@@ -308,12 +313,10 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             duration,
         });
 
-        // Update last completed routine
         if (activeSession.userId) {
             await updateLastCompletedRoutine(activeSession.userId, activeSession.routineId);
         }
 
-        // Queue for sync
         await queueWorkoutOperation('complete', activeSession.id!);
 
         setActiveSession(null);
@@ -331,7 +334,6 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             endTime,
         });
 
-        // Queue for sync
         await queueWorkoutOperation('abandon', activeSession.id!);
 
         setActiveSession(null);
@@ -400,7 +402,6 @@ export const useWorkout = () => {
     return context;
 };
 
-// Helper function to parse reps string like \"8-12\" to a number
 function parseReps(reps: string): number {
     if (reps.includes('-')) {
         const [min] = reps.split('-').map(Number);

@@ -236,9 +236,11 @@ const Index = () => {
         )}
       </main>
 
-      <div className="flex-shrink-0">
-        <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
-      </div>
+      {!activeSession && activeTab !== 'workout' && (
+        <div className="flex-shrink-0 border-t border-white/5 bg-background/80 backdrop-blur-xl">
+          <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
+        </div>
+      )}
 
       <MinimizedRestTimer />
     </div>
