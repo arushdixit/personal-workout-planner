@@ -1,5 +1,5 @@
 import { Exercise, WorkoutSet } from '@/lib/db';
-import { X, ChevronLeft, Edit, Dumbbell } from 'lucide-react';
+import { X, ChevronLeft, Edit, Dumbbell, CheckCircle2 } from 'lucide-react';
 import AnatomyDiagram from './AnatomyDiagram';
 import MuscleIcon from './MuscleIcon';
 import { useUser } from '@/context/UserContext';
@@ -10,6 +10,7 @@ import { createPortal } from 'react-dom';
 import { useState, useRef, useEffect } from 'react';
 import SetLogger from './SetLogger';
 import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 
 interface ExerciseDetailProps {
     exercise: Exercise & { sets?: WorkoutSet[] };
@@ -44,6 +45,7 @@ const ExerciseDetail = ({
     const { currentUser } = useUser();
     const gender = currentUser?.gender || 'male';
     const [activeTab, setActiveTab] = useState<Tab>(workoutMode ? 'sets' : 'instructions');
+    const [showConfirmComplete, setShowConfirmComplete] = useState(false);
     const dialogRef = useRef<HTMLDivElement>(null);
 
     // Close modal when exercise changes or open becomes false
@@ -203,6 +205,25 @@ const ExerciseDetail = ({
                                 onChange={(e) => onNoteChange?.(e.target.value)}
                                 className="min-h-[100px]"
                             />
+                        </div>
+
+                        {/* Complete Exercise Button */}
+                        <div className="pt-4">
+                            <Button
+                                variant="gradient"
+                                className="w-full h-14 text-lg font-bold"
+                                onClick={() => {
+                                    const allCompleted = exercise.sets?.every(s => s.completed);
+                                    if (allCompleted) {
+                                        onOpenChange(false);
+                                    } else {
+                                        setShowConfirmComplete(true);
+                                    }
+                                }}
+                            >
+                                <CheckCircle2 className="w-6 h-6 mr-2" />
+                                Complete Exercise
+                            </Button>
                         </div>
                     </div>
                 )}
@@ -396,6 +417,37 @@ const ExerciseDetail = ({
                     </div>
                 )}
             </div>
+
+            {/* Confirmation Dialog for incomplete exercise */}
+            <Dialog open={showConfirmComplete} onOpenChange={setShowConfirmComplete}>
+                <DialogContent className="glass border-white/10 max-w-sm">
+                    <DialogHeader>
+                        <DialogTitle>Complete Exercise?</DialogTitle>
+                        <DialogDescription>
+                            You haven't completed all sets for this exercise. Are you sure you want to finish?
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex-col gap-2 sm:flex-col">
+                        <Button
+                            variant="gradient"
+                            onClick={() => {
+                                setShowConfirmComplete(false);
+                                onOpenChange(false);
+                            }}
+                            className="w-full"
+                        >
+                            Yes, Complete Exercise
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            onClick={() => setShowConfirmComplete(false)}
+                            className="w-full"
+                        >
+                            Continue Sets
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 

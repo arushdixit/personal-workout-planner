@@ -36,6 +36,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     const [view, setView] = useState<'list' | 'detail'>('list');
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [showEndDialog, setShowEndDialog] = useState(false);
+    const [endDialogType, setEndDialogType] = useState<'complete' | 'abandon'>('complete');
     const [exerciseDetail, setExerciseDetail] = useState<Exercise | null>(null);
 
     // Load exercise details for selected exercise
@@ -192,13 +193,51 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                 )}
             </div>
 
+            {/* Workout Controls (when in list view) */}
+            {view === 'list' && !isWorkoutComplete && (
+                <div className="fixed bottom-24 left-4 right-4 z-30 flex gap-3">
+                    <Button
+                        variant="destructive"
+                        size="lg"
+                        onClick={() => {
+                            const completedSets = progress.completed;
+                            if (completedSets > 0) {
+                                // If any sets are completed, ask for confirmation
+                                setShowEndDialog(true);
+                                setEndDialogType('abandon');
+                            } else {
+                                handleAbandonWorkout();
+                            }
+                        }}
+                        className="flex-1 h-14 text-lg font-bold"
+                    >
+                        Cancel Workout
+                    </Button>
+                    <Button
+                        variant="gradient"
+                        size="lg"
+                        onClick={() => {
+                            setShowEndDialog(true);
+                            setEndDialogType('complete');
+                        }}
+                        className="flex-1 h-14 text-lg font-bold"
+                    >
+                        <CheckCircle2 className="w-6 h-6 mr-2" />
+                        Finish Workout
+                    </Button>
+                </div>
+            )}
+
             {/* End Workout Button (when workout is complete) */}
             {isWorkoutComplete && (
                 <div className="fixed bottom-24 left-4 right-4 z-30">
                     <Button
                         variant="gradient"
                         size="lg"
-                        onClick={() => setShowEndDialog(true)}
+                        onClick={() => {
+                            setShowEndDialog(true);
+                            setEndDialogType('complete');
+                        }}
                         className="w-full h-14 text-lg font-bold glow-red"
                     >
                         <CheckCircle2 className="w-6 h-6 mr-2" />
@@ -224,40 +263,35 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
             <Dialog open={showEndDialog} onOpenChange={setShowEndDialog}>
                 <DialogContent className="glass border-white/10 max-w-sm">
                     <DialogHeader>
-                        <DialogTitle>End Workout?</DialogTitle>
+                        <DialogTitle>
+                            {endDialogType === 'complete' ? 'Finish Workout?' : 'Cancel Workout?'}
+                        </DialogTitle>
                         <DialogDescription>
-                            {isWorkoutComplete
-                                ? 'Great job! You completed all sets.'
-                                : 'You still have sets remaining. Are you sure you want to end?'}
+                            {endDialogType === 'complete'
+                                ? (isWorkoutComplete
+                                    ? 'Great job! You completed all sets.'
+                                    : 'You still have sets remaining. Are you sure you want to finish?')
+                                : 'Are you sure you want to cancel? Your progress for this session will be lost.'}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-3 mt-4">
-                        {isWorkoutComplete ? (
+                        {endDialogType === 'complete' ? (
                             <Button
                                 variant="gradient"
                                 onClick={handleEndWorkout}
                                 className="w-full"
                             >
                                 <CheckCircle2 className="w-4 h-4 mr-2" />
-                                Finish Workout
+                                {isWorkoutComplete ? 'Finish Workout' : 'Finish Anyway'}
                             </Button>
                         ) : (
-                            <>
-                                <Button
-                                    variant="gradient"
-                                    onClick={handleEndWorkout}
-                                    className="w-full"
-                                >
-                                    Finish Anyway
-                                </Button>
-                                <Button
-                                    variant="destructive"
-                                    onClick={handleAbandonWorkout}
-                                    className="w-full"
-                                >
-                                    Abandon Workout
-                                </Button>
-                            </>
+                            <Button
+                                variant="destructive"
+                                onClick={handleAbandonWorkout}
+                                className="w-full font-bold"
+                            >
+                                Yes, Cancel Workout
+                            </Button>
                         )}
                         <Button
                             variant="ghost"
