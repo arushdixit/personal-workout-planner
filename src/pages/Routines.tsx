@@ -30,9 +30,12 @@ import { cn } from '@/lib/utils';
 
 interface RoutinesProps {
     showBuilderOnLoad?: boolean;
+    selectedRoutineId?: string | null;
+    onViewRoutine?: (routineId: string) => void;
+    onCloseEditor?: () => void;
 }
 
-const Routines = ({ showBuilderOnLoad = false }: RoutinesProps) => {
+const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine, onCloseEditor }: RoutinesProps) => {
     const { currentUser } = useUser();
     const [routines, setRoutines] = useState<Routine[]>([]);
     const [loading, setLoading] = useState(true);
@@ -53,6 +56,22 @@ const Routines = ({ showBuilderOnLoad = false }: RoutinesProps) => {
             triggerImmediateSync();
         };
     }, [currentUser?.id]);
+
+    // Sync builder state with URL parameter
+    useEffect(() => {
+        setShowBuilder(showBuilderOnLoad);
+    }, [showBuilderOnLoad]);
+
+    // Handle selectedRoutineId from URL
+    useEffect(() => {
+        if (selectedRoutineId && routines.length > 0) {
+            const routine = routines.find(r => r.id === selectedRoutineId);
+            if (routine) {
+                setEditingRoutine(routine);
+                setShowBuilder(true);
+            }
+        }
+    }, [selectedRoutineId, routines]);
 
     useEffect(() => {
         if (currentUser?.supabaseUserId) {
@@ -143,6 +162,9 @@ const Routines = ({ showBuilderOnLoad = false }: RoutinesProps) => {
     const handleEdit = (routine: Routine) => {
         setEditingRoutine(routine);
         setShowBuilder(true);
+        if (onViewRoutine && routine.id) {
+            onViewRoutine(routine.id);
+        }
     };
 
     const handleDelete = async () => {
@@ -179,11 +201,17 @@ const Routines = ({ showBuilderOnLoad = false }: RoutinesProps) => {
         setShowBuilder(false);
         setEditingRoutine(undefined);
         loadRoutines();
+        if (onCloseEditor) {
+            onCloseEditor();
+        }
     };
 
     const handleBuilderCancel = () => {
         setShowBuilder(false);
         setEditingRoutine(undefined);
+        if (onCloseEditor) {
+            onCloseEditor();
+        }
     };
 
     const calculateEstimatedTime = (routine: Routine): number => {

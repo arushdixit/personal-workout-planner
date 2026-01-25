@@ -19,50 +19,103 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState(() => 
     searchParams.get('tab') || 'today'
   );
-  const [workoutRoutineId, setWorkoutRoutineId] = useState<string | null>(null);
-  const [showRoutineBuilder, setShowRoutineBuilder] = useState(false);
+  const workoutId = searchParams.get('workoutId');
+  const exerciseId = searchParams.get('exerciseId');
+  const showBuilder = searchParams.get('builder') === 'true';
 
-  // Sync URL with navigation state
+  // Only sync URL changes (browser back/forward) to activeTab state
   useEffect(() => {
-    setSearchParams({ tab: activeTab });
-  }, [activeTab, setSearchParams]);
+    const tabFromURL = searchParams.get('tab') || 'today';
+    setActiveTab(tabFromURL);
+  }, [searchParams]);
+
+  // Update URL when activeTab changes from user interaction
+  useEffect(() => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    const tabFromURL = currentParams.get('tab');
+    
+    // Only update URL if activeTab differs from URL
+    if (tabFromURL !== activeTab) {
+      currentParams.set('tab', activeTab);
+      
+      // Clear tab-specific parameters when switching tabs
+      if (activeTab !== 'workout') {
+        currentParams.delete('workoutId');
+      }
+      if (activeTab !== 'library') {
+        currentParams.delete('exerciseId');
+        currentParams.delete('returnTab');
+      }
+      if (activeTab !== 'routines') {
+        currentParams.delete('builder');
+        currentParams.delete('routineId');
+      }
+      
+      setSearchParams(currentParams);
+    }
+  }, [activeTab]);
 
   const handleStartWorkout = () => {
-    setWorkoutRoutineId(activeSession?.routineId || 'today');
+    const routineId = activeSession?.routineId || 'today';
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set('tab', 'workout');
+    currentParams.set('workoutId', routineId);
+    setSearchParams(currentParams);
+    setActiveTab('workout');
   };
 
-  const handleViewExercise = (exerciseId: number) => {
-    // This will open the exercise detail view
-    // For now, just log it
-    console.log('View exercise:', exerciseId);
+  const handleViewExercise = (exerciseId: number, fromTab?: string) => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    // Store the origin tab to restore on close
+    if (fromTab) {
+      currentParams.set('returnTab', fromTab);
+    } else {
+      currentParams.delete('returnTab');
+    }
+    currentParams.set('tab', 'library');
+    currentParams.set('exerciseId', exerciseId.toString());
+    setSearchParams(currentParams);
+    setActiveTab('library');
   };
 
   const handleCloseWorkout = () => {
-    setWorkoutRoutineId(null);
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set('tab', 'today');
+    currentParams.delete('workoutId');
+    setSearchParams(currentParams);
+    setActiveTab('today');
   };
 
   const handleNavigateToRoutines = () => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set('tab', 'routines');
+    currentParams.set('builder', 'true');
+    setSearchParams(currentParams);
     setActiveTab('routines');
-    setShowRoutineBuilder(true);
+  };
+
+  const handleViewRoutine = (routineId: string) => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set('tab', 'routines');
+    currentParams.set('routineId', routineId);
+    currentParams.set('builder', 'true');
+    setSearchParams(currentParams);
+    setActiveTab('routines');
+  };
+
+  const handleCloseRoutineEditor = () => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.delete('routineId');
+    currentParams.delete('builder');
+    currentParams.set('tab', 'routines');
+    setSearchParams(currentParams);
   };
 
   // Reset showRoutineBuilder when switching away from routines tab
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
-    if (tab !== 'routines') {
-      setShowRoutineBuilder(false);
-    }
+    // Tab change is handled by useEffect above
   };
-
-  // Show workout session if active
-  if (workoutRoutineId) {
-    return (
-      <WorkoutSession
-        routineId={workoutRoutineId}
-        onClose={handleCloseWorkout}
-      />
-    );
-  }
 
   return (
     <div className="dark min-h-[100dvh] bg-background flex flex-col overflow-hidden">
@@ -75,9 +128,36 @@ const Index = () => {
           />
         )}
 
-        {activeTab === 'library' && <Library />}
+        {activeTab === 'library' && (
+          <Library 
+            selectedExerciseId={exerciseId}
+            onOpenExercise={(id: number) => {
+              const currentParams = new URLSearchParams(searchParams.toString());
+              currentParams.set('tab', 'library');
+              currentParams.set('exerciseId', id.toString());
+              setSearchParams(currentParams);
+            }}
+            onCloseExercise={() => {
+              const currentParams = new URLSearchParams(searchParams.toString());
+              const returnTab = currentParams.get('returnTab');
+              currentParams.delete('exerciseId');
+              currentParams.delete('returnTab');
+              if (returnTab) {
+                currentParams.set('tab', returnTab);
+              }
+              setSearchParams(currentParams);
+            }}
+          />
+        )}
 
-        {activeTab === 'routines' && <Routines showBuilderOnLoad={showRoutineBuilder} />}
+        {activeTab === 'routines' && (
+          <Routines 
+            showBuilderOnLoad={showBuilder} 
+            selectedRoutineId={searchParams.get('routineId')}
+            onViewRoutine={handleViewRoutine}
+            onCloseEditor={handleCloseRoutineEditor}
+          />
+        )}
 
         {activeTab === 'progress' && (
           <div className="space-y-6 animate-slide-up">
@@ -98,7 +178,16 @@ const Index = () => {
           </div>
         )}
 
-        {activeTab === 'profile' && (
+        {activeTab === 'workout' && workoutId && (
+        <div className="min-h-[100dvh] flex flex-col">
+          <WorkoutSession
+            routineId={workoutId}
+            onClose={handleCloseWorkout}
+          />
+        </div>
+      )}
+
+      {activeTab === 'profile' && (
           <div className="space-y-6 animate-slide-up">
             <div className="glass-card p-6 text-center">
               <div className="w-24 h-24 mx-auto mb-4 rounded-full gradient-red flex items-center justify-center glow-red">
@@ -118,7 +207,9 @@ const Index = () => {
                   onClick={() => {
                     if (u.id) {
                       switchUser(u.id);
-                      setActiveTab('today');
+                      const currentParams = new URLSearchParams(searchParams.toString());
+                      currentParams.set('tab', 'today');
+                      setSearchParams(currentParams);
                     }
                   }}
                   className={`w-full glass-card p-4 flex items-center gap-4 ${u.id === currentUser?.id ? 'border-primary/30' : ''}`}

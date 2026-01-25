@@ -41,7 +41,9 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
   ];
 
   const handleTabClick = (tabId: string) => {
-    setSearchParams({ tab: tabId });
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set('tab', tabId);
+    setSearchParams(currentParams);
     onTabChange(tabId);
   };
 

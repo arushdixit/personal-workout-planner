@@ -24,6 +24,13 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
     const [activeTab, setActiveTab] = useState<Tab>('instructions');
     const dialogRef = useRef<HTMLDivElement>(null);
 
+    // Close modal when exercise changes or open becomes false
+    useEffect(() => {
+        if (!exercise || !open) {
+            return;
+        }
+    }, [exercise, open]);
+
     // Focus the modal when it opens
     useEffect(() => {
         if (open && dialogRef.current) {

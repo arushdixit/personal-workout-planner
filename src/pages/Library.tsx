@@ -26,7 +26,13 @@ import { cn } from '@/lib/utils';
 import { importExercemusData } from '@/lib/exercemus';
 import { useUser } from '@/context/UserContext';
 
-const Library = () => {
+interface LibraryProps {
+    selectedExerciseId?: string | null;
+    onOpenExercise?: (id: number) => void;
+    onCloseExercise?: () => void;
+}
+
+const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: LibraryProps) => {
     const { currentUser } = useUser();
     const [exercises, setExercises] = useState<Exercise[]>([]);
     const [loading, setLoading] = useState(true);
@@ -37,6 +43,36 @@ const Library = () => {
     const [showWizard, setShowWizard] = useState(false);
     const [editingExercise, setEditingExercise] = useState<Exercise | undefined>();
     const [viewingExercise, setViewingExercise] = useState<Exercise | undefined>();
+
+    // Handle exercise selection from URL params
+    useEffect(() => {
+        if (selectedExerciseId && exercises.length > 0) {
+            const exercise = exercises.find(ex => ex.id === parseInt(selectedExerciseId));
+            if (exercise && exercise.id !== viewingExercise?.id) {
+                setViewingExercise(exercise);
+            } else if (!exercise && viewingExercise) {
+                // Clear viewing if exercise not found or ID was removed
+                setViewingExercise(undefined);
+            }
+        } else if (!selectedExerciseId && viewingExercise) {
+            // Clear viewing if exerciseId was removed from URL
+            setViewingExercise(undefined);
+        }
+    }, [selectedExerciseId, exercises.length]);
+
+    // Update URL when exercise is selected manually
+    const handleExerciseClick = (exercise: Exercise) => {
+        if (onOpenExercise) {
+            onOpenExercise(exercise.id);
+        } else {
+            // Fallback if callback not provided
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', 'library');
+            url.searchParams.set('exerciseId', exercise.id.toString());
+            window.history.replaceState({}, '', url.toString());
+        }
+        setViewingExercise(exercise);
+    };
     const [deleteTarget, setDeleteTarget] = useState<Exercise | null>(null);
     const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
     
@@ -295,7 +331,7 @@ const Library = () => {
                             key={ex.id}
                             className="glass border-white/10 animate-slide-up hover:border-primary/50 transition-all duration-300 group cursor-pointer"
                             style={{ animationDelay: `${index * 0.03}s` }}
-                            onClick={() => setViewingExercise(ex)}
+                            onClick={() => handleExerciseClick(ex)}
                         >
                             <CardContent className="p-4">
                                 <div className="flex items-start justify-between">
@@ -429,7 +465,7 @@ const Library = () => {
                                         <Card
                                             key={ex.id}
                                             className="glass border-white/10 hover:border-primary/50 transition-all duration-300 cursor-pointer"
-                                            onClick={() => setViewingExercise(ex)}
+                                            onClick={() => handleExerciseClick(ex)}
                                         >
                                             <CardContent className="p-4">
                                                 <div className="flex items-start justify-between">
@@ -505,6 +541,10 @@ const Library = () => {
                             (document.activeElement as HTMLElement).blur();
                         }
                         setViewingExercise(undefined);
+                        // Notify parent to close exercise
+                        if (onCloseExercise) {
+                            onCloseExercise();
+                        }
                     }
                 }}
                 onEdit={viewingExercise?.source === 'exercemus' && view === 'my' ? () => {

@@ -171,11 +171,16 @@ export async function completeWorkout(sessionId: number, endTime: string) {
         .from('workout_sessions')
         .select('start_time')
         .eq('id', sessionId)
-        .single();
+        .maybeSingle();
 
     if (fetchError) {
         console.error('Error fetching session:', fetchError);
         throw fetchError;
+    }
+
+    if (!sessionData) {
+        console.error('Session not found:', sessionId);
+        throw new Error('Session not found');
     }
 
     const duration = Math.floor(
@@ -202,11 +207,16 @@ export async function abandonWorkout(sessionId: number, endTime: string) {
         .from('workout_sessions')
         .select('start_time')
         .eq('id', sessionId)
-        .single();
+        .maybeSingle();
 
     if (fetchError) {
         console.error('Error fetching session:', fetchError);
         throw fetchError;
+    }
+
+    if (!sessionData) {
+        console.error('Session not found:', sessionId);
+        throw new Error('Session not found');
     }
 
     const duration = Math.floor(

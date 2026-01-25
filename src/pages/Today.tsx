@@ -21,7 +21,7 @@ interface TodayPageProps {
 }
 
 const TodayPage = (props: TodayPageProps) => {
-    const { onStartWorkout, onNavigateToRoutines } = props;
+    const { onStartWorkout, onViewExercise, onNavigateToRoutines } = props;
     const { currentUser } = useUser();
     const { activeSession, startWorkout } = useWorkout();
     
@@ -190,7 +190,12 @@ const TodayPage = (props: TodayPageProps) => {
                                 exercise={exercise}
                                 exerciseDetail={exerciseDetail}
                                 isNext={index === 0}
-                                onClick={() => exerciseDetail && setViewingExercise(exerciseDetail)}
+                                onClick={() => {
+                                    if (exerciseDetail && onViewExercise) {
+                                        // Pass 'today' as the return tab
+                                        (onViewExercise as any)(exerciseDetail.id, 'today');
+                                    }
+                                }}
                             />
                         );
                     })}
