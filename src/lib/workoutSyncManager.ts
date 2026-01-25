@@ -63,7 +63,8 @@ async function processWorkoutOperation(operation: QueuedOperation): Promise<void
     }
 
     // Fetch the latest session data from the database to get updated remoteId
-    const sessionId = operation.entityId as unknown as number;
+    // CRITICAL: operation.entityId is stored as a string in syncQueue, must convert to Number for IndexedDB
+    const sessionId = Number(operation.entityId);
     const session = await db.workout_sessions.get(sessionId);
 
     if (!session) {
@@ -120,7 +121,7 @@ async function processCreateSession(operation: QueuedOperation, session: Workout
         });
 
         // Store the remote ID separately from the local ID
-        await db.workout_sessions.update(operation.entityId as unknown as number, {
+        await db.workout_sessions.update(Number(operation.entityId), {
             remoteId: remoteSession.id,
             syncedAt: new Date().toISOString(),
         });
@@ -143,7 +144,7 @@ async function processCompleteSession(operation: QueuedOperation, session: Worko
     try {
         await completeRemoteWorkout(session.remoteId, new Date().toISOString());
 
-        await db.workout_sessions.update(operation.entityId as unknown as number, {
+        await db.workout_sessions.update(Number(operation.entityId), {
             syncedAt: new Date().toISOString(),
         });
 
@@ -167,7 +168,7 @@ async function processAbandonSession(operation: QueuedOperation, session: Workou
     try {
         await abandonRemoteWorkout(session.remoteId, new Date().toISOString());
 
-        await db.workout_sessions.update(operation.entityId as unknown as number, {
+        await db.workout_sessions.update(Number(operation.entityId), {
             syncedAt: new Date().toISOString(),
         });
 
@@ -274,6 +275,12 @@ export async function queueWorkoutOperation(
         String(sessionId),
         { session, workoutOpType: type, ...data }
     );
+
+    // Trigger sync in background immediately
+    // Use a short timeout to ensure the operation is committed and don't block the caller
+    setTimeout(() => {
+        processWorkoutSyncQueue().catch(err => console.error('[WorkoutSync] Background sync failed:', err));
+    }, 0);
 }
 
 export async function syncWorkoutImmediately(sessionId: number): Promise<void> {
