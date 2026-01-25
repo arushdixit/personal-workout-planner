@@ -1,4 +1,4 @@
-# Pro-Lifts Fitness PWA 🏎️🏋️
+# Pro-Lifts Fitness PWA 
 
 A premium, offline-first progressive web app for elite-level workout tracking. Built for users who demand high performance, data ownership, and science-based progression.
 
