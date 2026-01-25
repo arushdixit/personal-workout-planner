@@ -1,4 +1,4 @@
-import { Exercise } from '@/lib/db';
+import { Exercise, WorkoutSet } from '@/lib/db';
 import { X, ChevronLeft, Edit, Dumbbell } from 'lucide-react';
 import AnatomyDiagram from './AnatomyDiagram';
 import MuscleIcon from './MuscleIcon';
@@ -8,20 +8,42 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { createPortal } from 'react-dom';
 import { useState, useRef, useEffect } from 'react';
+import SetLogger from './SetLogger';
+import { Textarea } from '@/components/ui/textarea';
 
 interface ExerciseDetailProps {
-    exercise: Exercise;
+    exercise: Exercise & { sets?: WorkoutSet[] };
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onEdit?: () => void;
+    // Workout mode props (optional)
+    workoutMode?: boolean;
+    onSetComplete?: (setId: number, weight: number, reps: number, unit: 'kg' | 'lbs') => void;
+    onAddSet?: () => void;
+    unit?: 'kg' | 'lbs';
+    onUnitChange?: (unit: 'kg' | 'lbs') => void;
+    personalNote?: string;
+    onNoteChange?: (note: string) => void;
 }
 
-type Tab = 'instructions' | 'target';
+type Tab = 'sets' | 'instructions' | 'target';
 
-const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetailProps) => {
+const ExerciseDetail = ({
+    exercise,
+    open,
+    onOpenChange,
+    onEdit,
+    workoutMode = false,
+    onSetComplete,
+    onAddSet,
+    unit = 'kg',
+    onUnitChange,
+    personalNote,
+    onNoteChange
+}: ExerciseDetailProps) => {
     const { currentUser } = useUser();
     const gender = currentUser?.gender || 'male';
-    const [activeTab, setActiveTab] = useState<Tab>('instructions');
+    const [activeTab, setActiveTab] = useState<Tab>(workoutMode ? 'sets' : 'instructions');
     const dialogRef = useRef<HTMLDivElement>(null);
 
     // Close modal when exercise changes or open becomes false
@@ -114,6 +136,22 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
 
             {/* Tabs */}
             <div className="flex-shrink-0 flex gap-2 px-6 border-b border-white/5">
+                {workoutMode && (
+                    <button
+                        onClick={() => setActiveTab('sets')}
+                        className={cn(
+                            "px-6 py-3 text-sm font-bold transition-all relative",
+                            activeTab === 'sets'
+                                ? "text-white"
+                                : "text-muted-foreground hover:text-white/70"
+                        )}
+                    >
+                        Sets
+                        {activeTab === 'sets' && (
+                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
+                        )}
+                    </button>
+                )}
                 <button
                     onClick={() => setActiveTab('instructions')}
                     className={cn(
@@ -146,6 +184,29 @@ const ExerciseDetail = ({ exercise, open, onOpenChange, onEdit }: ExerciseDetail
 
             {/* Tab Content */}
             <div className="flex-1 overflow-y-auto overscroll-contain custom-scrollbar">
+                {activeTab === 'sets' && workoutMode && exercise.sets && (
+                    <div className="px-6 py-6 space-y-6">
+                        <SetLogger
+                            sets={exercise.sets}
+                            onSetComplete={onSetComplete!}
+                            onAddSet={onAddSet!}
+                            unit={unit}
+                            onUnitChange={onUnitChange!}
+                        />
+                        <div>
+                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
+                                How did this feel?
+                            </label>
+                            <Textarea
+                                placeholder="Add notes about form, pain, or progress..."
+                                value={personalNote || ''}
+                                onChange={(e) => onNoteChange?.(e.target.value)}
+                                className="min-h-[100px]"
+                            />
+                        </div>
+                    </div>
+                )}
+
                 {activeTab === 'instructions' && (
                     <div className="px-6 py-6 space-y-8">
                         {/* Personal Notes - Always at the top if they exist */}

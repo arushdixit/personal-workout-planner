@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, CheckCircle2, ChevronRight, Dumbbell, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import ActiveExercise from './ActiveExercise';
+import ExerciseDetail from './ExerciseDetail';
 import WorkoutTimer from './WorkoutTimer';
 import { useWorkout } from '@/context/WorkoutContext';
 import { db, Exercise } from '@/lib/db';
@@ -155,7 +155,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                 ) : (
                     selectedIndex !== null && exerciseDetail && (
                         <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                            <ActiveExercise
+                            <ExerciseDetail
                                 exercise={{
                                     ...exerciseDetail,
                                     name: activeSession.exercises[selectedIndex].exerciseName,
@@ -169,6 +169,9 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                     injuryPreventionTips: exerciseDetail.injuryPreventionTips,
                                     formCues: exerciseDetail.formCues,
                                 }}
+                                open={view === 'detail'}
+                                onOpenChange={(open) => !open && setView('list')}
+                                workoutMode={true}
                                 onSetComplete={(setId, weight, reps, unit) => handleSetComplete(selectedIndex, setId, weight, reps, unit)}
                                 onAddSet={() => handleAddSet(selectedIndex)}
                                 unit={getExerciseUnit(activeSession.exercises[selectedIndex].exerciseId)}

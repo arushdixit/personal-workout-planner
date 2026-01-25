@@ -53,7 +53,7 @@ export async function processWorkoutSyncQueue(): Promise<void> {
 }
 
 async function processWorkoutOperation(operation: QueuedOperation): Promise<void> {
-    const sessionData = operation.data as { session?: WorkoutSession; workoutOpType?: WorkoutSyncType; [key: string]: unknown };
+    const sessionData = operation.data as { session?: WorkoutSession; workoutOpType?: WorkoutSyncType;[key: string]: unknown };
     const session = sessionData.session;
     const workoutOpType = sessionData.workoutOpType;
 
@@ -129,7 +129,7 @@ async function processCreateSession(operation: QueuedOperation, session: Workout
 
 async function processCompleteSession(operation: QueuedOperation, session: WorkoutSession): Promise<void> {
     if (!session.id) {
-        console.warn('[WorkoutSync] Session has no remote ID');
+        console.warn('[WorkoutSync] Session has no remote ID, removing operation');
         await removeOperation(operation.id!);
         return;
     }
@@ -141,17 +141,19 @@ async function processCompleteSession(operation: QueuedOperation, session: Worko
             syncedAt: new Date().toISOString(),
         });
 
-        await removeOperation(operation.id!);
         console.log('[WorkoutSync] Successfully synced completed session');
     } catch (error) {
         console.error('[WorkoutSync] Failed to complete session remotely:', error);
         throw error;
+    } finally {
+        // Always remove the operation, even if session wasn't found remotely
+        await removeOperation(operation.id!);
     }
 }
 
 async function processAbandonSession(operation: QueuedOperation, session: WorkoutSession): Promise<void> {
     if (!session.id) {
-        console.warn('[WorkoutSync] Session has no remote ID');
+        console.warn('[WorkoutSync] Session has no remote ID, removing operation');
         await removeOperation(operation.id!);
         return;
     }
@@ -163,11 +165,13 @@ async function processAbandonSession(operation: QueuedOperation, session: Workou
             syncedAt: new Date().toISOString(),
         });
 
-        await removeOperation(operation.id!);
         console.log('[WorkoutSync] Successfully synced abandoned session');
     } catch (error) {
         console.error('[WorkoutSync] Failed to abandon session remotely:', error);
         throw error;
+    } finally {
+        // Always remove the operation, even if session wasn't found remotely
+        await removeOperation(operation.id!);
     }
 }
 

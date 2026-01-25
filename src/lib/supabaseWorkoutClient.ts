@@ -179,8 +179,8 @@ export async function completeWorkout(sessionId: number, endTime: string) {
     }
 
     if (!sessionData) {
-        console.error('Session not found:', sessionId);
-        throw new Error('Session not found');
+        console.warn('Session not found on server, skipping completion:', sessionId);
+        return; // Gracefully handle missing session
     }
 
     const duration = Math.floor(
@@ -215,8 +215,8 @@ export async function abandonWorkout(sessionId: number, endTime: string) {
     }
 
     if (!sessionData) {
-        console.error('Session not found:', sessionId);
-        throw new Error('Session not found');
+        console.warn('Session not found on server, skipping abandonment:', sessionId);
+        return; // Gracefully handle missing session
     }
 
     const duration = Math.floor(
