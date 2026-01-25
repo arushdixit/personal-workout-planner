@@ -12,10 +12,23 @@ export async function determineTodaysRoutine(
     lastCompletedRoutineId?: string
 ): Promise<RoutineCyclingResult> {
     // Get all routines for this user
-    const routines = await db.routines
-        .where('localUserId')
-        .equals(localUserId)
-        .toArray();
+    // Use supabaseUserId as primary lookup since it's stable across DB cleanups
+    let routines: Routine[] = [];
+
+    if (supabaseUserId) {
+        routines = await db.routines
+            .where('userId')
+            .equals(supabaseUserId)
+            .toArray();
+    }
+
+    // Fallback to localUserId if no supabaseUserId or no routines found
+    if (routines.length === 0 && localUserId) {
+        routines = await db.routines
+            .where('localUserId')
+            .equals(localUserId)
+            .toArray();
+    }
 
     if (routines.length === 0) {
         return { routine: null, reason: 'no_routines' };
@@ -71,12 +84,26 @@ export async function getLastCompletedRoutine(
 
 export async function getRoutinesForSplit(
     localUserId: number,
+    supabaseUserId: string | undefined,
     activeSplit: string
 ): Promise<Routine[]> {
-    const routines = await db.routines
-        .where('localUserId')
-        .equals(localUserId)
-        .toArray();
+    // Use supabaseUserId as primary lookup since it's stable across DB cleanups
+    let routines: Routine[] = [];
+
+    if (supabaseUserId) {
+        routines = await db.routines
+            .where('userId')
+            .equals(supabaseUserId)
+            .toArray();
+    }
+
+    // Fallback to localUserId if no supabaseUserId or no routines found
+    if (routines.length === 0 && localUserId) {
+        routines = await db.routines
+            .where('localUserId')
+            .equals(localUserId)
+            .toArray();
+    }
 
     // Filter routines that match the active split
     // This assumes routines have a way to identify their split type

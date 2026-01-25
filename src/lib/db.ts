@@ -74,6 +74,7 @@ export interface WorkoutSessionExercise {
 export interface WorkoutSession {
     id?: number;
     uuid?: string;
+    remoteId?: number; // Supabase session ID (different from local Dexie ID)
     userId: number;
     supabaseUserId: string;
     routineId: string;
@@ -183,12 +184,12 @@ const db = new Dexie('ProLiftsDB') as Dexie & {
     syncQueue: EntityTable<SyncOperation, 'id'>;
 };
 
-db.version(9).stores({
+db.version(10).stores({
     users: '++id, name, supabaseUserId, lastCompletedRoutineId, lastWorkoutDate',
     exercises: '++id, name, *primaryMuscles, equipment, inLibrary, source, category, *aliases',
     workouts: '++id, userId, date, splitType',
     routines: 'id, userId, localUserId, name',
-    workout_sessions: '++id, uuid, userId, supabaseUserId, routineId, date, status',
+    workout_sessions: '++id, uuid, remoteId, userId, supabaseUserId, routineId, date, status',
     syncQueue: '++id, type, entityType, entityId, status, createdAt',
 });
 

@@ -3,6 +3,8 @@ import { X, Smartphone, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const IOS_INSTALL_KEY = 'pro-lifts-ios-install-shown';
+const IOS_INSTALL_REMIND_KEY = 'pro-lifts-ios-install-remind-later';
+const REMIND_LATER_DAYS = 7; // Show again after 7 days if reminded later
 
 export function IOSInstallPrompt() {
   const [isVisible, setIsVisible] = useState(false);
@@ -16,12 +18,23 @@ export function IOSInstallPrompt() {
       const hasSeenPrompt = localStorage.getItem(IOS_INSTALL_KEY) === 'true';
       const isPWA = window.matchMedia('(display-mode: standalone)').matches;
 
-      if (isIOS && !isStandalone && !isPWA && !hasSeenPrompt) {
+      // Check if user clicked "Remind Me Later" and if enough time has passed
+      const remindLaterTimestamp = localStorage.getItem(IOS_INSTALL_REMIND_KEY);
+      let shouldShowAfterReminder = true;
+
+      if (remindLaterTimestamp) {
+        const daysSinceReminder = (Date.now() - parseInt(remindLaterTimestamp)) / (1000 * 60 * 60 * 24);
+        shouldShowAfterReminder = daysSinceReminder >= REMIND_LATER_DAYS;
+      }
+
+      // Only show if: iOS, not standalone, not PWA, hasn't permanently dismissed, and enough time passed since remind-later
+      if (isIOS && !isStandalone && !isPWA && !hasSeenPrompt && shouldShowAfterReminder) {
         setIsVisible(true);
       }
     };
 
-    const timer = setTimeout(checkIOS, 2000);
+    // Show after 3 seconds to avoid overwhelming on first load
+    const timer = setTimeout(checkIOS, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -29,21 +42,33 @@ export function IOSInstallPrompt() {
   const handleDismiss = () => {
     setIsVisible(false);
     setIsDismissed(true);
+    // Mark as permanently dismissed
     localStorage.setItem(IOS_INSTALL_KEY, 'true');
+    // Clear any remind-later timestamp
+    localStorage.removeItem(IOS_INSTALL_REMIND_KEY);
   };
 
   const handleRemindLater = () => {
     setIsVisible(false);
+    // Store current timestamp for remind-later
+    localStorage.setItem(IOS_INSTALL_REMIND_KEY, Date.now().toString());
   };
 
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center pb-6 px-4 pointer-events-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm pointer-events-auto"
+        onClick={handleRemindLater}
+      />
+
+      {/* Prompt Card */}
       <div
         className={cn(
           "glass gradient-radial border border-white/10 rounded-2xl p-6 max-w-sm w-full",
-          "pointer-events-auto animate-in slide-in-from-bottom-4 duration-300"
+          "pointer-events-auto animate-in zoom-in-95 duration-300 relative"
         )}
       >
         <div className="flex items-start justify-between mb-4">
@@ -59,6 +84,7 @@ export function IOSInstallPrompt() {
           <button
             onClick={handleDismiss}
             className="text-white/40 hover:text-white transition-colors"
+            aria-label="Dismiss"
           >
             <X className="w-5 h-5" />
           </button>
@@ -81,7 +107,7 @@ export function IOSInstallPrompt() {
             onClick={handleDismiss}
             className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 text-sm font-medium transition-colors"
           >
-            Already Installed
+            Don't Show Again
           </button>
           <button
             onClick={handleRemindLater}

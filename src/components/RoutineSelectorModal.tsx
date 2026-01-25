@@ -13,11 +13,11 @@ interface RoutineSelectorModalProps {
     onCreateNew: () => void;
 }
 
-const RoutineSelectorModal = ({ 
-    open, 
-    onOpenChange, 
-    onSelect, 
-    onCreateNew 
+const RoutineSelectorModal = ({
+    open,
+    onOpenChange,
+    onSelect,
+    onCreateNew
 }: RoutineSelectorModalProps) => {
     const { currentUser } = useUser();
     const [routines, setRoutines] = useState<Routine[]>([]);
@@ -32,10 +32,24 @@ const RoutineSelectorModal = ({
             }
 
             try {
-                const userRoutines = await db.routines
-                    .where('localUserId')
-                    .equals(currentUser.id)
-                    .toArray();
+                let userRoutines: Routine[] = [];
+
+                // Use supabaseUserId as primary lookup since it's stable across DB cleanups
+                if (currentUser.supabaseUserId) {
+                    userRoutines = await db.routines
+                        .where('userId')
+                        .equals(currentUser.supabaseUserId)
+                        .toArray();
+                }
+
+                // Fallback to localUserId if no routines found
+                if (userRoutines.length === 0) {
+                    userRoutines = await db.routines
+                        .where('localUserId')
+                        .equals(currentUser.id)
+                        .toArray();
+                }
+
                 setRoutines(userRoutines);
             } catch (error) {
                 console.error('Failed to load routines:', error);
@@ -48,7 +62,7 @@ const RoutineSelectorModal = ({
         if (open) {
             loadRoutines();
         }
-    }, [open, currentUser?.id]);
+    }, [open, currentUser?.id, currentUser?.supabaseUserId]);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -89,9 +103,9 @@ const RoutineSelectorModal = ({
                                     </CardContent>
                                 </Card>
                             ))}
-                            
-                            <Button 
-                                variant="outline" 
+
+                            <Button
+                                variant="outline"
                                 onClick={onCreateNew}
                                 className="w-full mt-4"
                             >

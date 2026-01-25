@@ -54,17 +54,20 @@ export async function processWorkoutSyncQueue(): Promise<void> {
 
 async function processWorkoutOperation(operation: QueuedOperation): Promise<void> {
     const sessionData = operation.data as { session?: WorkoutSession; workoutOpType?: WorkoutSyncType;[key: string]: unknown };
-    const session = sessionData.session;
     const workoutOpType = sessionData.workoutOpType;
 
-    if (!session) {
-        console.warn('[WorkoutSync] No session data in operation');
+    if (!workoutOpType) {
+        console.warn('[WorkoutSync] No workout operation type in operation data');
         await removeOperation(operation.id!);
         return;
     }
 
-    if (!workoutOpType) {
-        console.warn('[WorkoutSync] No workout operation type in operation data');
+    // Fetch the latest session data from the database to get updated remoteId
+    const sessionId = operation.entityId as unknown as number;
+    const session = await db.workout_sessions.get(sessionId);
+
+    if (!session) {
+        console.warn('[WorkoutSync] Session not found in database, removing operation');
         await removeOperation(operation.id!);
         return;
     }
@@ -114,13 +117,14 @@ async function processCreateSession(operation: QueuedOperation, session: Workout
             })),
         });
 
+        // Store the remote ID separately from the local ID
         await db.workout_sessions.update(operation.entityId as unknown as number, {
-            id: remoteSession.id,
+            remoteId: remoteSession.id,
             syncedAt: new Date().toISOString(),
         });
 
         await removeOperation(operation.id!);
-        console.log('[WorkoutSync] Successfully synced created session:', remoteSession.id);
+        console.log('[WorkoutSync] Successfully synced created session. Local ID:', operation.entityId, 'Remote ID:', remoteSession.id);
     } catch (error) {
         console.error('[WorkoutSync] Failed to create session remotely:', error);
         throw error;
@@ -128,20 +132,20 @@ async function processCreateSession(operation: QueuedOperation, session: Workout
 }
 
 async function processCompleteSession(operation: QueuedOperation, session: WorkoutSession): Promise<void> {
-    if (!session.id) {
-        console.warn('[WorkoutSync] Session has no remote ID, removing operation');
-        await removeOperation(operation.id!);
-        return;
+    if (!session.remoteId) {
+        console.warn('[WorkoutSync] Session has no remote ID yet, will retry after create completes');
+        // Don't remove the operation - let it retry after the create operation completes
+        throw new Error('Session not yet synced to server');
     }
 
     try {
-        await completeRemoteWorkout(session.id, new Date().toISOString());
+        await completeRemoteWorkout(session.remoteId, new Date().toISOString());
 
         await db.workout_sessions.update(operation.entityId as unknown as number, {
             syncedAt: new Date().toISOString(),
         });
 
-        console.log('[WorkoutSync] Successfully synced completed session');
+        console.log('[WorkoutSync] Successfully synced completed session. Local ID:', operation.entityId, 'Remote ID:', session.remoteId);
     } catch (error) {
         console.error('[WorkoutSync] Failed to complete session remotely:', error);
         throw error;
@@ -152,20 +156,20 @@ async function processCompleteSession(operation: QueuedOperation, session: Worko
 }
 
 async function processAbandonSession(operation: QueuedOperation, session: WorkoutSession): Promise<void> {
-    if (!session.id) {
-        console.warn('[WorkoutSync] Session has no remote ID, removing operation');
-        await removeOperation(operation.id!);
-        return;
+    if (!session.remoteId) {
+        console.warn('[WorkoutSync] Session has no remote ID yet, will retry after create completes');
+        // Don't remove the operation - let it retry after the create operation completes
+        throw new Error('Session not yet synced to server');
     }
 
     try {
-        await abandonRemoteWorkout(session.id, new Date().toISOString());
+        await abandonRemoteWorkout(session.remoteId, new Date().toISOString());
 
         await db.workout_sessions.update(operation.entityId as unknown as number, {
             syncedAt: new Date().toISOString(),
         });
 
-        console.log('[WorkoutSync] Successfully synced abandoned session');
+        console.log('[WorkoutSync] Successfully synced abandoned session. Local ID:', operation.entityId, 'Remote ID:', session.remoteId);
     } catch (error) {
         console.error('[WorkoutSync] Failed to abandon session remotely:', error);
         throw error;
