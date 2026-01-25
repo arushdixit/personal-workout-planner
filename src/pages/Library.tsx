@@ -75,7 +75,7 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
     };
     const [deleteTarget, setDeleteTarget] = useState<Exercise | null>(null);
     const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
-    
+
     // NEW: Routine selector state
     const [showRoutineSelector, setShowRoutineSelector] = useState(false);
     const [selectedExerciseForAdd, setSelectedExerciseForAdd] = useState<Exercise | null>(null);
@@ -193,7 +193,7 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
         toast.success(`Exercise added to routine`);
         setShowRoutineSelector(false);
         setSelectedExerciseForAdd(null);
-        
+
         // Mark the exercise as in library
         if (selectedExerciseForAdd?.id) {
             db.exercises.update(selectedExerciseForAdd.id, { inLibrary: true });
@@ -227,7 +227,7 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
     }
 
     return (
-        <div className="space-y-6 animate-slide-up min-h-[100dvh]">
+        <div className="space-y-6 animate-slide-up pb-10">
             {/* View Switcher */}
             <div className="flex p-1 bg-white/5 rounded-xl border border-white/10">
                 <button

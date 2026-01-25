@@ -124,8 +124,8 @@ const Index = () => {
   };
 
   return (
-    <div className="dark min-h-[100dvh] bg-background flex flex-col overflow-hidden">
-      <main className="flex-1 overflow-y-auto custom-scrollbar px-4 pt-6 pb-32 space-y-6">
+    <div className="dark h-[100dvh] bg-background flex flex-col overflow-hidden">
+      <main className="flex-1 overflow-y-auto custom-scrollbar px-4 pt-6 space-y-6">
         {activeTab === 'today' && (
           <TodayPage
             onStartWorkout={handleStartWorkout}
@@ -235,9 +235,8 @@ const Index = () => {
           </div>
         )}
       </main>
-
-      {!activeSession && activeTab !== 'workout' && (
-        <div className="flex-shrink-0 border-t border-white/5 bg-background/80 backdrop-blur-xl">
+      {activeTab !== 'workout' && (
+        <div className="flex-shrink-0 border-t border-white/10 bg-background/80 backdrop-blur-xl z-50">
           <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
         </div>
       )}

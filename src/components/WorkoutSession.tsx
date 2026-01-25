@@ -222,7 +222,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
 
             {/* Workout Controls (when in list view) */}
             {view === 'list' && !isWorkoutComplete && (
-                <div className="fixed bottom-24 left-0 right-0 z-30 px-4">
+                <div className="fixed bottom-6 left-0 right-0 z-30 px-4 pb-safe">
                     <div className="flex gap-3 max-w-lg mx-auto">
                         <Button
                             variant="destructive"
@@ -259,7 +259,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
 
             {/* End Workout Button (when workout is complete) */}
             {isWorkoutComplete && (
-                <div className="fixed bottom-24 left-0 right-0 z-30 px-4">
+                <div className="fixed bottom-6 left-0 right-0 z-30 px-4 pb-safe">
                     <Button
                         variant="gradient"
                         size="lg"

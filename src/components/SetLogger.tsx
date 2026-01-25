@@ -96,9 +96,13 @@ const SetLogger = ({
             {/* Sets List */}
             <div className="space-y-3">
                 {sets.map((set, index) => {
-                    const isNext = set.id === nextIncompleteSetId;
+                    const isActuallyNext = set.id === nextIncompleteSetId;
+                    const isNext = isActuallyNext && !isRestTimerActive;
+                    const isResting = isActuallyNext && isRestTimerActive;
                     const isCompleted = set.completed;
-                    const isDisabled = !isNext && !isCompleted;
+
+                    // Allow interaction if it's the next set OR if it's already completed (for editing)
+                    const isDisabled = !isActuallyNext && !isCompleted;
 
                     const currentValues = inputValues[set.id] || {
                         weight: isCompleted ? set.weight.toString() : (set.weight > 0 ? set.weight.toString() : ''),
@@ -120,9 +124,12 @@ const SetLogger = ({
                             {/* Set Badge */}
                             <div className={cn(
                                 "absolute top-0 right-0 px-4 py-1 rounded-bl-2xl text-[10px] font-black uppercase tracking-widest",
-                                isNext ? "bg-primary text-white" : isCompleted ? "bg-emerald-500 text-white" : "bg-white/10 text-muted-foreground"
+                                isNext ? "bg-primary text-white" :
+                                    isResting ? "bg-primary/40 text-white" :
+                                        isCompleted ? "bg-emerald-500 text-white" :
+                                            "bg-white/10 text-muted-foreground"
                             )}>
-                                {isCompleted ? 'Completed' : isNext ? 'Active' : 'Locked'}
+                                {isCompleted ? 'Completed' : isNext ? 'Active' : isResting ? 'Resting' : 'Locked'}
                             </div>
 
                             <div className="flex flex-col gap-4">
@@ -141,14 +148,15 @@ const SetLogger = ({
                                             <Input
                                                 type="number"
                                                 inputMode="decimal"
-                                                disabled={isDisabled || isCompleted}
+                                                disabled={isDisabled}
                                                 value={currentValues.weight}
                                                 onChange={(e) => handleInputChange(set.id, 'weight', e.target.value)}
+                                                onBlur={() => isCompleted && handleLogSet(set)}
                                                 placeholder={unit}
                                                 className={cn(
                                                     "h-12 text-center text-lg font-black bg-black/20 border-0 focus-visible:ring-2 focus-visible:ring-primary/50 transition-all rounded-xl",
-                                                    isCompleted && "text-emerald-400 opacity-60",
-                                                    isNext && "bg-white/5"
+                                                    isCompleted && "text-emerald-400 focus:text-foreground",
+                                                    (isNext || isResting) && "bg-white/5"
                                                 )}
                                             />
                                         </div>
@@ -157,14 +165,15 @@ const SetLogger = ({
                                             <Input
                                                 type="number"
                                                 inputMode="numeric"
-                                                disabled={isDisabled || isCompleted}
+                                                disabled={isDisabled}
                                                 value={currentValues.reps}
                                                 onChange={(e) => handleInputChange(set.id, 'reps', e.target.value)}
+                                                onBlur={() => isCompleted && handleLogSet(set)}
                                                 placeholder="0"
                                                 className={cn(
                                                     "h-12 text-center text-lg font-black bg-black/20 border-0 focus-visible:ring-2 focus-visible:ring-primary/50 transition-all rounded-xl",
-                                                    isCompleted && "text-emerald-400 opacity-60",
-                                                    isNext && "bg-white/5"
+                                                    isCompleted && "text-emerald-400 focus:text-foreground",
+                                                    (isNext || isResting) && "bg-white/5"
                                                 )}
                                             />
                                         </div>
@@ -178,33 +187,41 @@ const SetLogger = ({
                                 </div>
 
                                 {/* Second Row: Big Log Button (Only for active set) */}
-                                {isNext && (
+                                {(isNext || isResting) && (
                                     <div className="flex gap-3 animate-in slide-in-from-top-2 duration-500">
                                         <Button
                                             onClick={() => handleLogSet(set)}
-                                            className="flex-1 h-14 text-lg font-black bg-primary hover:bg-primary/90 text-white shadow-xl shadow-primary/20 rounded-2xl active:scale-95 transition-all"
+                                            disabled={isResting}
+                                            className={cn(
+                                                "flex-1 h-14 text-lg font-black shadow-xl rounded-2xl active:scale-95 transition-all",
+                                                isResting
+                                                    ? "bg-white/5 text-muted-foreground cursor-not-allowed"
+                                                    : "bg-primary hover:bg-primary/90 text-white shadow-primary/20"
+                                            )}
                                         >
-                                            <Check className="w-6 h-6 mr-2 stroke-[3px]" />
-                                            LOG SET
+                                            {isResting ? (
+                                                <>
+                                                    <Timer className="w-6 h-6 mr-2 animate-spin-slow" />
+                                                    RESTING...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Check className="w-6 h-6 mr-2 stroke-[3px]" />
+                                                    LOG SET
+                                                </>
+                                            )}
                                         </Button>
 
-                                        {/* Timer Indicator if active and next to this set */}
-                                        {isRestTimerActive && (
-                                            <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center justify-center animate-pulse">
+                                        {/* Timer Indicator if resting */}
+                                        {isResting && (
+                                            <div className="w-14 h-14 rounded-2xl bg-primary/20 border border-primary/30 flex flex-col items-center justify-center animate-pulse">
                                                 <Timer className="w-4 h-4 text-primary mb-1" />
-                                                <span className="text-[10px] font-black tabular-nums">{restTimeLeft}s</span>
+                                                <span className="text-[10px] font-black tabular-nums text-primary">{restTimeLeft}s</span>
                                             </div>
                                         )}
                                     </div>
                                 )}
 
-                                {/* Timer for next set if currently resting */}
-                                {!isNext && index > 0 && sets[index - 1].completed && !set.completed && isRestTimerActive && (
-                                    <div className="flex items-center gap-2 px-2 py-1 bg-primary/10 rounded-full w-fit animate-pulse">
-                                        <Timer className="w-3 h-3 text-primary" />
-                                        <span className="text-[10px] font-black tabular-nums text-primary uppercase">Resting: {restTimeLeft}s</span>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     );

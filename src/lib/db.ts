@@ -68,6 +68,7 @@ export interface WorkoutSessionExercise {
     exerciseName: string;
     order: number;
     sets: WorkoutSet[];
+    restSeconds: number;
     personalNote?: string;
 }
 

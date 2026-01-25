@@ -142,6 +142,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
                 exerciseId: ex.exerciseId,
                 exerciseName: ex.exerciseName,
                 order: ex.order,
+                restSeconds: ex.restSeconds,
                 sets: Array.from({ length: ex.sets }, (_, setIndex) => ({
                     id: Date.now() + setIndex + (index * 100),
                     setNumber: setIndex + 1,
@@ -184,6 +185,10 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         const session = await db.workout_sessions.get(activeSession.id!);
         if (!session) return;
 
+        const exercise = session.exercises[exerciseIndex];
+        const set = exercise.sets.find(s => s.id === setId);
+        const wasAlreadyCompleted = set?.completed;
+
         const updatedExercises = session.exercises.map((ex, idx) => {
             if (idx !== exerciseIndex) return ex;
             return {
@@ -196,7 +201,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
                         reps,
                         unit,
                         completed: true,
-                        completedAt: new Date().toISOString(),
+                        completedAt: s.completedAt || new Date().toISOString(),
                     };
                 })
             };
@@ -205,9 +210,13 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         await db.workout_sessions.update(session.id!, { exercises: updatedExercises });
         setActiveSession({ ...session, exercises: updatedExercises });
 
-        setRestTimeLeft(90);
-        setIsRestTimerActive(true);
-        setIsRestTimerMinimized(false);
+        // Only trigger rest timer if it's the first time logging this set
+        if (!wasAlreadyCompleted) {
+            const restSeconds = exercise.restSeconds || 90;
+            setRestTimeLeft(restSeconds);
+            setIsRestTimerActive(true);
+            setIsRestTimerMinimized(false);
+        }
 
         await queueWorkoutOperation('set_complete', session.id!, { setId, reps, weight });
     }, [activeSession]);
