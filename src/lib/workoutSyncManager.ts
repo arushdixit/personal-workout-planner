@@ -67,7 +67,9 @@ async function processWorkoutOperation(operation: QueuedOperation): Promise<void
     const session = await db.workout_sessions.get(sessionId);
 
     if (!session) {
-        console.warn('[WorkoutSync] Session not found in database, removing operation');
+        // This is expected if the session was deleted locally (e.g., user abandoned and deleted)
+        // We just clean up the orphaned sync operation
+        console.log(`[WorkoutSync] Session ${sessionId} no longer exists, cleaning up ${workoutOpType} operation`);
         await removeOperation(operation.id!);
         return;
     }
