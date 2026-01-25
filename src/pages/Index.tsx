@@ -6,6 +6,7 @@ import Routines from '@/pages/Routines';
 import TodayPage from '@/pages/Today';
 import ProgressChart from '@/components/ProgressChart';
 import WorkoutSession from '@/components/WorkoutSession';
+import { MinimizedRestTimer } from '@/components/RestTimer';
 import { User, Trophy, Target, LogOut, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -238,6 +239,8 @@ const Index = () => {
       <div className="flex-shrink-0">
         <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
       </div>
+
+      <MinimizedRestTimer />
     </div>
   );
 };

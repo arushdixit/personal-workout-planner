@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
-import { Check, Minus, Plus, Clock, Trash2 } from 'lucide-react';
+import { Check, Plus, Trash2, Timer, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import PlateVisualizer from './PlateVisualizer';
 import { WorkoutSet } from '@/lib/db';
+import { useWorkout } from '@/context/WorkoutContext';
 
 interface SetLoggerProps {
     sets: WorkoutSet[];
@@ -27,251 +27,200 @@ const SetLogger = ({
     canAddSet = true,
     canRemoveSet = false,
 }: SetLoggerProps) => {
-    const [editingSet, setEditingSet] = useState<number | null>(null);
-    const [tempWeight, setTempWeight] = useState(0);
-    const [tempReps, setTempReps] = useState(0);
+    const { isRestTimerActive, restTimeLeft } = useWorkout();
 
-    const handleStartEdit = (set: WorkoutSet) => {
-        if (set.completed) return;
-        setEditingSet(set.id);
-        setTempWeight(set.weight);
-        setTempReps(set.reps);
+    // Local state for input values
+    const [inputValues, setInputValues] = useState<Record<number, { weight: string; reps: string }>>({});
+
+    const handleInputChange = (setId: number, field: 'weight' | 'reps', value: string) => {
+        setInputValues(prev => ({
+            ...prev,
+            [setId]: {
+                ...(prev[setId] || { weight: '', reps: '' }),
+                [field]: value
+            }
+        }));
     };
 
-    const handleComplete = (setId: number) => {
-        onSetComplete(setId, tempWeight, tempReps, unit);
-        setEditingSet(null);
+    const handleLogSet = (set: WorkoutSet) => {
+        const values = inputValues[set.id] || {
+            weight: set.weight > 0 ? set.weight.toString() : '',
+            reps: set.reps > 0 ? set.reps.toString() : ''
+        };
+        const weight = parseFloat(values.weight) || 0;
+        const reps = parseInt(values.reps, 10) || 0;
+        onSetComplete(set.id, weight, reps, unit);
     };
 
-    const handleCancel = () => {
-        setEditingSet(null);
-        setTempWeight(0);
-        setTempReps(0);
-    };
+    const nextIncompleteSetId = useMemo(() => {
+        return sets.find(s => !s.completed)?.id || null;
+    }, [sets]);
 
-    const adjustValue = (type: 'weight' | 'reps', delta: number) => {
-        if (type === 'weight') {
-            const increment = unit === 'kg' ? 2.5 : 5;
-            setTempWeight((prev) => Math.max(0, prev + delta * increment));
-        } else {
-            setTempReps((prev) => Math.max(0, prev + delta));
-        }
-    };
-
-    const formatTime = (isoString?: string) => {
-        if (!isoString) return '';
-        const date = new Date(isoString);
-        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    };
-
-    const completedCount = useMemo(() => 
-        sets.filter(s => s.completed).length, 
-    [sets]);
+    const completedCount = useMemo(() =>
+        sets.filter(s => s.completed).length,
+        [sets]);
 
     return (
         <div className="space-y-4">
-            {/* Unit Toggle */}
-            <div className="flex items-center justify-center gap-2 py-2">
-                <Button
-                    variant={unit === 'kg' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => onUnitChange('kg')}
-                    className={cn(
-                        "w-16",
-                        unit === 'kg' && "gradient-red"
-                    )}
-                >
-                    kg
-                </Button>
-                <Button
-                    variant={unit === 'lbs' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => onUnitChange('lbs')}
-                    className={cn(
-                        "w-16",
-                        unit === 'lbs' && "gradient-red"
-                    )}
-                >
-                    lbs
-                </Button>
-            </div>
-
-            {/* Progress Summary */}
-            <div className="flex items-center justify-between text-sm text-muted-foreground px-2">
-                <span>{completedCount} / {sets.length} sets completed</span>
+            {/* Header / Progress */}
+            <div className="flex items-center justify-between gap-4 py-2 border-b border-white/5">
+                <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Workout Progress</span>
+                    <div className="flex items-center gap-2">
+                        <span className="text-xl font-black text-foreground">{completedCount}</span>
+                        <span className="text-muted-foreground text-sm">/ {sets.length} sets</span>
+                    </div>
+                </div>
+                <div className="flex bg-white/5 rounded-xl p-1.5 border border-white/5">
+                    <button
+                        onClick={() => onUnitChange('kg')}
+                        className={cn(
+                            "px-4 py-1.5 text-xs font-black rounded-lg transition-all",
+                            unit === 'kg' ? "bg-white/10 text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]" : "text-muted-foreground hover:text-white/60"
+                        )}
+                    >
+                        KG
+                    </button>
+                    <button
+                        onClick={() => onUnitChange('lbs')}
+                        className={cn(
+                            "px-4 py-1.5 text-xs font-black rounded-lg transition-all",
+                            unit === 'lbs' ? "bg-white/10 text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]" : "text-muted-foreground hover:text-white/60"
+                        )}
+                    >
+                        LBS
+                    </button>
+                </div>
             </div>
 
             {/* Sets List */}
             <div className="space-y-3">
-                {sets.map((set) => (
-                    <div
-                        key={set.id}
-                        className={cn(
-                            "glass-card p-4 transition-all duration-300",
-                            set.completed && "bg-primary/10 ring-1 ring-primary/30",
-                            editingSet === set.id && "ring-1 ring-primary"
-                        )}
-                    >
-                        {editingSet === set.id ? (
-                            <div className="space-y-3">
-                                {/* Weight Input with Quick Adjust */}
-                                <div className="flex items-center justify-center gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        onClick={() => adjustValue('weight', -1)}
-                                        className="h-10 w-10"
-                                    >
-                                        <Minus className="w-4 h-4" />
-                                    </Button>
-                                    <div className="relative w-24">
-                                        <Input
-                                            type="number"
-                                            value={tempWeight}
-                                            onChange={(e) => setTempWeight(Math.max(0, parseFloat(e.target.value) || 0))}
-                                            className="text-center font-semibold h-10 pr-8 bg-background/50"
-                                            step={unit === 'kg' ? '2.5' : '5'}
-                                        />
-                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                                            {unit}
-                                        </span>
+                {sets.map((set, index) => {
+                    const isNext = set.id === nextIncompleteSetId;
+                    const isCompleted = set.completed;
+                    const isDisabled = !isNext && !isCompleted;
+
+                    const currentValues = inputValues[set.id] || {
+                        weight: isCompleted ? set.weight.toString() : (set.weight > 0 ? set.weight.toString() : ''),
+                        reps: isCompleted ? set.reps.toString() : (set.reps > 0 ? set.reps.toString() : '')
+                    };
+
+                    return (
+                        <div
+                            key={set.id}
+                            className={cn(
+                                "relative overflow-hidden transition-all duration-500 rounded-3xl border",
+                                isNext
+                                    ? "bg-primary/5 border-primary/30 p-5 ring-1 ring-primary/20 shadow-[0_0_30px_rgba(239,68,68,0.05)]"
+                                    : isCompleted
+                                        ? "bg-emerald-500/[0.03] border-emerald-500/20 p-4 opacity-80"
+                                        : "bg-white/[0.02] border-white/5 p-4 grayscale opacity-40"
+                            )}
+                        >
+                            {/* Set Badge */}
+                            <div className={cn(
+                                "absolute top-0 right-0 px-4 py-1 rounded-bl-2xl text-[10px] font-black uppercase tracking-widest",
+                                isNext ? "bg-primary text-white" : isCompleted ? "bg-emerald-500 text-white" : "bg-white/10 text-muted-foreground"
+                            )}>
+                                {isCompleted ? 'Completed' : isNext ? 'Active' : 'Locked'}
+                            </div>
+
+                            <div className="flex flex-col gap-4">
+                                {/* First Row: Details */}
+                                <div className="flex items-center gap-4">
+                                    <div className={cn(
+                                        "w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black shrink-0 transition-colors",
+                                        isNext ? "bg-primary/20 text-primary" : isCompleted ? "bg-emerald-500/20 text-emerald-500" : "bg-white/5 text-muted-foreground"
+                                    )}>
+                                        {set.setNumber}
                                     </div>
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        onClick={() => adjustValue('weight', 1)}
-                                        className="h-10 w-10"
-                                    >
-                                        <Plus className="w-4 h-4" />
-                                    </Button>
+
+                                    <div className="flex-1 grid grid-cols-2 gap-3">
+                                        <div className="space-y-1">
+                                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block ml-1">Weight</span>
+                                            <Input
+                                                type="number"
+                                                inputMode="decimal"
+                                                disabled={isDisabled || isCompleted}
+                                                value={currentValues.weight}
+                                                onChange={(e) => handleInputChange(set.id, 'weight', e.target.value)}
+                                                placeholder={unit}
+                                                className={cn(
+                                                    "h-12 text-center text-lg font-black bg-black/20 border-0 focus-visible:ring-2 focus-visible:ring-primary/50 transition-all rounded-xl",
+                                                    isCompleted && "text-emerald-400 opacity-60",
+                                                    isNext && "bg-white/5"
+                                                )}
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block ml-1">Reps</span>
+                                            <Input
+                                                type="number"
+                                                inputMode="numeric"
+                                                disabled={isDisabled || isCompleted}
+                                                value={currentValues.reps}
+                                                onChange={(e) => handleInputChange(set.id, 'reps', e.target.value)}
+                                                placeholder="0"
+                                                className={cn(
+                                                    "h-12 text-center text-lg font-black bg-black/20 border-0 focus-visible:ring-2 focus-visible:ring-primary/50 transition-all rounded-xl",
+                                                    isCompleted && "text-emerald-400 opacity-60",
+                                                    isNext && "bg-white/5"
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {!isNext && isCompleted && (
+                                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                            <Check className="w-5 h-5 text-emerald-500" />
+                                        </div>
+                                    )}
                                 </div>
 
-                                {/* Plate Visualization */}
-                                {tempWeight > 0 && (
-                                    <div className="flex justify-center py-2">
-                                        <PlateVisualizer
-                                            weight={tempWeight}
-                                            unit={unit}
-                                        />
+                                {/* Second Row: Big Log Button (Only for active set) */}
+                                {isNext && (
+                                    <div className="flex gap-3 animate-in slide-in-from-top-2 duration-500">
+                                        <Button
+                                            onClick={() => handleLogSet(set)}
+                                            className="flex-1 h-14 text-lg font-black bg-primary hover:bg-primary/90 text-white shadow-xl shadow-primary/20 rounded-2xl active:scale-95 transition-all"
+                                        >
+                                            <Check className="w-6 h-6 mr-2 stroke-[3px]" />
+                                            LOG SET
+                                        </Button>
+
+                                        {/* Timer Indicator if active and next to this set */}
+                                        {isRestTimerActive && (
+                                            <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center justify-center animate-pulse">
+                                                <Timer className="w-4 h-4 text-primary mb-1" />
+                                                <span className="text-[10px] font-black tabular-nums">{restTimeLeft}s</span>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
-                                {/* Reps Input with Quick Adjust */}
-                                <div className="flex items-center justify-center gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        onClick={() => adjustValue('reps', -1)}
-                                        className="h-10 w-10"
-                                    >
-                                        <Minus className="w-4 h-4" />
-                                    </Button>
-                                    <Input
-                                        type="number"
-                                        value={tempReps}
-                                        onChange={(e) => setTempReps(Math.max(0, parseInt(e.target.value) || 0))}
-                                        className="w-20 text-center font-semibold h-10"
-                                        step="1"
-                                    />
-                                    <span className="text-sm text-muted-foreground w-8">reps</span>
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        onClick={() => adjustValue('reps', 1)}
-                                        className="h-10 w-10"
-                                    >
-                                        <Plus className="w-4 h-4" />
-                                    </Button>
-                                </div>
-
-                                {/* Action Buttons */}
-                                <div className="flex gap-2 pt-2">
-                                    <Button
-                                        variant="ghost"
-                                        onClick={handleCancel}
-                                        className="flex-1"
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        variant="gradient"
-                                        onClick={() => handleComplete(set.id)}
-                                        className="flex-1"
-                                    >
-                                        <Check className="w-4 h-4 mr-2" />
-                                        Complete Set
-                                    </Button>
-                                </div>
+                                {/* Timer for next set if currently resting */}
+                                {!isNext && index > 0 && sets[index - 1].completed && !set.completed && isRestTimerActive && (
+                                    <div className="flex items-center gap-2 px-2 py-1 bg-primary/10 rounded-full w-fit animate-pulse">
+                                        <Timer className="w-3 h-3 text-primary" />
+                                        <span className="text-[10px] font-black tabular-nums text-primary uppercase">Resting: {restTimeLeft}s</span>
+                                    </div>
+                                )}
                             </div>
-                        ) : (
-                            <button
-                                onClick={() => !set.completed && handleStartEdit(set)}
-                                className="w-full grid grid-cols-12 items-center gap-2"
-                                disabled={set.completed}
-                            >
-                                {/* Set Number */}
-                                <div className={cn(
-                                    "col-span-1 text-lg font-bold text-center",
-                                    set.completed ? "text-primary" : "text-muted-foreground"
-                                )}>
-                                    {set.setNumber}
-                                </div>
-
-                                {/* Weight */}
-                                <div className="col-span-4 text-left">
-                                    {set.completed ? (
-                                        <div>
-                                            <span className="font-semibold">
-                                                {set.weight} {set.unit}
-                                            </span>
-                                            {set.completedAt && (
-                                                <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                                                    <Clock className="w-3 h-3" />
-                                                    {formatTime(set.completedAt)}
-                                                </div>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <span className="text-muted-foreground">
-                                            -- {unit}
-                                        </span>
-                                    )}
-                                </div>
-
-                                {/* Reps */}
-                                <div className={cn(
-                                    "col-span-3 text-center font-medium",
-                                    set.completed ? "text-foreground" : "text-muted-foreground"
-                                )}>
-                                    {set.completed ? `${set.reps} reps` : '--'}
-                                </div>
-
-                                {/* Status */}
-                                <div className="col-span-4 flex justify-end items-center gap-2">
-                                    {set.completed ? (
-                                        <div className="w-8 h-8 rounded-full gradient-red flex items-center justify-center">
-                                            <Check className="w-4 h-4 text-white" />
-                                        </div>
-                                    ) : (
-                                        <div className="w-8 h-8 rounded-full border-2 border-dashed border-muted-foreground/30" />
-                                    )}
-                                </div>
-                            </button>
-                        )}
-                    </div>
-                ))}
+                        </div>
+                    );
+                })}
             </div>
 
             {/* Add/Remove Set Buttons */}
-            <div className="flex gap-2">
+            <div className="flex gap-3 pt-4">
                 {canAddSet && (
                     <Button
-                        variant="outline"
+                        variant="glass"
                         onClick={onAddSet}
-                        className="flex-1"
+                        className="flex-1 h-14 border-dashed border-2 border-white/5 hover:bg-white/5 hover:border-primary/30 rounded-2xl font-black text-muted-foreground hover:text-foreground"
                     >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Set
+                        <Plus className="w-5 h-5 mr-2" />
+                        ADD EXTRA SET
                     </Button>
                 )}
                 {canRemoveSet && sets.length > 1 && !sets[sets.length - 1].completed && (
@@ -279,9 +228,9 @@ const SetLogger = ({
                         variant="ghost"
                         size="icon"
                         onClick={onRemoveSet}
-                        className="text-destructive hover:text-destructive"
+                        className="h-14 w-14 rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 border border-white/5"
                     >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-5 h-5" />
                     </Button>
                 )}
             </div>

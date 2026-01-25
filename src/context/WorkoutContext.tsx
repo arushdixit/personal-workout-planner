@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode, useMemo } from 'react';
 import { db, WorkoutSession, WorkoutSessionExercise, WorkoutSet, Routine } from '@/lib/db';
-import { completeWorkout as completeRemoteWorkout } from '@/lib/supabaseWorkoutClient';
 import { updateLastCompletedRoutine } from '@/lib/routineCycling';
 import { queueWorkoutOperation } from '@/lib/workoutSyncManager';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,6 +15,8 @@ interface WorkoutContextType {
     progress: { completed: number; total: number };
     isWorkoutComplete: boolean;
     isRestTimerActive: boolean;
+    restTimeLeft: number;
+    isRestTimerMinimized: boolean;
 
     // Actions
     startWorkout: (routine: Routine, userId: number, supabaseUserId: string) => Promise<WorkoutSession>;
@@ -29,6 +30,8 @@ interface WorkoutContextType {
     endWorkout: () => Promise<void>;
     abandonWorkout: () => Promise<void>;
     clearActiveSession: () => Promise<void>;
+    setMinimizedRest: (minimized: boolean) => void;
+    adjustRestTime: (delta: number) => void;
 
     // Unit Override
     setExerciseUnit: (exerciseId: number, unit: 'kg' | 'lbs') => void;
@@ -42,6 +45,8 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
     const [exerciseUnitOverrides, setExerciseUnitOverrides] = useState<Record<number, 'kg' | 'lbs'>>({});
     const [isRestTimerActive, setIsRestTimerActive] = useState(false);
+    const [restTimeLeft, setRestTimeLeft] = useState(0);
+    const [isRestTimerMinimized, setIsRestTimerMinimized] = useState(false);
 
     // Load any active session on mount
     useEffect(() => {
@@ -68,10 +73,29 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         loadActiveSession();
     }, []);
 
-    // Computed values
-    const currentExercise = activeSession?.exercises[currentExerciseIndex] || null;
+    // Rest Timer Logic
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (isRestTimerActive && restTimeLeft > 0) {
+            timer = setInterval(() => {
+                setRestTimeLeft(prev => {
+                    if (prev <= 1) {
+                        setIsRestTimerActive(false);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        }
+        return () => clearInterval(timer);
+    }, [isRestTimerActive, restTimeLeft]);
 
-    const progress = React.useMemo(() => {
+    // Computed values
+    const currentExercise = useMemo(() =>
+        activeSession?.exercises[currentExerciseIndex] || null
+        , [activeSession, currentExerciseIndex]);
+
+    const progress = useMemo(() => {
         if (!activeSession) return { completed: 0, total: 0 };
 
         let totalSets = 0;
@@ -85,7 +109,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         return { completed: completedSets, total: totalSets };
     }, [activeSession]);
 
-    const isWorkoutComplete = React.useMemo(() => {
+    const isWorkoutComplete = useMemo(() => {
         if (!activeSession) return false;
         return activeSession.exercises.every(ex =>
             ex.sets.every(set => set.completed)
@@ -179,7 +203,9 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             setActiveSession({ ...session, exercises: session.exercises });
 
             // Show rest timer
+            setRestTimeLeft(90); // Default 90s
             setIsRestTimerActive(true);
+            setIsRestTimerMinimized(false);
 
             // Queue for sync
             await queueWorkoutOperation('set_complete', session.id!, { setId, reps, weight });
@@ -257,6 +283,15 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
     const skipRest = useCallback(() => {
         setIsRestTimerActive(false);
+        setRestTimeLeft(0);
+    }, []);
+
+    const setMinimizedRest = useCallback((minimized: boolean) => {
+        setIsRestTimerMinimized(minimized);
+    }, []);
+
+    const adjustRestTime = useCallback((delta: number) => {
+        setRestTimeLeft(prev => Math.max(0, prev + delta));
     }, []);
 
     const endWorkout = useCallback(async () => {
@@ -331,6 +366,8 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         progress,
         isWorkoutComplete,
         isRestTimerActive,
+        restTimeLeft,
+        isRestTimerMinimized,
         startWorkout,
         completeSet,
         addExtraSet,
@@ -342,6 +379,8 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         endWorkout,
         abandonWorkout,
         clearActiveSession,
+        setMinimizedRest,
+        adjustRestTime,
         setExerciseUnit,
         getExerciseUnit,
     };
@@ -361,7 +400,7 @@ export const useWorkout = () => {
     return context;
 };
 
-// Helper function to parse reps string like "8-12" to a number
+// Helper function to parse reps string like \"8-12\" to a number
 function parseReps(reps: string): number {
     if (reps.includes('-')) {
         const [min] = reps.split('-').map(Number);
