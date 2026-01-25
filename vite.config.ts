@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => ({
         'favicon.ico',
         'robots.txt',
         'apple-touch-icon.png',
-        'images/muscles/*.png'
+        'muscles/*.png'
       ],
       manifest: {
         name: 'Pro-Lifts Fitness',

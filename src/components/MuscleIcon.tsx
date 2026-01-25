@@ -57,7 +57,7 @@ export const MuscleIcon = ({ muscleName, isPrimary, size = 'md' }: MuscleIconPro
         >
             {/* Try to load image first */}
             <img
-                src={`/images/muscles/${muscleSlug}.png`}
+                src={`/muscles/${muscleSlug}.png`}
                 alt={muscleName}
                 className={cn(iconSizes[size], "object-contain filter brightness-0 invert opacity-80")}
                 onError={(e) => {
