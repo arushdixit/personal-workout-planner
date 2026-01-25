@@ -10,13 +10,13 @@ interface WorkoutContextType {
     activeSession: WorkoutSession | null;
     currentExerciseIndex: number;
     exerciseUnitOverrides: Record<number, 'kg' | 'lbs'>;
-    
+
     // Computed
     currentExercise: WorkoutSessionExercise | null;
     progress: { completed: number; total: number };
     isWorkoutComplete: boolean;
     isRestTimerActive: boolean;
-    
+
     // Actions
     startWorkout: (routine: Routine, userId: number, supabaseUserId: string) => Promise<WorkoutSession>;
     completeSet: (exerciseIndex: number, setId: number, weight: number, reps: number, unit: 'kg' | 'lbs') => Promise<void>;
@@ -29,7 +29,7 @@ interface WorkoutContextType {
     endWorkout: () => Promise<void>;
     abandonWorkout: () => Promise<void>;
     clearActiveSession: () => Promise<void>;
-    
+
     // Unit Override
     setExerciseUnit: (exerciseId: number, unit: 'kg' | 'lbs') => void;
     getExerciseUnit: (exerciseId: number) => 'kg' | 'lbs';
@@ -52,8 +52,9 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
                     .where('userId')
                     .equals(currentUser.id)
                     .and(s => s.status === 'in_progress')
+                    .reverse()
                     .first();
-                
+
                 if (session) {
                     setActiveSession(session);
                     // Find current exercise index based on first incomplete
@@ -72,21 +73,21 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
     const progress = React.useMemo(() => {
         if (!activeSession) return { completed: 0, total: 0 };
-        
+
         let totalSets = 0;
         let completedSets = 0;
-        
+
         for (const exercise of activeSession.exercises) {
             totalSets += exercise.sets.length;
             completedSets += exercise.sets.filter(s => s.completed).length;
         }
-        
+
         return { completed: completedSets, total: totalSets };
     }, [activeSession]);
 
     const isWorkoutComplete = React.useMemo(() => {
         if (!activeSession) return false;
-        return activeSession.exercises.every(ex => 
+        return activeSession.exercises.every(ex =>
             ex.sets.every(set => set.completed)
         );
     }, [activeSession]);
@@ -97,6 +98,13 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         userId: number,
         supabaseUserId: string
     ): Promise<WorkoutSession> => {
+        // Clear any existing in-progress sessions first to avoid duplicates
+        await db.workout_sessions
+            .where('userId')
+            .equals(userId)
+            .and(s => s.status === 'in_progress')
+            .delete();
+
         const now = new Date().toISOString();
         const today = now.split('T')[0];
 
@@ -122,16 +130,16 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             })),
             status: 'in_progress',
         };
-        
+
         const localId = await db.workout_sessions.add(sessionForDexie);
-        const createdSession: WorkoutSession = { 
-            ...sessionForDexie, 
+        const createdSession: WorkoutSession = {
+            ...sessionForDexie,
             id: localId as number,
             uuid: uuidv4(),
         };
-        
+
         await db.workout_sessions.update(localId as number, { uuid: createdSession.uuid });
-        
+
         setActiveSession(createdSession);
         setCurrentExerciseIndex(0);
         setExerciseUnitOverrides({});

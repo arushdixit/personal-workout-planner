@@ -12,10 +12,6 @@ import { WorkoutSet, Exercise } from "@/lib/db";
 
 interface ActiveExerciseProps {
     exercise: Exercise & { sets: WorkoutSet[] };
-    currentIndex: number;
-    totalExercises: number;
-    onPrevious: () => void;
-    onNext: () => void;
     onSetComplete: (setId: number, weight: number, reps: number, unit: 'kg' | 'lbs') => void;
     onAddSet: () => void;
     unit: 'kg' | 'lbs';
@@ -26,10 +22,6 @@ interface ActiveExerciseProps {
 
 const ActiveExercise = ({
     exercise,
-    currentIndex,
-    totalExercises,
-    onPrevious,
-    onNext,
     onSetComplete,
     onAddSet,
     unit,
@@ -42,7 +34,6 @@ const ActiveExercise = ({
     const gender = currentUser?.gender || 'male';
     const [activeTab, setActiveTab] = useState<'sets' | 'tutorial' | 'muscles'>('sets');
 
-    const progress = ((currentIndex + 1) / totalExercises) * 100;
     const completedSets = exercise.sets.filter((s) => s.completed).length;
 
     const handleSetComplete = (setId: number, weight: number, reps: number, setUnit: 'kg' | 'lbs') => {
@@ -53,45 +44,10 @@ const ActiveExercise = ({
     };
 
     return (
-        <div className="min-h-screen pb-24">
-            {/* Progress bar */}
-            <div className="fixed top-0 left-0 right-0 z-40 h-1 bg-muted">
-                <div
-                    className="h-full gradient-red transition-all duration-500 glow-red"
-                    style={{ width: `${progress}%` }}
-                />
-            </div>
-
+        <div className="pb-24">
             {/* Header */}
-            <div className="relative z-30 pt-14 px-4 pb-4">
-                <div className="flex items-center justify-between mb-4">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={onPrevious}
-                        disabled={currentIndex === 0}
-                        aria-label="Previous exercise"
-                    >
-                        <ChevronLeft className="w-6 h-6" />
-                    </Button>
-                    <span className="text-sm font-medium text-muted-foreground">
-                        {currentIndex + 1} / {totalExercises}
-                    </span>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={onNext}
-                        disabled={currentIndex === totalExercises - 1}
-                        aria-label="Next exercise"
-                    >
-                        <ChevronRight className="w-6 h-6" />
-                    </Button>
-                </div>
-
-                <h1 className="text-2xl font-bold text-center mb-2">{exercise.name}</h1>
-                <p className="text-center text-muted-foreground text-sm">
-                    {completedSets} / {exercise.sets.length} sets completed
-                </p>
+            <div className="relative z-30 px-0 pb-4">
+                <h1 className="text-3xl font-bold mb-2">{exercise.name}</h1>
             </div>
 
             {/* Warning banner */}
@@ -143,6 +99,8 @@ const ActiveExercise = ({
                                         src={exercise.tutorialUrl}
                                         className="w-full h-full"
                                         allowFullScreen
+                                        title="Exercise Tutorial"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     />
                                 </div>
                             )}

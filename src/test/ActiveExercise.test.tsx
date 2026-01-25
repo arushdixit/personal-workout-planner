@@ -1,225 +1,222 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ActiveExercise from '@/components/ActiveExercise';
 import { renderWithProviders } from './test-utils';
+import { Exercise, WorkoutSet } from '@/lib/db';
 
-const mockExercise = {
-  id: '1',
+const mockExercise: Exercise & { sets: WorkoutSet[] } = {
+  id: 1,
   name: 'Bench Press',
   primaryMuscles: ['chest'],
   secondaryMuscles: ['triceps'],
+  equipment: 'Barbell',
   sets: [
-    { id: 1, weight: 100, reps: 8, completed: false },
-    { id: 2, weight: 100, reps: 8, completed: false },
-    { id: 3, weight: 100, reps: 8, completed: false },
+    { id: 1, setNumber: 1, weight: 100, reps: 8, completed: false, unit: 'kg' },
+    { id: 2, setNumber: 2, weight: 100, reps: 8, completed: false, unit: 'kg' },
+    { id: 3, setNumber: 3, weight: 100, reps: 8, completed: false, unit: 'kg' },
   ],
 };
 
-const renderActiveExercise = (exercise, currentIndex, totalExercises, onPrevious, onNext, onSetComplete) => {
-  act(() => {
-    renderWithProviders(
-      <ActiveExercise
-        exercise={exercise}
-        currentIndex={currentIndex}
-        totalExercises={totalExercises}
-        onPrevious={onPrevious}
-        onNext={onNext}
-        onSetComplete={onSetComplete}
-      />
-    );
-  });
+const renderActiveExercise = (
+  exercise: Exercise & { sets: WorkoutSet[] },
+  onSetComplete = vi.fn(),
+  onAddSet = vi.fn(),
+  onNoteChange = vi.fn()
+) => {
+  return renderWithProviders(
+    <ActiveExercise
+      exercise={exercise}
+      onSetComplete={onSetComplete}
+      onAddSet={onAddSet}
+      unit="kg"
+      onUnitChange={vi.fn()}
+      onNoteChange={onNoteChange}
+    />
+  );
 };
 
-describe('ActiveExercise - Header & Progress', () => {
+describe('ActiveExercise - Header', () => {
   it('displays exercise name', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 0, 3, onPrevious, onNext, onSetComplete);
-
+    renderActiveExercise(mockExercise);
     expect(screen.getByText('Bench Press')).toBeInTheDocument();
   });
+});
 
-  it('shows current exercise index', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
+describe('ActiveExercise - Tabs', () => {
+  it('renders all tabs', () => {
+    renderActiveExercise(mockExercise);
 
-    renderActiveExercise(mockExercise, 0, 3, onPrevious, onNext, onSetComplete);
-
-    expect(screen.getByText('1 / 3')).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /sets/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /tutorial/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /target muscles/i })).toBeInTheDocument();
   });
 
-  it('displays progress indicator', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
+  it('shows sets tab by default', () => {
+    renderActiveExercise(mockExercise);
 
-    renderActiveExercise(mockExercise, 1, 3, onPrevious, onNext, onSetComplete);
-
-    expect(screen.getByText('2 / 3')).toBeInTheDocument();
+    const setsTab = screen.getByRole('tab', { name: /sets/i });
+    expect(setsTab).toHaveAttribute('data-state', 'active');
   });
 
-  it('shows sets completion status', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
+  it('switches to tutorial tab when clicked', async () => {
+    renderActiveExercise(mockExercise);
 
-    renderActiveExercise(mockExercise, 0, 3, onPrevious, onNext, onSetComplete);
+    const tutorialTab = screen.getByRole('tab', { name: /tutorial/i });
+    fireEvent.click(tutorialTab);
 
-    expect(screen.getByText('0 / 3 sets completed')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(tutorialTab).toHaveAttribute('data-state', 'active');
+    });
+  });
+
+  it('switches to muscles tab when clicked', async () => {
+    renderActiveExercise(mockExercise);
+
+    const musclesTab = screen.getByRole('tab', { name: /target muscles/i });
+    fireEvent.click(musclesTab);
+
+    await waitFor(() => {
+      expect(musclesTab).toHaveAttribute('data-state', 'active');
+    });
   });
 });
 
-describe('ActiveExercise - Navigation', () => {
-  it('disables previous button on first exercise', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
+describe('ActiveExercise - Sets Tab', () => {
+  it('renders SetLogger component', () => {
+    renderActiveExercise(mockExercise);
 
-    renderActiveExercise(mockExercise, 0, 3, onPrevious, onNext, onSetComplete);
-
-    const prevButton = screen.getByRole('button', { name: /previous exercise/i });
-    expect(prevButton).toBeDisabled();
+    // SetLogger should show progress
+    expect(screen.getByText(/0 \/ 3 sets completed/i)).toBeInTheDocument();
   });
 
-  it('enables previous button on subsequent exercises', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 1, 3, onPrevious, onNext, onSetComplete);
-
-    const prevButton = screen.getByRole('button', { name: /previous exercise/i });
-    expect(prevButton).not.toBeDisabled();
-  });
-
-  it('disables next button on last exercise', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 2, 3, onPrevious, onNext, onSetComplete);
-
-    const nextButton = screen.getByRole('button', { name: /next exercise/i });
-    expect(nextButton).toBeDisabled();
-  });
-
-  it('calls onPrevious when previous button clicked', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 1, 3, onPrevious, onNext, onSetComplete);
-
-    const prevButton = screen.getByRole('button', { name: /previous exercise/i });
-    fireEvent.click(prevButton);
-
-    expect(onPrevious).toHaveBeenCalled();
-  });
-
-  it('calls onNext when next button clicked', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 1, 3, onPrevious, onNext, onSetComplete);
-
-    const nextButton = screen.getByRole('button', { name: /next exercise/i });
-    fireEvent.click(nextButton);
-
-    expect(onNext).toHaveBeenCalled();
-  });
-});
-
-describe('ActiveExercise - Anatomy Diagram', () => {
-  it('renders anatomy diagram', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 0, 3, onPrevious, onNext, onSetComplete);
-
-    const diagramElement = screen.getByRole('img');
-    expect(diagramElement).toBeInTheDocument();
-  });
-});
-
-describe('ActiveExercise - Tutorial', () => {
-  it('shows tutorial button', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 0, 3, onPrevious, onNext, onSetComplete);
-
-    expect(screen.getByRole('button', { name: /watch tutorial/i })).toBeInTheDocument();
-  });
-
-  it('toggles tutorial display when clicked', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 0, 3, onPrevious, onNext, onSetComplete);
-
-    const tutorialButton = screen.getByRole('button', { name: /watch tutorial/i });
-    fireEvent.click(tutorialButton);
-
-    expect(screen.getByText(/Video tutorial placeholder/i)).toBeInTheDocument();
-  });
-});
-
-describe('ActiveExercise - Notes Section', () => {
   it('renders notes textarea', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 0, 3, onPrevious, onNext, onSetComplete);
+    renderActiveExercise(mockExercise);
 
     const textarea = screen.getByPlaceholderText(/Add notes about form/i);
     expect(textarea).toBeInTheDocument();
   });
 
   it('allows entering notes', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 0, 3, onPrevious, onNext, onSetComplete);
+    const onNoteChange = vi.fn();
+    renderActiveExercise(mockExercise, vi.fn(), vi.fn(), onNoteChange);
 
     const textarea = screen.getByPlaceholderText(/Add notes about form/i);
     fireEvent.change(textarea, { target: { value: 'Felt great today!' } });
 
-    expect(textarea).toHaveValue('Felt great today!');
+    expect(onNoteChange).toHaveBeenCalledWith('Felt great today!');
+  });
+});
+
+describe('ActiveExercise - Tutorial Tab', () => {
+  it('shows tutorial content when exercise has tutorial URL', async () => {
+    const exerciseWithTutorial = {
+      ...mockExercise,
+      tutorialUrl: 'https://www.youtube.com/embed/test',
+    };
+
+    renderActiveExercise(exerciseWithTutorial);
+
+    const tutorialTab = screen.getByRole('tab', { name: /tutorial/i });
+    fireEvent.click(tutorialTab);
+
+    await waitFor(() => {
+      const iframe = screen.getByRole('presentation') || document.querySelector('iframe');
+      expect(iframe).toBeInTheDocument();
+    });
+  });
+
+  it('shows beginner friendly instructions when available', async () => {
+    const exerciseWithInstructions = {
+      ...mockExercise,
+      beginnerFriendlyInstructions: ['Keep your back straight', 'Control the weight'],
+    };
+
+    renderActiveExercise(exerciseWithInstructions);
+
+    const tutorialTab = screen.getByRole('tab', { name: /tutorial/i });
+    fireEvent.click(tutorialTab);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Beginner Friendly Tips/i)).toBeInTheDocument();
+      expect(screen.getByText(/Keep your back straight/i)).toBeInTheDocument();
+    });
+  });
+
+  it('shows common mistakes when available', async () => {
+    const exerciseWithMistakes = {
+      ...mockExercise,
+      commonMistakes: ['Arching back too much', 'Flaring elbows'],
+    };
+
+    renderActiveExercise(exerciseWithMistakes);
+
+    const tutorialTab = screen.getByRole('tab', { name: /tutorial/i });
+    fireEvent.click(tutorialTab);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Things to Avoid/i)).toBeInTheDocument();
+      expect(screen.getByText(/Arching back too much/i)).toBeInTheDocument();
+    });
   });
 });
 
 describe('ActiveExercise - Warning Banner', () => {
-  it('displays warning when exercise has warning', () => {
+  it('displays warning when exercise has tips', () => {
     const exerciseWithWarning = {
       ...mockExercise,
-      warning: 'Previous injury in shoulder area',
+      tips: ['Previous injury in shoulder area'],
     };
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
 
-    renderActiveExercise(exerciseWithWarning, 0, 3, onPrevious, onNext, onSetComplete);
+    renderActiveExercise(exerciseWithWarning);
 
     expect(screen.getByText(/Previous Note/i)).toBeInTheDocument();
     expect(screen.getByText(/Previous injury in shoulder area/i)).toBeInTheDocument();
   });
 
-  it('does not show warning banner when no warning present', () => {
-    const onPrevious = vi.fn();
-    const onNext = vi.fn();
-    const onSetComplete = vi.fn();
-
-    renderActiveExercise(mockExercise, 0, 3, onPrevious, onNext, onSetComplete);
+  it('does not show warning banner when no tips present', () => {
+    renderActiveExercise(mockExercise);
 
     expect(screen.queryByText(/Previous Note/i)).not.toBeInTheDocument();
+  });
+});
+
+describe('ActiveExercise - Anatomy Diagram', () => {
+  it('renders anatomy diagram in muscles tab', async () => {
+    renderActiveExercise(mockExercise);
+
+    const musclesTab = screen.getByRole('tab', { name: /target muscles/i });
+    fireEvent.click(musclesTab);
+
+    await waitFor(() => {
+      const diagram = screen.getByRole('img');
+      expect(diagram).toBeInTheDocument();
+    });
+  });
+});
+
+describe('ActiveExercise - Set Completion', () => {
+  it('calls onSetComplete when a set is completed', async () => {
+    const onSetComplete = vi.fn();
+    const { container } = renderWithProviders(
+      <ActiveExercise
+        exercise={mockExercise}
+        onSetComplete={onSetComplete}
+        onAddSet={vi.fn()}
+        unit="kg"
+        onUnitChange={vi.fn()}
+        onNoteChange={vi.fn()}
+      />
+    );
+
+    // Click first set to enter edit mode
+    const setButtons = container.querySelectorAll('button[class*="grid"]');
+    fireEvent.click(setButtons[0]);
+
+    await waitFor(() => {
+      const completeButton = screen.getByText(/Complete Set/i);
+      fireEvent.click(completeButton);
+    });
+
+    expect(onSetComplete).toHaveBeenCalled();
   });
 });

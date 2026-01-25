@@ -2,7 +2,9 @@ import { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { UserProvider } from '@/context/UserContext';
+import { WorkoutProvider } from '@/context/WorkoutContext';
 import { UserProfile, db } from '@/lib/db';
+import { BrowserRouter } from 'react-router-dom';
 
 export const createTestQueryClient = () => {
   return new QueryClient({
@@ -19,19 +21,42 @@ const queryClient = createTestQueryClient();
 
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   includeUserProvider?: boolean;
+  includeWorkoutProvider?: boolean;
+  includeRouter?: boolean;
 }
 
 export const renderWithProviders = (
   ui: ReactElement,
   options: CustomRenderOptions = {}
 ) => {
-  const { includeUserProvider = true, ...renderOptions } = options;
+  const {
+    includeUserProvider = true,
+    includeWorkoutProvider = true,
+    includeRouter = false,
+    ...renderOptions
+  } = options;
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {includeUserProvider ? <UserProvider>{children}</UserProvider> : children}
-    </QueryClientProvider>
-  );
+  const wrapper = ({ children }: { children: React.ReactNode }) => {
+    let content = children;
+
+    if (includeRouter) {
+      content = <BrowserRouter>{content}</BrowserRouter>;
+    }
+
+    if (includeWorkoutProvider) {
+      content = <WorkoutProvider>{content}</WorkoutProvider>;
+    }
+
+    if (includeUserProvider) {
+      content = <UserProvider>{content}</UserProvider>;
+    }
+
+    return (
+      <QueryClientProvider client={queryClient}>
+        {content}
+      </QueryClientProvider>
+    );
+  };
 
   return render(ui, { wrapper, ...renderOptions });
 };

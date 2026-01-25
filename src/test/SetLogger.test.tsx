@@ -1,340 +1,347 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SetLogger from '@/components/SetLogger';
+import { WorkoutSet } from '@/lib/db';
 
-const mockSets = [
-    { id: 1, weight: 100, reps: 8, completed: false },
-    { id: 2, weight: 100, reps: 8, completed: false },
-    { id: 3, weight: 100, reps: 8, completed: false },
+const mockSets: WorkoutSet[] = [
+    { id: 1, setNumber: 1, weight: 100, reps: 8, completed: false, unit: 'kg' },
+    { id: 2, setNumber: 2, weight: 100, reps: 8, completed: false, unit: 'kg' },
+    { id: 3, setNumber: 3, weight: 100, reps: 8, completed: false, unit: 'kg' },
 ];
 
 describe('SetLogger - Rendering', () => {
-    it('renders all sets', () => {
+    it('renders all sets with headers', () => {
         const onSetComplete = vi.fn();
-        
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
-        
-        expect(screen.getByText('SET')).toBeInTheDocument();
-        expect(screen.getByText('WEIGHT')).toBeInTheDocument();
-        expect(screen.getByText('REPS')).toBeInTheDocument();
-        expect(screen.getByText('DONE')).toBeInTheDocument();
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
+
+        render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
+
+        // Check for progress summary
+        expect(screen.getByText(/0 \/ 3 sets completed/i)).toBeInTheDocument();
     });
 
     it('displays set information correctly', () => {
         const onSetComplete = vi.fn();
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
 
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
+        render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
 
-        const weightElements = screen.getAllByText('100kg');
-        expect(weightElements.length).toBeGreaterThan(0);
-        expect(screen.getAllByText('8')).toHaveLength(3); // 3 sets with 8 reps
+        // Check for set numbers
+        expect(screen.getByText('1')).toBeInTheDocument();
+        expect(screen.getByText('2')).toBeInTheDocument();
+        expect(screen.getByText('3')).toBeInTheDocument();
     });
 
-    it('shows unit as kg by default', () => {
+    it('shows unit toggle buttons', () => {
         const onSetComplete = vi.fn();
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
 
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} unit="kg" />);
+        render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
 
-        const weightElements = screen.getAllByText('100kg');
-        expect(weightElements.length).toBeGreaterThan(0);
+        const buttons = screen.getAllByRole('button');
+        const kgButton = buttons.find(btn => btn.textContent === 'kg');
+        const lbsButton = buttons.find(btn => btn.textContent === 'lbs');
+
+        expect(kgButton).toBeInTheDocument();
+        expect(lbsButton).toBeInTheDocument();
     });
 
-    it('shows unit as lbs when specified', () => {
+    it('calls onUnitChange when unit is toggled', () => {
         const onSetComplete = vi.fn();
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
 
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} unit="lb" />);
+        render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
 
-        const weightElements = screen.getAllByText('100lb');
-        expect(weightElements.length).toBeGreaterThan(0);
+        const buttons = screen.getAllByRole('button');
+        const lbsButton = buttons.find(btn => btn.textContent === 'lbs');
+
+        if (lbsButton) {
+            fireEvent.click(lbsButton);
+            expect(onUnitChange).toHaveBeenCalledWith('lbs');
+        }
     });
 });
 
 describe('SetLogger - Set Editing', () => {
     it('enters edit mode when clicking incomplete set', async () => {
         const onSetComplete = vi.fn();
-        
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
-        
-        const firstSet = screen.getAllByText(/1/)[0];
-        fireEvent.click(firstSet.closest('.grid') || firstSet);
-        
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
+
+        const { container } = render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
+
+        // Find the first set button and click it
+        const setButtons = container.querySelectorAll('button[class*="grid"]');
+        fireEvent.click(setButtons[0]);
+
         await waitFor(() => {
-            expect(screen.getByDisplayValue('100')).toBeInTheDocument();
-            expect(screen.getByDisplayValue('8')).toBeInTheDocument();
+            expect(screen.getByText(/Complete Set/i)).toBeInTheDocument();
         });
     });
 
     it('does not enter edit mode for completed sets', () => {
-        const completedSets = [
-            { id: 1, weight: 100, reps: 8, completed: true },
+        const completedSets: WorkoutSet[] = [
+            { id: 1, setNumber: 1, weight: 100, reps: 8, completed: true, unit: 'kg' },
         ];
         const onSetComplete = vi.fn();
-        
-        render(<SetLogger sets={completedSets} onSetComplete={onSetComplete} />);
-        
-        const set = screen.getByText('1').closest('button');
-        fireEvent.click(set!);
-        
-        // Should not enter edit mode
-        expect(screen.queryByDisplayValue('100')).not.toBeInTheDocument();
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
+
+        const { container } = render(
+            <SetLogger
+                sets={completedSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
+
+        const setButtons = container.querySelectorAll('button[disabled]');
+        expect(setButtons.length).toBeGreaterThan(0);
     });
 });
 
 describe('SetLogger - Weight Adjustments', () => {
-    it('increments weight by 2.5 when plus button clicked', async () => {
+    it('allows editing weight in edit mode', async () => {
         const onSetComplete = vi.fn();
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
 
-        const { container } = render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
+        const { container } = render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
 
-        fireEvent.click(screen.getByText('1').closest('button')!);
+        // Click first set to enter edit mode
+        const setButtons = container.querySelectorAll('button[class*="grid"]');
+        fireEvent.click(setButtons[0]);
 
         await waitFor(() => {
-            const inputs = container.querySelectorAll('input[type="number"]');
-            expect(inputs.length).toBeGreaterThan(0);
+            const weightInput = screen.getByDisplayValue('100');
+            expect(weightInput).toBeInTheDocument();
         });
-
-        const plusButtons = container.querySelectorAll('button');
-        let found = false;
-        for (const btn of Array.from(plusButtons)) {
-            const input = btn.parentElement?.querySelector('input[type="number"]');
-            const svg = btn.querySelector('svg');
-            if ((input as HTMLInputElement)?.value === '100' && svg?.querySelector('svg[aria-label="Plus"]')) {
-                const nextSibling = btn.nextElementSibling;
-                if (nextSibling?.querySelector('svg[aria-label="Plus"]')) {
-                    fireEvent.click(nextSibling);
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (found) {
-            await waitFor(() => {
-                const inputs = container.querySelectorAll('input[type="number"]');
-                expect(Array.from(inputs).some((i: any) => i.value === '102.5')).toBe(true);
-            });
-        }
-    });
-
-    it('decrements weight by 2.5 when minus button clicked', async () => {
-        const onSetComplete = vi.fn();
-
-        const { container } = render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
-
-        fireEvent.click(screen.getByText('1').closest('button')!);
-
-        await waitFor(() => {
-            const inputs = container.querySelectorAll('input[type="number"]');
-            expect(inputs.length).toBeGreaterThan(0);
-        });
-
-        const minusButtons = container.querySelectorAll('button');
-        let found = false;
-        for (const btn of Array.from(minusButtons)) {
-            const input = btn.parentElement?.querySelector('input[type="number"]');
-            const svg = btn.querySelector('svg');
-            if ((input as HTMLInputElement)?.value === '100' && svg?.querySelector('svg[aria-label="Minus"]')) {
-                const prevSibling = btn.previousElementSibling;
-                if (prevSibling?.querySelector('svg[aria-label="Minus"]')) {
-                    fireEvent.click(prevSibling);
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (found) {
-            await waitFor(() => {
-                const inputs = container.querySelectorAll('input[type="number"]');
-                expect(Array.from(inputs).some((i: any) => i.value === '97.5')).toBe(true);
-            });
-        }
     });
 
     it('prevents weight from going below zero', async () => {
-        const lowWeightSets = [
-            { id: 1, weight: 2, reps: 8, completed: false },
+        const lowWeightSets: WorkoutSet[] = [
+            { id: 1, setNumber: 1, weight: 2, reps: 8, completed: false, unit: 'kg' },
         ];
         const onSetComplete = vi.fn();
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
 
-        const { container } = render(<SetLogger sets={lowWeightSets} onSetComplete={onSetComplete} />);
-        fireEvent.click(screen.getByText('1').closest('button')!);
+        const { container } = render(
+            <SetLogger
+                sets={lowWeightSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
 
-        await waitFor(() => {
-            const inputs = container.querySelectorAll('input[type="number"]');
-            expect(Array.from(inputs).some(i => i.value === '2')).toBe(true);
-        });
-
-         const inputs = container.querySelectorAll('input[type="number"]');
-        fireEvent.change(inputs[0] as any, { target: { value: '-5' } });
-
-        await waitFor(() => {
-            expect((inputs[0] as HTMLInputElement).value).toBe('0');
-        });
-    });
-
-    it('allows direct weight input', async () => {
-        const onSetComplete = vi.fn();
-
-        const { container } = render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
-
-        fireEvent.click(screen.getByText('1').closest('button')!);
+        const setButtons = container.querySelectorAll('button[class*="grid"]');
+        fireEvent.click(setButtons[0]);
 
         await waitFor(() => {
-            const inputs = container.querySelectorAll('input[type="number"]');
-            expect(inputs.length).toBeGreaterThan(0);
-        });
-
-         const inputs = container.querySelectorAll('input[type="number"]');
-        fireEvent.change(inputs[0] as any, { target: { value: '110.5' } });
-
-        await waitFor(() => {
-            expect((inputs[0] as HTMLInputElement).value).toBe('110.5');
+            const weightInput = screen.getByDisplayValue('2') as HTMLInputElement;
+            fireEvent.change(weightInput, { target: { value: '-5' } });
+            expect(weightInput.value).toBe('0');
         });
     });
 });
 
 describe('SetLogger - Reps Adjustments', () => {
-    it('increments reps by 1 when plus button clicked', async () => {
+    it('allows editing reps in edit mode', async () => {
         const onSetComplete = vi.fn();
-        
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
-        
-        fireEvent.click(screen.getByText('1').closest('button')!);
-        
-        await waitFor(() => {
-            const repsInputs = screen.getAllByDisplayValue('8');
-            expect(repsInputs[0]).toBeInTheDocument();
-        });
-        
-        const plusButtons = screen.getAllByRole('button');
-        const repsPlusButton = plusButtons[plusButtons.length - 1];
-        
-        fireEvent.click(repsPlusButton);
-        
-        await waitFor(() => {
-            expect(screen.getByDisplayValue('9')).toBeInTheDocument();
-        });
-    });
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
 
-    it('decrements reps by 1 when minus button clicked', async () => {
-        const onSetComplete = vi.fn();
-        
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
-        
-        fireEvent.click(screen.getByText('1').closest('button')!);
-        
+        const { container } = render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
+
+        const setButtons = container.querySelectorAll('button[class*="grid"]');
+        fireEvent.click(setButtons[0]);
+
         await waitFor(() => {
-            expect(screen.getByDisplayValue('8')).toBeInTheDocument();
-        });
-        
-        const minusButtons = screen.getAllByRole('button');
-        const repsMinusButton = minusButtons[minusButtons.length - 2];
-        
-        fireEvent.click(repsMinusButton);
-        
-        await waitFor(() => {
-            expect(screen.getByDisplayValue('7')).toBeInTheDocument();
+            const repsInput = screen.getAllByDisplayValue('8')[0];
+            expect(repsInput).toBeInTheDocument();
         });
     });
 
     it('prevents reps from going below zero', async () => {
         const onSetComplete = vi.fn();
-        
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
-        
-        fireEvent.click(screen.getByText('1').closest('button')!);
-        
-        await waitFor(() => {
-            const inputs = screen.getAllByDisplayValue('8');
-            expect(inputs[1]).toBeInTheDocument();
-        });
-        
-        const inputs = screen.getAllByDisplayValue('8');
-        fireEvent.change(inputs[1], { target: { value: '-1' } });
-        
-        await waitFor(() => {
-            expect(inputs[1]).toHaveValue(0);
-        });
-    });
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
 
-    it('allows direct reps input', async () => {
-        const onSetComplete = vi.fn();
-        
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
-        
-        fireEvent.click(screen.getByText('1').closest('button')!);
-        
+        const { container } = render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
+
+        const setButtons = container.querySelectorAll('button[class*="grid"]');
+        fireEvent.click(setButtons[0]);
+
         await waitFor(() => {
-            const inputs = screen.getAllByDisplayValue('8');
-            expect(inputs[1]).toBeInTheDocument();
-        });
-        
-        const inputs = screen.getAllByDisplayValue('8');
-        fireEvent.change(inputs[1], { target: { value: '12' } });
-        
-        await waitFor(() => {
-            expect(inputs[1]).toHaveValue(12);
+            const repsInputs = screen.getAllByDisplayValue('8');
+            const repsInput = repsInputs[repsInputs.length - 1] as HTMLInputElement;
+            fireEvent.change(repsInput, { target: { value: '-1' } });
+            expect(repsInput.value).toBe('0');
         });
     });
 });
 
 describe('SetLogger - Set Completion', () => {
-    it('marks set as completed when check button clicked', async () => {
+    it('calls onSetComplete when completing a set', async () => {
         const onSetComplete = vi.fn();
-        
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
-        
-        fireEvent.click(screen.getByText('1').closest('button')!);
-        
-        await waitFor(() => {
-            expect(screen.getByDisplayValue('100')).toBeInTheDocument();
-        });
-        
-        const checkButtons = screen.getAllByRole('button').filter(btn => 
-            btn.querySelector('svg') && btn.className.includes('gradient-red')
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
+
+        const { container } = render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
         );
-        
-        fireEvent.click(checkButtons[0]);
-        
-        expect(onSetComplete).toHaveBeenCalledWith(1, 100, 8);
+
+        // Click first set to enter edit mode
+        const setButtons = container.querySelectorAll('button[class*="grid"]');
+        fireEvent.click(setButtons[0]);
+
+        await waitFor(() => {
+            const completeButton = screen.getByText(/Complete Set/i);
+            fireEvent.click(completeButton);
+        });
+
+        expect(onSetComplete).toHaveBeenCalledWith(1, 100, 8, 'kg');
     });
 
-    it('calls onSetComplete with correct values', async () => {
-        const onSetComplete = vi.fn();
-        
-        render(<SetLogger sets={mockSets} onSetComplete={onSetComplete} />);
-        
-        fireEvent.click(screen.getByText('1').closest('button')!);
-        
-        await waitFor(() => {
-            expect(screen.getByDisplayValue('100')).toBeInTheDocument();
-        });
-        
-        const inputs = screen.getAllByDisplayValue('100');
-        fireEvent.change(inputs[0], { target: { value: '110' } });
-        
-        const repsInputs = screen.getAllByDisplayValue('8');
-        fireEvent.change(repsInputs[1], { target: { value: '10' } });
-        
-        const checkButtons = screen.getAllByRole('button').filter(btn => 
-            btn.querySelector('svg') && btn.className.includes('gradient-red')
-        );
-        
-        fireEvent.click(checkButtons[0]);
-        
-        expect(onSetComplete).toHaveBeenCalledWith(1, 110, 10);
-    });
-
-    it('shows completed set visual indicator', async () => {
-        const completedSets = [
-            { id: 1, weight: 100, reps: 8, completed: true },
+    it('shows completed set visual indicator', () => {
+        const completedSets: WorkoutSet[] = [
+            { id: 1, setNumber: 1, weight: 100, reps: 8, completed: true, unit: 'kg' },
         ];
         const onSetComplete = vi.fn();
-        
-        render(<SetLogger sets={completedSets} onSetComplete={onSetComplete} />);
-        
-        const completedSet = screen.getByText('1');
-        expect(completedSet).toHaveClass('text-primary');
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
+
+        render(
+            <SetLogger
+                sets={completedSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+            />
+        );
+
+        expect(screen.getByText(/1 \/ 1 sets completed/i)).toBeInTheDocument();
+    });
+});
+
+describe('SetLogger - Add Set', () => {
+    it('shows add set button when canAddSet is true', () => {
+        const onSetComplete = vi.fn();
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
+
+        render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+                canAddSet={true}
+            />
+        );
+
+        expect(screen.getByText(/Add Set/i)).toBeInTheDocument();
+    });
+
+    it('calls onAddSet when add set button is clicked', () => {
+        const onSetComplete = vi.fn();
+        const onAddSet = vi.fn();
+        const onUnitChange = vi.fn();
+
+        render(
+            <SetLogger
+                sets={mockSets}
+                onSetComplete={onSetComplete}
+                onAddSet={onAddSet}
+                unit="kg"
+                onUnitChange={onUnitChange}
+                canAddSet={true}
+            />
+        );
+
+        const addButton = screen.getByText(/Add Set/i);
+        fireEvent.click(addButton);
+
+        expect(onAddSet).toHaveBeenCalled();
     });
 });

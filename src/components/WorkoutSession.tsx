@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { X, CheckCircle2 } from 'lucide-react';
+import { X, CheckCircle2, ChevronRight, Dumbbell, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import ActiveExercise from './ActiveExercise';
+import WorkoutTimer from './WorkoutTimer';
 import { useWorkout } from '@/context/WorkoutContext';
 import { db, Exercise } from '@/lib/db';
+import { cn } from '@/lib/utils';
 
 interface WorkoutSessionProps {
     routineId: string;
@@ -31,23 +33,23 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
         setExerciseUnit,
     } = useWorkout();
 
+    const [view, setView] = useState<'list' | 'detail'>('list');
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [showEndDialog, setShowEndDialog] = useState(false);
     const [exerciseDetail, setExerciseDetail] = useState<Exercise | null>(null);
 
-    // Load exercise details for current exercise
+    // Load exercise details for selected exercise
     useEffect(() => {
         const loadExerciseDetail = async () => {
-            if (!currentExercise) return;
-            const exercise = await db.exercises.get(currentExercise.exerciseId);
+            if (selectedIndex === null || !activeSession) return;
+            const currentEx = activeSession.exercises[selectedIndex];
+            const exercise = await db.exercises.get(currentEx.exerciseId);
             setExerciseDetail(exercise || null);
         };
         loadExerciseDetail();
-    }, [currentExercise]);
+    }, [selectedIndex, activeSession]);
 
-    // Find current exercise in active session
-    const currentSet = activeSession?.exercises[currentExerciseIndex];
-
-    if (!activeSession || !currentExercise || !currentSet) {
+    if (!activeSession) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="w-8 h-8 gradient-red rounded-full animate-pulse-glow" />
@@ -55,16 +57,16 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
         );
     }
 
-    const handleSetComplete = async (setId: number, weight: number, reps: number, unit: 'kg' | 'lbs') => {
-        await completeSet(currentExerciseIndex, setId, weight, reps, unit);
+    const handleSetComplete = async (exerciseIdx: number, setId: number, weight: number, reps: number, unit: 'kg' | 'lbs') => {
+        await completeSet(exerciseIdx, setId, weight, reps, unit);
     };
 
-    const handleAddSet = () => {
-        addExtraSet(currentExerciseIndex);
+    const handleAddSet = (exerciseIdx: number) => {
+        addExtraSet(exerciseIdx);
     };
 
-    const handleNoteChange = (note: string) => {
-        updatePersonalNote(currentExerciseIndex, note);
+    const handleNoteChange = (exerciseIdx: number, note: string) => {
+        updatePersonalNote(exerciseIdx, note);
     };
 
     const handleEndWorkout = async () => {
@@ -80,55 +82,104 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     };
 
     return (
-        <div className="relative">
-            {/* Close button */}
-            <button
-                onClick={() => setShowEndDialog(true)}
-                className="fixed top-4 right-4 z-50 p-2 rounded-full bg-background hover:bg-white/10 transition-colors"
-            >
-                <X className="w-5 h-5" />
-            </button>
+        <div className="relative min-h-screen bg-background">
+            {/* Top Bar with Timer and Close */}
+            <div className="fixed top-0 left-0 right-0 z-50 p-4 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b border-white/5">
+                {view === 'detail' ? (
+                    <button
+                        onClick={() => setView('list')}
+                        className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                        aria-label="Back to workout list"
+                    >
+                        <ChevronLeft className="w-6 h-6" />
+                    </button>
+                ) : (
+                    <div className="w-10" />
+                )}
 
-            {/* Progress indicator */}
-            <div className="fixed top-4 left-4 right-20 z-40">
-                <div className="flex items-center justify-between text-sm text-white mb-1">
-                    <span>{progress.completed}/{progress.total} sets</span>
-                    <span>{Math.round((progress.completed / progress.total) * 100)}%</span>
-                </div>
-                <div className="h-2 bg-background/80 backdrop-blur-md rounded-full overflow-hidden">
-                    <div
-                        className="h-full gradient-red transition-all duration-300"
-                        style={{ width: `${(progress.completed / progress.total) * 100}%` }}
-                    />
-                </div>
+                <WorkoutTimer startTime={activeSession.startTime} />
+
+                <button
+                    onClick={() => setShowEndDialog(true)}
+                    className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                >
+                    <X className="w-6 h-6" />
+                </button>
             </div>
 
-            {/* Active Exercise */}
-            <ActiveExercise
-                exercise={{
-                    ...exerciseDetail!,
-                    name: currentExercise.exerciseName,
-                    primaryMuscles: exerciseDetail?.primaryMuscles || [],
-                    secondaryMuscles: exerciseDetail?.secondaryMuscles || [],
-                    sets: currentExercise.sets,
-                    tutorialUrl: exerciseDetail?.tutorialUrl,
-                    tips: exerciseDetail?.tips,
-                    beginnerFriendlyInstructions: exerciseDetail?.beginnerFriendlyInstructions,
-                    commonMistakes: exerciseDetail?.commonMistakes,
-                    injuryPreventionTips: exerciseDetail?.injuryPreventionTips,
-                    formCues: exerciseDetail?.formCues,
-                }}
-                currentIndex={currentExerciseIndex}
-                totalExercises={activeSession.exercises.length}
-                onPrevious={previousExercise}
-                onNext={nextExercise}
-                onSetComplete={handleSetComplete}
-                onAddSet={handleAddSet}
-                unit={getExerciseUnit(currentExercise.exerciseId)}
-                onUnitChange={(unit) => setExerciseUnit(currentExercise.exerciseId, unit)}
-                personalNote={currentExercise.personalNote}
-                onNoteChange={handleNoteChange}
-            />
+            <div className="pt-24 pb-32 px-4">
+                {view === 'list' ? (
+                    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="mb-6">
+                            <h2 className="text-3xl font-bold mb-1">{activeSession.routineName}</h2>
+                            <p className="text-muted-foreground">{activeSession.exercises.length} exercises to go</p>
+                        </div>
+
+                        <div className="grid gap-3">
+                            {activeSession.exercises.map((ex, idx) => {
+                                const completedSets = ex.sets.filter(s => s.completed).length;
+                                const isAllCompleted = completedSets === ex.sets.length && ex.sets.length > 0;
+
+                                return (
+                                    <button
+                                        key={idx}
+                                        onClick={() => {
+                                            setSelectedIndex(idx);
+                                            setView('detail');
+                                        }}
+                                        className={cn(
+                                            "w-full glass-card p-4 flex items-center gap-4 transition-all hover:bg-white/10 group text-left",
+                                            isAllCompleted && "opacity-60"
+                                        )}
+                                    >
+                                        <div className={cn(
+                                            "w-12 h-12 rounded-xl flex items-center justify-center transition-colors",
+                                            isAllCompleted ? "bg-emerald-500/20 text-emerald-500" : "bg-white/5 text-muted-foreground"
+                                        )}>
+                                            {isAllCompleted ? <CheckCircle2 className="w-6 h-6" /> : <Dumbbell className="w-6 h-6" />}
+                                        </div>
+
+                                        <div className="flex-1">
+                                            <h3 className="font-semibold text-lg">{ex.exerciseName}</h3>
+                                            <p className="text-sm text-muted-foreground">
+                                                {completedSets} / {ex.sets.length} sets completed
+                                            </p>
+                                        </div>
+
+                                        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ) : (
+                    selectedIndex !== null && exerciseDetail && (
+                        <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                            <ActiveExercise
+                                exercise={{
+                                    ...exerciseDetail,
+                                    name: activeSession.exercises[selectedIndex].exerciseName,
+                                    primaryMuscles: exerciseDetail.primaryMuscles || [],
+                                    secondaryMuscles: exerciseDetail.secondaryMuscles || [],
+                                    sets: activeSession.exercises[selectedIndex].sets,
+                                    tutorialUrl: exerciseDetail.tutorialUrl,
+                                    tips: exerciseDetail.tips,
+                                    beginnerFriendlyInstructions: exerciseDetail.beginnerFriendlyInstructions,
+                                    commonMistakes: exerciseDetail.commonMistakes,
+                                    injuryPreventionTips: exerciseDetail.injuryPreventionTips,
+                                    formCues: exerciseDetail.formCues,
+                                }}
+                                onSetComplete={(setId, weight, reps, unit) => handleSetComplete(selectedIndex, setId, weight, reps, unit)}
+                                onAddSet={() => handleAddSet(selectedIndex)}
+                                unit={getExerciseUnit(activeSession.exercises[selectedIndex].exerciseId)}
+                                onUnitChange={(unit) => setExerciseUnit(activeSession.exercises[selectedIndex].exerciseId, unit)}
+                                personalNote={activeSession.exercises[selectedIndex].personalNote}
+                                onNoteChange={(note) => handleNoteChange(selectedIndex, note)}
+                            />
+                        </div>
+                    )
+                )}
+            </div>
 
             {/* End Workout Button (when workout is complete) */}
             {isWorkoutComplete && (
