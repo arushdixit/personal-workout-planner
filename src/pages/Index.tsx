@@ -237,7 +237,7 @@ const Index = () => {
         )}
       </main>
       {activeTab !== 'workout' && (
-        <div className="flex-shrink-0 border-t border-white/10 bg-background/80 backdrop-blur-xl z-50">
+        <div className="relative flex-shrink-0 border-t border-white/10 bg-background/80 backdrop-blur-xl z-[60]">
           <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
         </div>
       )}

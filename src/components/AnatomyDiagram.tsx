@@ -111,10 +111,10 @@ const AnatomyDiagram = ({
       )}
 
       {/* Anatomy Container */}
-      <div className="relative w-full aspect-[1/2] max-w-[280px] mx-auto bg-slate-950/50 rounded-3xl overflow-hidden p-4 border border-white/5">
+      <div className="relative w-full aspect-[1/2] max-w-[400px] mx-auto bg-slate-950/50 rounded-[2.5rem] overflow-hidden p-8 border border-white/5 shadow-2xl">
         <svg
           viewBox={view === 'front' ? "0 0 724 1448" : "724 0 724 1448"}
-          className="w-full h-full"
+          className="w-full h-full drop-shadow-[0_0_30px_rgba(225,29,72,0.1)]"
           role="img"
           aria-label={`Human body ${view} view showing muscle groups`}
         >
@@ -143,14 +143,14 @@ const AnatomyDiagram = ({
       </div>
 
       {/* Legend */}
-      <div className="flex justify-center gap-6 text-xs bg-white/5 p-3 rounded-2xl border border-white/5 max-w-[280px] mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-rose-600" />
-          <span className="text-muted-foreground">Primary</span>
+      <div className="flex justify-center gap-8 text-xs bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/5 max-w-[400px] mx-auto">
+        <div className="flex items-center gap-3">
+          <div className="w-4 h-4 rounded-full bg-rose-600 shadow-[0_0_10px_rgba(225,29,72,0.5)]" />
+          <span className="text-muted-foreground font-medium">Primary</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-orange-400" />
-          <span className="text-muted-foreground">Secondary</span>
+        <div className="flex items-center gap-3">
+          <div className="w-4 h-4 rounded-full bg-orange-400 shadow-[0_0_10px_rgba(251,146,60,0.5)]" />
+          <span className="text-muted-foreground font-medium">Secondary</span>
         </div>
       </div>
     </div>

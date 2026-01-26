@@ -185,7 +185,7 @@ const ExerciseDetail = ({
             </div>
 
             {/* Tab Content */}
-            <div className="flex-1 overflow-y-auto overscroll-contain custom-scrollbar">
+            <div className={cn("flex-1 overflow-y-auto overscroll-contain custom-scrollbar", !workoutMode && "pb-32")}>
                 {activeTab === 'sets' && workoutMode && exercise.sets && (
                     <div className="px-6 py-6 space-y-6">
                         <SetLogger
@@ -377,16 +377,19 @@ const ExerciseDetail = ({
                                 <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
                                     Primary Muscle Groups
                                 </h2>
-                                <div className="space-y-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {primaryMuscles.map((muscle) => (
                                         <div
                                             key={muscle}
-                                            className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/10"
+                                            className="flex items-center gap-6 bg-gradient-to-br from-white/10 to-white/5 rounded-[2rem] border border-white/10 shadow-lg group hover:border-rose-500/30 transition-all duration-300"
                                         >
-                                            <MuscleIcon muscleName={muscle} isPrimary={true} />
-                                            <span className="text-base font-semibold capitalize">
-                                                {muscle.replace(/[_-]/g, ' ')}
-                                            </span>
+                                            <MuscleIcon muscleName={muscle} isPrimary={true} size="md" />
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-bold text-rose-500 uppercase tracking-widest mb-1">Primary</span>
+                                                <span className="text-lg font-bold capitalize text-white">
+                                                    {muscle.replace(/[_-]/g, ' ')}
+                                                </span>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -396,19 +399,22 @@ const ExerciseDetail = ({
                         {/* Secondary Muscle Groups */}
                         {secondaryMuscles.length > 0 && (
                             <section className="space-y-4">
-                                <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                                <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider pl-2">
                                     Secondary Muscle Groups
                                 </h2>
-                                <div className="space-y-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {secondaryMuscles.map((muscle) => (
                                         <div
                                             key={muscle}
-                                            className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/10"
+                                            className="flex items-center gap-6 bg-gradient-to-br from-white/10 to-white/5 rounded-[2rem] border border-white/10 shadow-lg group hover:border-orange-400/30 transition-all duration-300"
                                         >
-                                            <MuscleIcon muscleName={muscle} isPrimary={false} />
-                                            <span className="text-base font-semibold capitalize">
-                                                {muscle.replace(/[_-]/g, ' ')}
-                                            </span>
+                                            <MuscleIcon muscleName={muscle} isPrimary={false} size="md" />
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-1">Secondary</span>
+                                                <span className="text-lg font-bold capitalize text-white">
+                                                    {muscle.replace(/[_-]/g, ' ')}
+                                                </span>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
