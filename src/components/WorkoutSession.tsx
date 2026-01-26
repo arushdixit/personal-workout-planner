@@ -236,9 +236,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
 
                 {activeSession && <WorkoutTimer startTime={activeSession.startTime} />}
 
-                <button onClick={handleClose} className="p-2 rounded-full hover:bg-white/10 transition-colors">
-                    <X className="w-6 h-6" />
-                </button>
+                <div className="w-10" />
             </div>
 
             {/* Scrollable Content */}

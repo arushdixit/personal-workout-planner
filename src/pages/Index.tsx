@@ -6,6 +6,7 @@ import Routines from '@/pages/Routines';
 import TodayPage from '@/pages/Today';
 import ProgressChart from '@/components/ProgressChart';
 import WorkoutSession from '@/components/WorkoutSession';
+import WorkoutCountdown from '@/components/WorkoutCountdown';
 import { MinimizedRestTimer } from '@/components/RestTimer';
 import { User, Trophy, Target, LogOut, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,7 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState(() =>
     searchParams.get('tab') || 'today'
   );
+  const [showCountdown, setShowCountdown] = useState(false);
   const workoutId = searchParams.get('workoutId');
   const exerciseId = searchParams.get('exerciseId');
   const showBuilder = searchParams.get('builder') === 'true';
@@ -62,13 +64,18 @@ const Index = () => {
   }, [activeTab]);
 
   const handleStartWorkout = () => {
+    setShowCountdown(true);
+  };
+
+  const handleCountdownComplete = useCallback(() => {
+    setShowCountdown(false);
     const routineId = activeSession?.routineId || 'today';
     const currentParams = new URLSearchParams(searchParams.toString());
     currentParams.set('tab', 'workout');
     currentParams.set('workoutId', routineId);
     setSearchParams(currentParams);
     setActiveTab('workout');
-  };
+  }, [activeSession, searchParams, setSearchParams]);
 
   const handleViewExercise = (exerciseId: number, fromTab?: string) => {
     const currentParams = new URLSearchParams(searchParams.toString());
@@ -243,6 +250,10 @@ const Index = () => {
       )}
 
       <MinimizedRestTimer />
+
+      {showCountdown && (
+        <WorkoutCountdown onComplete={handleCountdownComplete} />
+      )}
     </div>
   );
 };
