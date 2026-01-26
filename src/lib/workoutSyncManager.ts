@@ -269,15 +269,15 @@ async function processExerciseNote(operation: QueuedOperation, session: WorkoutS
         throw new Error('Session not yet synced to server');
     }
 
-    const noteData = operation.data as { exerciseId?: number; note?: string };
-    if (!noteData.exerciseId) {
-        console.warn('[WorkoutSync] Missing exercise ID for note update');
+    const noteData = operation.data as { exerciseOrder?: number; note?: string };
+    if (noteData.exerciseOrder === undefined) {
+        console.warn('[WorkoutSync] Missing exercise order for note update');
         await removeOperation(operation.id!);
         return;
     }
 
     try {
-        await updateRemoteExerciseNote(session.remoteId, noteData.exerciseId, noteData.note);
+        await updateRemoteExerciseNote(session.remoteId, noteData.exerciseOrder, noteData.note);
         await removeOperation(operation.id!);
         console.log('[WorkoutSync] Successfully synced exercise note');
     } catch (error) {

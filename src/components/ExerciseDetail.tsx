@@ -25,6 +25,7 @@ interface ExerciseDetailProps {
     onUnitChange?: (unit: 'kg' | 'lbs') => void;
     personalNote?: string;
     onNoteChange?: (note: string) => void;
+    lastSessionNote?: string;
 }
 
 type Tab = 'sets' | 'instructions' | 'target';
@@ -40,7 +41,8 @@ const ExerciseDetail = ({
     unit = 'kg',
     onUnitChange,
     personalNote,
-    onNoteChange
+    onNoteChange,
+    lastSessionNote
 }: ExerciseDetailProps) => {
     const { currentUser } = useUser();
     const gender = currentUser?.gender || 'male';
@@ -204,6 +206,21 @@ const ExerciseDetail = ({
                                 </p>
                                 <p className="text-sm text-purple-100/80 leading-relaxed italic line-clamp-3">
                                     "{exercise.personalNotes}"
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Last Time Notes */}
+                        {lastSessionNote && (
+                            <div className="bg-blue-500/5 border border-blue-500/20 rounded-xl p-4 animate-in fade-in slide-in-from-top-2">
+                                <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Last Time You Did This
+                                </p>
+                                <p className="text-sm text-blue-100/80 leading-relaxed italic">
+                                    "{lastSessionNote}"
                                 </p>
                             </div>
                         )}

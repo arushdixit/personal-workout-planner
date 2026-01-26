@@ -327,7 +327,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         // Trigger sync
         queueWorkoutOperation('exercise_note', activeSession.id!, {
-            exerciseId: activeSession.exercises[exerciseIndex].exerciseId,
+            exerciseOrder: activeSession.exercises[exerciseIndex].order,
             note
         }).catch(err => console.error('[WorkoutContext] Failed to queue note sync:', err));
     }, [activeSession]);

@@ -4,6 +4,7 @@ import {
     updateRoutine as updateRoutineRemote,
     deleteRoutine as deleteRoutineRemote,
     upsertUserExercise as upsertExerciseRemote,
+    fetchUserExercises as fetchUserExercisesRemote,
 } from './supabaseClient';
 import { db, Routine } from './db';
 import {
@@ -33,6 +34,7 @@ export async function processSyncQueue(): Promise<void> {
 
         if (syncOps.length === 0) {
             console.log('[SyncManager] No routine or exercise operations to process');
+            isProcessing = false;
             return;
         }
 
@@ -193,4 +195,45 @@ export async function triggerImmediateSync(): Promise<void> {
         processSyncQueue(),
         processWorkoutSyncQueue(),
     ]);
+}
+
+/**
+ * Pull all user exercise data (personal notes) from Supabase and merge with local DB
+ */
+export async function pullUserExercises(userId: string): Promise<void> {
+    try {
+        console.log('[SyncManager] Pulling user exercises from remote...');
+        const remoteExercises = await fetchUserExercisesRemote(userId);
+
+        for (const remoteEx of remoteExercises) {
+            // Find the exercise locally by name (since local ID might be different)
+            const localEx = await db.exercises.where('name').equalsIgnoreCase(remoteEx.name).first();
+
+            if (localEx) {
+                // If the remote version has notes and is different from local, update local
+                if (remoteEx.personal_notes !== localEx.personalNotes) {
+                    await db.exercises.update(localEx.id!, {
+                        personalNotes: remoteEx.personal_notes,
+                        updatedAt: remoteEx.updated_at || new Date().toISOString()
+                    });
+                    console.log(`[SyncManager] Updated notes for: ${remoteEx.name}`);
+                }
+            } else {
+                // If it doesn't exist locally, it might be a custom exercise created on another device
+                await db.exercises.add({
+                    name: remoteEx.name,
+                    personalNotes: remoteEx.personal_notes || '',
+                    equipment: (remoteEx.equipment as any) || 'Other',
+                    primaryMuscles: remoteEx.primary_muscles || [],
+                    secondaryMuscles: remoteEx.secondary_muscles || [],
+                    source: (remoteEx.source as any) || 'local',
+                    updatedAt: remoteEx.updated_at || new Date().toISOString(),
+                    createdAt: remoteEx.updated_at || new Date().toISOString(),
+                });
+                console.log(`[SyncManager] Added custom exercise from remote: ${remoteEx.name}`);
+            }
+        }
+    } catch (error) {
+        console.error('[SyncManager] Failed to pull user exercises:', error);
+    }
 }

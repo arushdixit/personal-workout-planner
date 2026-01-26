@@ -92,14 +92,14 @@ export async function createWorkoutSession(params: CreateSessionParams) {
 
 export async function updateSessionExercise(
     sessionId: number,
-    exerciseId: number,
+    exerciseOrder: number,
     personalNote?: string
 ) {
     const { error } = await supabase
         .from('session_exercises')
         .update({ personal_note: personalNote })
         .eq('session_id', sessionId)
-        .eq('exercise_id', exerciseId);
+        .eq('exercise_order', exerciseOrder);
 
     if (error) {
         console.error('Error updating session exercise:', error);

@@ -201,6 +201,23 @@ export async function getLastExercisePerformance(
     return exercise?.sets.filter(s => s.completed);
 }
 
+export async function getLastExerciseNote(
+    userId: number,
+    exerciseId: number
+): Promise<string | undefined> {
+    const session = await db.workout_sessions
+        .where('userId')
+        .equals(userId)
+        .and(s => s.status === 'completed' && s.exercises.some(ex => ex.exerciseId === exerciseId))
+        .reverse()
+        .first();
+
+    if (!session) return undefined;
+
+    const exercise = session.exercises.find(ex => ex.exerciseId === exerciseId);
+    return exercise?.personalNote;
+}
+
 export async function clearIncompleteSessions(userId: number): Promise<void> {
     const sessions = await db.workout_sessions
         .where('userId')

@@ -9,6 +9,7 @@ import WorkoutTimer from './WorkoutTimer';
 import RestTimer, { MinimizedRestTimer } from './RestTimer';
 import { useWorkout } from '@/context/WorkoutContext';
 import { db, Exercise } from '@/lib/db';
+import { getLastExerciseNote } from '@/lib/workoutSession';
 import { cn } from '@/lib/utils';
 
 interface WorkoutSessionProps {
@@ -43,6 +44,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     const [exerciseDetail, setExerciseDetail] = useState<Exercise | null>(null);
     const [showWizard, setShowWizard] = useState(false);
     const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
+    const [lastSessionNote, setLastSessionNote] = useState<string | undefined>();
 
     useEffect(() => {
         const loadExerciseDetail = async () => {
@@ -53,6 +55,12 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                 exercise = await db.exercises.where('name').equalsIgnoreCase(currentEx.exerciseName).first();
             }
             setExerciseDetail(exercise || null);
+
+            // Load last session note
+            if (activeSession.userId) {
+                const lastNote = await getLastExerciseNote(activeSession.userId, currentEx.exerciseId);
+                setLastSessionNote(lastNote);
+            }
         };
         loadExerciseDetail();
     }, [selectedIndex, activeSession]);
@@ -311,6 +319,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                 onUnitChange={(unit) => setExerciseUnit(activeSession.exercises[selectedIndex].exerciseId, unit)}
                                 personalNote={activeSession.exercises[selectedIndex].personalNote}
                                 onNoteChange={(note) => handleNoteChange(selectedIndex, note)}
+                                lastSessionNote={lastSessionNote}
                                 onEdit={() => {
                                     setEditingExercise(exerciseDetail);
                                     setShowWizard(true);

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { db, UserProfile } from '@/lib/db';
 import { supabase } from '@/lib/supabaseClient';
 import { importExercemusData } from '@/lib/exercemus';
+import { pullUserExercises } from '@/lib/syncManager';
 import { User } from '@supabase/supabase-js';
 
 interface UserContextType {
@@ -76,6 +77,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                         setCurrentUser(users[0]);
                         // Ensure exercise data is present for returning user
                         importExercemusData().catch(console.error);
+                        pullUserExercises(user.id).catch(console.error);
                     } else {
                         console.log('[Auth] No local profile found, checking user metadata');
                         // Try to restore profile from Supabase user metadata
@@ -97,6 +99,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                             setAllUsers(userProfile ? [userProfile] : []);
                             // Ensure exercise data is present for restored profile
                             importExercemusData().catch(console.error);
+                            pullUserExercises(user.id).catch(console.error);
                         } else {
                             setCurrentUser(null);
                         }

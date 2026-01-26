@@ -333,3 +333,20 @@ export async function upsertUserExercise(exercise: UserExercise): Promise<UserEx
 
     return data;
 }
+
+/**
+ * Fetch all user-specific exercise data (personal notes)
+ */
+export async function fetchUserExercises(userId: string): Promise<UserExercise[]> {
+    const { data, error } = await supabase
+        .from('user_exercises')
+        .select('*')
+        .eq('user_id', userId);
+
+    if (error) {
+        console.error('Error fetching user exercises:', error);
+        throw error;
+    }
+
+    return data || [];
+}

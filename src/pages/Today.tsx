@@ -109,9 +109,13 @@ const TodayPage = (props: TodayPageProps) => {
         const editedExerciseId = editingExercise?.id;
         setEditingExercise(undefined);
 
-        if (editedExerciseId && viewingExercise?.id === editedExerciseId) {
+        if (editedExerciseId) {
             const updated = await db.exercises.get(editedExerciseId);
-            if (updated) setViewingExercise(updated);
+            if (updated) {
+                // Update local cache so the list reflects changes immediately
+                setExerciseDetails(prev => ({ ...prev, [editedExerciseId]: updated }));
+                if (viewingExercise?.id === editedExerciseId) setViewingExercise(updated);
+            }
         }
     };
 
