@@ -34,6 +34,9 @@ export async function determineTodaysRoutine(
         return { routine: null, reason: 'no_routines' };
     }
 
+    // Sort routines by name to ensure consistent order
+    routines.sort((a, b) => a.name.localeCompare(b.name));
+
     // If no completed routine, return first routine
     if (!lastCompletedRoutineId) {
         return {

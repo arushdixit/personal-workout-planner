@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, CheckCircle2, ChevronRight, Dumbbell, ChevronLeft, Timer } from 'lucide-react';
+import { X, CheckCircle2, ChevronRight, Dumbbell, ChevronLeft, Timer, Trophy, Star, ArrowRight, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import ExerciseDetail from './ExerciseDetail';
@@ -38,6 +38,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     const [view, setView] = useState<'list' | 'detail'>('list');
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [showEndDialog, setShowEndDialog] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     const [endDialogType, setEndDialogType] = useState<'complete' | 'abandon'>('complete');
     const [exerciseDetail, setExerciseDetail] = useState<Exercise | null>(null);
 
@@ -83,7 +84,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     const handleEndWorkout = async () => {
         await endWorkout();
         setShowEndDialog(false);
-        onClose();
+        setShowSuccess(true);
     };
 
     const handleAbandonWorkout = async () => {
@@ -285,6 +286,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
 
             {/* End Workout Dialog */}
             <Dialog open={showEndDialog} onOpenChange={setShowEndDialog}>
+                {/* ... existing dialog content ... */}
                 <DialogContent className="glass border-white/10 max-w-sm rounded-[2rem]">
                     <DialogHeader>
                         <DialogTitle>
@@ -323,6 +325,69 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                             className="w-full h-12 rounded-xl"
                         >
                             Continue Workout
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Congratulation Screen */}
+            <Dialog open={showSuccess} onOpenChange={(open) => !open && onClose()}>
+                <DialogContent className="max-w-md bg-background border-none p-0 overflow-hidden rounded-[2.5rem] shadow-2xl">
+                    <div className="relative pt-12 pb-8 px-6 text-center space-y-8 animate-in zoom-in-95 duration-500">
+                        {/* Animated Background Orbs */}
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -z-10 animate-pulse" />
+
+                        {/* Success Icon */}
+                        <div className="relative inline-flex">
+                            <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl animate-pulse" />
+                            <div className="relative w-24 h-24 bg-gradient-to-tr from-primary to-rose-500 rounded-3xl flex items-center justify-center rotate-12 shadow-2xl">
+                                <Trophy className="w-12 h-12 text-white -rotate-12" />
+                            </div>
+                            <div className="absolute -top-2 -right-2 w-8 h-8 bg-amber-400 rounded-full flex items-center justify-center shadow-lg border-4 border-background animate-bounce">
+                                <Star className="w-4 h-4 text-white fill-current" />
+                            </div>
+                        </div>
+
+                        {/* Text */}
+                        <div className="space-y-2">
+                            <h2 className="text-3xl font-black tracking-tight text-foreground">WORKOUT COMPLETE!</h2>
+                            <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs">You're crushing it today</p>
+                        </div>
+
+                        {/* Summary Stats */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="glass-card p-4 space-y-1">
+                                <div className="flex items-center justify-center gap-2 text-primary">
+                                    <Activity className="w-4 h-4" />
+                                    <span className="text-2xl font-black">{progress.completed}</span>
+                                </div>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase">Sets Logged</p>
+                            </div>
+                            <div className="glass-card p-4 space-y-1">
+                                <div className="flex items-center justify-center gap-2 text-primary">
+                                    <Timer className="w-4 h-4" />
+                                    <span className="text-2xl font-black">{Math.floor(activeSession.duration ? activeSession.duration / 60 : 0)}m</span>
+                                </div>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase">Duration</p>
+                            </div>
+                        </div>
+
+                        {/* Motivation */}
+                        <div className="p-6 glass-card border-primary/20 bg-primary/5 rounded-3xl">
+                            <p className="text-sm font-medium italic text-foreground/80 lowercase first-letter:uppercase">
+                                "The only bad workout is the one that didn't happen. Great job showing up."
+                            </p>
+                        </div>
+
+                        <Button
+                            variant="gradient"
+                            onClick={onClose}
+                            className="w-full h-16 rounded-[1.5rem] text-lg font-black shadow-[0_10px_30px_rgba(239,68,68,0.3)] hover:scale-[1.02] active:scale-95 transition-all group"
+                        >
+                            <span className="flex items-center gap-2">
+                                Back to Dashboard
+                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            </span>
                         </Button>
                     </div>
                 </DialogContent>

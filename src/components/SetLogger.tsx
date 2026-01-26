@@ -32,24 +32,27 @@ const SetLogger = ({
     // Local state for input values
     const [inputValues, setInputValues] = useState<Record<number, { weight: string; reps: string }>>({});
 
-    const handleInputChange = (setId: number, field: 'weight' | 'reps', value: string) => {
-        setInputValues(prev => ({
-            ...prev,
-            [setId]: {
-                ...(prev[setId] || { weight: '', reps: '' }),
-                [field]: value
-            }
-        }));
+    const handleInputChange = (setId: number, field: 'weight' | 'reps', value: string, currentSet: WorkoutSet) => {
+        setInputValues(prev => {
+            const existing = prev[setId] || {
+                weight: currentSet.weight > 0 ? currentSet.weight.toString() : '',
+                reps: currentSet.reps > 0 ? currentSet.reps.toString() : ''
+            };
+            return {
+                ...prev,
+                [setId]: {
+                    ...existing,
+                    [field]: value
+                }
+            };
+        });
     };
 
     const handleLogSet = (set: WorkoutSet) => {
-        const values = inputValues[set.id] || {
-            weight: set.weight > 0 ? set.weight.toString() : '',
-            reps: set.reps > 0 ? set.reps.toString() : ''
-        };
-        const weight = parseFloat(values.weight) || 0;
-        const reps = parseInt(values.reps, 10) || 0;
-        onSetComplete(set.id, weight, reps, unit);
+        const values = inputValues[set.id];
+        const weight = values ? parseFloat(values.weight) : set.weight;
+        const reps = values ? parseInt(values.reps, 10) : set.reps;
+        onSetComplete(set.id, weight || 0, reps || 0, unit);
     };
 
     const nextIncompleteSetId = useMemo(() => {
@@ -104,9 +107,9 @@ const SetLogger = ({
                     // Allow interaction if it's the next set OR if it's already completed (for editing)
                     const isDisabled = !isActuallyNext && !isCompleted;
 
-                    const currentValues = inputValues[set.id] || {
-                        weight: isCompleted ? set.weight.toString() : (set.weight > 0 ? set.weight.toString() : ''),
-                        reps: isCompleted ? set.reps.toString() : (set.reps > 0 ? set.reps.toString() : '')
+                    const currentValues = {
+                        weight: inputValues[set.id]?.weight ?? (set.weight > 0 ? set.weight.toString() : ''),
+                        reps: inputValues[set.id]?.reps ?? (set.reps > 0 ? set.reps.toString() : '')
                     };
 
                     return (
@@ -150,7 +153,7 @@ const SetLogger = ({
                                                 inputMode="decimal"
                                                 disabled={isDisabled}
                                                 value={currentValues.weight}
-                                                onChange={(e) => handleInputChange(set.id, 'weight', e.target.value)}
+                                                onChange={(e) => handleInputChange(set.id, 'weight', e.target.value, set)}
                                                 onBlur={() => isCompleted && handleLogSet(set)}
                                                 placeholder={unit}
                                                 className={cn(
@@ -167,7 +170,7 @@ const SetLogger = ({
                                                 inputMode="numeric"
                                                 disabled={isDisabled}
                                                 value={currentValues.reps}
-                                                onChange={(e) => handleInputChange(set.id, 'reps', e.target.value)}
+                                                onChange={(e) => handleInputChange(set.id, 'reps', e.target.value, set)}
                                                 onBlur={() => isCompleted && handleLogSet(set)}
                                                 placeholder="0"
                                                 className={cn(

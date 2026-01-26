@@ -10,7 +10,7 @@ interface UserContextType {
     loading: boolean;
     isAuthenticated: boolean;
     switchUser: (userId: number) => void;
-    refreshUsers: () => Promise<void>;
+    refreshUsers: (supabaseUserId?: string) => Promise<void>;
     signIn: (email: string, password: string) => Promise<void>;
     signUp: (
         email: string,
@@ -155,7 +155,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     return (
-        <UserContext.Provider value={{ currentUser, allUsers, loading, isAuthenticated, switchUser, refreshUsers, signIn, signUp, logout, setSupabaseUser }}>
+        <UserContext.Provider value={{ currentUser, allUsers, loading, isAuthenticated, switchUser, refreshUsers: () => refreshUsers(supabaseUser?.id), signIn, signUp, logout, setSupabaseUser }}>
             {children}
         </UserContext.Provider>
     );

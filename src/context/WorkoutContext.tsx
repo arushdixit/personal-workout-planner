@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode, useMemo } from 'react';
 import { db, WorkoutSession, WorkoutSessionExercise, WorkoutSet, Routine } from '@/lib/db';
 import { updateLastCompletedRoutine } from '@/lib/routineCycling';
+import { useUser } from './UserContext';
 import { queueWorkoutOperation } from '@/lib/workoutSyncManager';
 import { v4 as uuidv4 } from 'uuid';
+import { getLastExercisePerformance } from '@/lib/workoutSession';
 
 interface WorkoutContextType {
     // State
@@ -41,6 +43,7 @@ interface WorkoutContextType {
 const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
 
 export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const { refreshUsers } = useUser();
     const [activeSession, setActiveSession] = useState<WorkoutSession | null>(null);
     const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
     const [exerciseUnitOverrides, setExerciseUnitOverrides] = useState<Record<number, 'kg' | 'lbs'>>({});
@@ -131,6 +134,31 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         const now = new Date().toISOString();
         const today = now.split('T')[0];
 
+        const exercises = await Promise.all(routine.exercises.map(async (ex, index) => {
+            const lastPerformance = await getLastExercisePerformance(userId, ex.exerciseId);
+            const defaultWeight = lastPerformance?.[0]?.weight || 0;
+            const defaultReps = lastPerformance?.[0]?.reps || parseReps(ex.reps);
+            const defaultUnit = lastPerformance?.[0]?.unit || 'kg';
+
+            return {
+                exerciseId: ex.exerciseId,
+                exerciseName: ex.exerciseName,
+                order: ex.order,
+                restSeconds: ex.restSeconds,
+                sets: Array.from({ length: ex.sets }, (_, setIndex) => {
+                    const historicalSet = lastPerformance?.[setIndex];
+                    return {
+                        id: Date.now() + setIndex + (index * 100),
+                        setNumber: setIndex + 1,
+                        reps: historicalSet?.reps || defaultReps,
+                        weight: historicalSet?.weight || defaultWeight,
+                        unit: historicalSet?.unit || defaultUnit,
+                        completed: false,
+                    };
+                }),
+            };
+        }));
+
         const sessionForDexie: Omit<WorkoutSession, 'id'> & { id?: number } = {
             userId,
             supabaseUserId,
@@ -138,20 +166,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             routineName: routine.name,
             date: today,
             startTime: now,
-            exercises: routine.exercises.map((ex, index) => ({
-                exerciseId: ex.exerciseId,
-                exerciseName: ex.exerciseName,
-                order: ex.order,
-                restSeconds: ex.restSeconds,
-                sets: Array.from({ length: ex.sets }, (_, setIndex) => ({
-                    id: Date.now() + setIndex + (index * 100),
-                    setNumber: setIndex + 1,
-                    reps: parseReps(ex.reps),
-                    weight: 0,
-                    unit: 'kg',
-                    completed: false,
-                })),
-            })),
+            exercises,
             status: 'in_progress',
         };
 
@@ -194,15 +209,27 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             return {
                 ...ex,
                 sets: ex.sets.map(s => {
-                    if (s.id !== setId) return s;
-                    return {
-                        ...s,
-                        weight,
-                        reps,
-                        unit,
-                        completed: true,
-                        completedAt: s.completedAt || new Date().toISOString(),
-                    };
+                    // Update the target set
+                    if (s.id === setId) {
+                        return {
+                            ...s,
+                            weight,
+                            reps,
+                            unit,
+                            completed: true,
+                            completedAt: s.completedAt || new Date().toISOString(),
+                        };
+                    }
+                    // Carry forward values to subsequent incomplete sets
+                    if (!s.completed && s.setNumber > (set?.setNumber || 0)) {
+                        return {
+                            ...s,
+                            weight,
+                            reps,
+                            unit
+                        };
+                    }
+                    return s;
                 })
             };
         });
@@ -227,13 +254,14 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         const updatedExercises = activeSession.exercises.map((ex, idx) => {
             if (idx !== exerciseIndex) return ex;
 
+            const lastSet = ex.sets[ex.sets.length - 1];
             const newSetNumber = ex.sets.length + 1;
-            const unit = exerciseUnitOverrides[ex.exerciseId] || 'kg';
+            const unit = exerciseUnitOverrides[ex.exerciseId] || lastSet?.unit || 'kg';
             const newSet: WorkoutSet = {
                 id: Date.now(),
                 setNumber: newSetNumber,
-                reps: parseReps('10'),
-                weight: 0,
+                reps: lastSet?.reps || parseReps('10'),
+                weight: lastSet?.weight || 0,
                 unit,
                 completed: false,
             };
@@ -324,6 +352,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         if (activeSession.userId) {
             await updateLastCompletedRoutine(activeSession.userId, activeSession.routineId);
+            await refreshUsers();
         }
 
         await queueWorkoutOperation('complete', activeSession.id!);
