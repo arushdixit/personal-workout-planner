@@ -3,6 +3,7 @@ import {
     createRoutine as createRoutineRemote,
     updateRoutine as updateRoutineRemote,
     deleteRoutine as deleteRoutineRemote,
+    upsertUserExercise as upsertExerciseRemote,
 } from './supabaseClient';
 import { db, Routine } from './db';
 import {
@@ -28,30 +29,28 @@ export async function processSyncQueue(): Promise<void> {
 
     try {
         const operations = await getPendingOperations();
+        const syncOps = operations.filter(op => op.entityType === 'routine' || op.entityType === 'exercise');
 
-        if (operations.length === 0) {
-            console.log('[SyncManager] No pending operations');
+        if (syncOps.length === 0) {
+            console.log('[SyncManager] No routine or exercise operations to process');
             return;
         }
 
-        const routineOps = operations.filter(op => op.entityType === 'routine');
+        console.log(`[SyncManager] Processing ${syncOps.length} operations`);
 
-        if (routineOps.length === 0) {
-            console.log('[SyncManager] No routine operations to process (workout ops handled separately)');
-            return;
-        }
-
-        console.log(`[SyncManager] Processing ${routineOps.length} routine operations`);
-
-        for (const operation of routineOps) {
+        for (const operation of syncOps) {
             if (!canRetryImmediately(operation)) {
                 continue;
             }
 
             try {
-                console.log(`[SyncManager] Processing routine ${operation.type}:${operation.entityId}`);
+                console.log(`[SyncManager] Processing ${operation.entityType} ${operation.type}:${operation.entityId}`);
 
-                await processRoutineOperation(operation);
+                if (operation.entityType === 'routine') {
+                    await processRoutineOperation(operation);
+                } else if (operation.entityType === 'exercise') {
+                    await processExerciseOperation(operation);
+                }
             } catch (error) {
                 console.error(`[SyncManager] Failed to process operation ${operation.id}:`, error);
 
@@ -81,6 +80,32 @@ async function processRoutineOperation(operation: QueuedOperation): Promise<void
         case 'delete':
             await processDeleteRoutine(operation);
             break;
+    }
+}
+
+async function processExerciseOperation(operation: QueuedOperation): Promise<void> {
+    if (operation.entityType !== 'exercise') return;
+
+    // Use name as the primary key for user_exercises sync to handle library cross-device
+    const exerciseData = operation.data as any;
+
+    try {
+        await upsertExerciseRemote({
+            user_id: exerciseData.userId,
+            exercise_id_local: Number(operation.entityId),
+            name: exerciseData.name,
+            personal_notes: exerciseData.personalNotes,
+            equipment: exerciseData.equipment,
+            primary_muscles: exerciseData.primaryMuscles,
+            secondary_muscles: exerciseData.secondaryMuscles,
+            source: exerciseData.source,
+        });
+
+        await removeOperation(operation.id);
+        console.log('[SyncManager] Successfully synced exercise data:', exerciseData.name);
+    } catch (error) {
+        console.error('[SyncManager] Failed to sync exercise:', error);
+        throw error;
     }
 }
 

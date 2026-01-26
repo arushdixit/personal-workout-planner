@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ChevronLeft, ChevronRight, Sparkles, Loader2, Check, X, Search } from 'lucide-react';
 import { db, Exercise, EquipmentType, EQUIPMENT_TYPES } from '@/lib/db';
+import { addToSyncQueue } from '@/lib/syncQueue';
+import { triggerImmediateSync } from '@/lib/syncManager';
 import { lookupExercise } from '@/lib/openrouter';
 import AnatomyDiagram from './AnatomyDiagram';
 import { useUser } from '@/context/UserContext';
@@ -143,8 +145,26 @@ const ExerciseWizard = ({ exercise, open, onOpenChange, onComplete }: ExerciseWi
 
             if (isEditMode && exercise?.id) {
                 await db.exercises.update(exercise.id, exerciseData);
+
+                // Sync to Supabase if authenticated
+                if (currentUser?.supabaseUserId) {
+                    await addToSyncQueue('update', 'exercise', exercise.id.toString(), {
+                        ...exerciseData,
+                        userId: currentUser.supabaseUserId
+                    });
+                    triggerImmediateSync();
+                }
             } else {
-                await db.exercises.add(exerciseData);
+                const newId = await db.exercises.add(exerciseData);
+
+                // Sync to Supabase if authenticated
+                if (currentUser?.supabaseUserId) {
+                    await addToSyncQueue('create', 'exercise', newId.toString(), {
+                        ...exerciseData,
+                        userId: currentUser.supabaseUserId
+                    });
+                    triggerImmediateSync();
+                }
             }
             onComplete();
         } catch (err) {

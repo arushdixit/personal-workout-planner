@@ -5,12 +5,13 @@ import {
     abandonWorkout as abandonRemoteWorkout,
     updateSessionSet as updateRemoteSet,
     addSessionSet as addRemoteSet,
+    updateSessionExercise as updateRemoteExerciseNote,
 } from './supabaseWorkoutClient';
 import { addToSyncQueue, updateOperationStatus, removeOperation, getPendingOperations, type QueuedOperation, type SyncType, type EntityType } from './syncQueue';
 
 let isProcessing = false;
 
-export type WorkoutSyncType = 'create' | 'complete' | 'abandon' | 'set_complete' | 'set_update' | 'add_set';
+export type WorkoutSyncType = 'create' | 'complete' | 'abandon' | 'set_complete' | 'set_update' | 'add_set' | 'exercise_note';
 
 export async function processWorkoutSyncQueue(): Promise<void> {
     if (isProcessing) {
@@ -93,6 +94,9 @@ async function processWorkoutOperation(operation: QueuedOperation): Promise<void
             break;
         case 'add_set':
             await processAddSet(operation, session);
+            break;
+        case 'exercise_note':
+            await processExerciseNote(operation, session);
             break;
         default:
             console.warn(`[WorkoutSync] Unknown workout operation type: ${workoutOpType}`);
@@ -255,6 +259,29 @@ async function processAddSet(operation: QueuedOperation, session: WorkoutSession
         console.log('[WorkoutSync] Successfully synced add set');
     } catch (error) {
         console.error('[WorkoutSync] Failed to add set remotely:', error);
+        throw error;
+    }
+}
+
+async function processExerciseNote(operation: QueuedOperation, session: WorkoutSession): Promise<void> {
+    if (!session.remoteId) {
+        console.warn('[WorkoutSync] Session has no remote ID yet');
+        throw new Error('Session not yet synced to server');
+    }
+
+    const noteData = operation.data as { exerciseId?: number; note?: string };
+    if (!noteData.exerciseId) {
+        console.warn('[WorkoutSync] Missing exercise ID for note update');
+        await removeOperation(operation.id!);
+        return;
+    }
+
+    try {
+        await updateRemoteExerciseNote(session.remoteId, noteData.exerciseId, noteData.note);
+        await removeOperation(operation.id!);
+        console.log('[WorkoutSync] Successfully synced exercise note');
+    } catch (error) {
+        console.error('[WorkoutSync] Failed to sync exercise note:', error);
         throw error;
     }
 }

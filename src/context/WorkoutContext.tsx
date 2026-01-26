@@ -324,6 +324,12 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
         setActiveSession({ ...activeSession, exercises: updatedExercises });
+
+        // Trigger sync
+        queueWorkoutOperation('exercise_note', activeSession.id!, {
+            exerciseId: activeSession.exercises[exerciseIndex].exerciseId,
+            note
+        }).catch(err => console.error('[WorkoutContext] Failed to queue note sync:', err));
     }, [activeSession]);
 
     const nextExercise = useCallback(() => {

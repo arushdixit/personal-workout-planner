@@ -32,6 +32,19 @@ export interface Routine {
     updated_at?: string;
 }
 
+export interface UserExercise {
+    id?: string;
+    user_id: string;
+    exercise_id_local: number;
+    name: string;
+    personal_notes?: string;
+    equipment?: string;
+    primary_muscles?: string[];
+    secondary_muscles?: string[];
+    source?: string;
+    updated_at?: string;
+}
+
 // --- Authentication ---
 
 /**
@@ -289,4 +302,34 @@ export async function duplicateRoutine(routineId: string, userId: string, localU
     };
 
     return await createRoutine(copy);
+}
+
+/**
+ * Upsert user-specific exercise data (personal notes, custom exercises)
+ */
+export async function upsertUserExercise(exercise: UserExercise): Promise<UserExercise> {
+    const { data, error } = await supabase
+        .from('user_exercises')
+        .upsert({
+            user_id: exercise.user_id,
+            name: exercise.name,
+            exercise_id_local: exercise.exercise_id_local,
+            personal_notes: exercise.personal_notes,
+            equipment: exercise.equipment,
+            primary_muscles: exercise.primary_muscles,
+            secondary_muscles: exercise.secondary_muscles,
+            source: exercise.source,
+            updated_at: new Date().toISOString(),
+        }, {
+            onConflict: 'user_id,name'
+        })
+        .select()
+        .single();
+
+    if (error) {
+        console.error('Error upserting user exercise:', error);
+        throw error;
+    }
+
+    return data;
 }
