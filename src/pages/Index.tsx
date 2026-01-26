@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
 import Library from '@/pages/Library';
@@ -84,13 +84,13 @@ const Index = () => {
     setActiveTab('library');
   };
 
-  const handleCloseWorkout = () => {
+  const handleCloseWorkout = useCallback(() => {
     const currentParams = new URLSearchParams(searchParams.toString());
     currentParams.set('tab', 'today');
     currentParams.delete('workoutId');
     setSearchParams(currentParams);
     setActiveTab('today');
-  };
+  }, [searchParams, setSearchParams]);
 
   const handleNavigateToRoutines = () => {
     const currentParams = new URLSearchParams(searchParams.toString());
@@ -187,6 +187,7 @@ const Index = () => {
         {activeTab === 'workout' && workoutId && (
           <div className="min-h-[100dvh] flex flex-col">
             <WorkoutSession
+              key="active-workout-session"
               routineId={workoutId}
               onClose={handleCloseWorkout}
             />

@@ -8,6 +8,7 @@ interface UserContextType {
     currentUser: UserProfile | null;
     allUsers: UserProfile[];
     loading: boolean;
+    refreshing: boolean;
     isAuthenticated: boolean;
     switchUser: (userId: number) => void;
     refreshUsers: (supabaseUserId?: string) => Promise<void>;
@@ -29,18 +30,27 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     const refreshUsers = async (supabaseUserId?: string) => {
-        setLoading(true);
+        if (!currentUser) setLoading(true);
+        setRefreshing(true);
         try {
             const users = supabaseUserId
                 ? await db.users.where('supabaseUserId').equals(supabaseUserId).toArray()
                 : await db.users.toArray();
             setAllUsers(users);
+
+            // Also update currentUser if it's already set to ensure it has latest data (like lastCompletedRoutineId)
+            if (currentUser) {
+                const updated = users.find(u => u.id === currentUser.id);
+                if (updated) setCurrentUser(updated);
+            }
         } catch (err) {
             console.error('Failed to load users:', err);
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     };
 
@@ -155,7 +165,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     return (
-        <UserContext.Provider value={{ currentUser, allUsers, loading, isAuthenticated, switchUser, refreshUsers: () => refreshUsers(supabaseUser?.id), signIn, signUp, logout, setSupabaseUser }}>
+        <UserContext.Provider value={{ currentUser, allUsers, loading, refreshing, isAuthenticated, switchUser, refreshUsers: () => refreshUsers(supabaseUser?.id), signIn, signUp, logout, setSupabaseUser }}>
             {children}
         </UserContext.Provider>
     );

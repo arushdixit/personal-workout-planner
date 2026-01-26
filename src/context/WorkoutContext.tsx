@@ -19,6 +19,14 @@ interface WorkoutContextType {
     isRestTimerActive: boolean;
     restTimeLeft: number;
     isRestTimerMinimized: boolean;
+    showSuccess: boolean;
+    completedStats: {
+        duration: number;
+        completedSets: number;
+        totalSets: number;
+        volume: number;
+        exerciseCount: number;
+    } | null;
 
     // Actions
     startWorkout: (routine: Routine, userId: number, supabaseUserId: string) => Promise<WorkoutSession>;
@@ -29,11 +37,12 @@ interface WorkoutContextType {
     nextExercise: () => void;
     previousExercise: () => void;
     skipRest: () => void;
-    endWorkout: () => Promise<{ duration: number; completedSets: number; totalSets: number } | null>;
+    endWorkout: () => Promise<void>;
     abandonWorkout: () => Promise<void>;
     clearActiveSession: () => Promise<void>;
     setMinimizedRest: (minimized: boolean) => void;
     adjustRestTime: (delta: number) => void;
+    clearSuccess: () => void;
 
     // Unit Override
     setExerciseUnit: (exerciseId: number, unit: 'kg' | 'lbs') => void;
@@ -50,6 +59,14 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     const [isRestTimerActive, setIsRestTimerActive] = useState(false);
     const [restTimeLeft, setRestTimeLeft] = useState(0);
     const [isRestTimerMinimized, setIsRestTimerMinimized] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [completedStats, setCompletedStats] = useState<{
+        duration: number;
+        completedSets: number;
+        totalSets: number;
+        volume: number;
+        exerciseCount: number;
+    } | null>(null);
 
     // Load any active session on mount
     useEffect(() => {
@@ -337,18 +354,39 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     }, []);
 
     const endWorkout = useCallback(async () => {
-        if (!activeSession) return null;
+        if (!activeSession) return;
 
         const endTime = new Date().toISOString();
         const duration = Math.floor(
             (new Date(endTime).getTime() - new Date(activeSession.startTime).getTime()) / 1000
         );
 
-        const stats = {
+        // Calculate detailed stats
+        let volume = 0;
+        let completedSetsCount = 0;
+        let exerciseCount = 0;
+
+        activeSession.exercises.forEach(ex => {
+            let exCompleted = false;
+            ex.sets.forEach(set => {
+                if (set.completed) {
+                    volume += (set.weight || 0) * (set.reps || 0);
+                    completedSetsCount++;
+                    exCompleted = true;
+                }
+            });
+            if (exCompleted) exerciseCount++;
+        });
+
+        setCompletedStats({
             duration,
-            completedSets: progress.completed,
-            totalSets: progress.total
-        };
+            completedSets: completedSetsCount,
+            totalSets: progress.total,
+            volume,
+            exerciseCount
+        });
+
+        setShowSuccess(true);
 
         await db.workout_sessions.update(activeSession.id!, {
             status: 'completed',
@@ -366,9 +404,12 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         setActiveSession(null);
         setCurrentExerciseIndex(0);
         setIsRestTimerActive(false);
-
-        return stats;
     }, [activeSession, progress, refreshUsers]);
+
+    const clearSuccess = useCallback(() => {
+        setShowSuccess(false);
+        setCompletedStats(null);
+    }, []);
 
     const abandonWorkout = useCallback(async () => {
         if (!activeSession) return;
@@ -431,6 +472,9 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         adjustRestTime,
         setExerciseUnit,
         getExerciseUnit,
+        showSuccess,
+        completedStats,
+        clearSuccess
     };
 
     return (
