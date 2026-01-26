@@ -547,14 +547,14 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
                         }
                     }
                 }}
-                onEdit={viewingExercise?.source === 'exercemus' && view === 'my' ? () => {
+                onEdit={() => {
                     // Blur focus before opening wizard to prevent aria-hidden conflicts
                     if (document.activeElement) {
                         (document.activeElement as HTMLElement).blur();
                     }
                     setEditingExercise(viewingExercise);
                     setShowWizard(true);
-                } : undefined}
+                }}
             />
 
             {/* Delete Confirmation */}
@@ -600,6 +600,27 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
                 }}
             />
 
+            {/* Exercise Wizard Modal */}
+            <ExerciseWizard
+                exercise={editingExercise}
+                open={showWizard}
+                onOpenChange={(open) => {
+                    setShowWizard(open);
+                    if (!open) setEditingExercise(undefined);
+                }}
+                onComplete={async () => {
+                    setShowWizard(false);
+                    setEditingExercise(undefined);
+                    // Refresh exercises list to show updated notes/info
+                    const all = await db.exercises.toArray();
+                    setExercises(all);
+                    // Also refresh the currently viewing exercise if it's the one we edited
+                    if (viewingExercise?.id) {
+                        const updated = await db.exercises.get(viewingExercise.id);
+                        if (updated) setViewingExercise(updated);
+                    }
+                }}
+            />
         </div>
     );
 };

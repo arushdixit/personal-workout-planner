@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import ExerciseDetail from './ExerciseDetail';
+import ExerciseWizard from './ExerciseWizard';
 import WorkoutTimer from './WorkoutTimer';
 import RestTimer, { MinimizedRestTimer } from './RestTimer';
 import { useWorkout } from '@/context/WorkoutContext';
@@ -40,6 +41,8 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     const [showEndDialog, setShowEndDialog] = useState(false);
     const [endDialogType, setEndDialogType] = useState<'complete' | 'abandon'>('complete');
     const [exerciseDetail, setExerciseDetail] = useState<Exercise | null>(null);
+    const [showWizard, setShowWizard] = useState(false);
+    const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
 
     useEffect(() => {
         const loadExerciseDetail = async () => {
@@ -310,6 +313,10 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                 onUnitChange={(unit) => setExerciseUnit(activeSession.exercises[selectedIndex].exerciseId, unit)}
                                 personalNote={activeSession.exercises[selectedIndex].personalNote}
                                 onNoteChange={(note) => handleNoteChange(selectedIndex, note)}
+                                onEdit={() => {
+                                    setEditingExercise(exerciseDetail);
+                                    setShowWizard(true);
+                                }}
                             />
                         )
                     )
@@ -321,7 +328,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                         </div>
                         <div className="space-y-4">
                             <h3 className="text-xl font-bold opacity-30 tracking-tight">Finishing up...</h3>
-                            <Button variant="ghost" onClick={handleClose} className="opacity-40">
+                            <Button variant="ghost" onClick={onClose} className="opacity-40">
                                 Back to Today
                             </Button>
                         </div>
@@ -387,6 +394,25 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
 
             <RestTimer />
             <MinimizedRestTimer />
+
+            <ExerciseWizard
+                exercise={editingExercise || undefined}
+                open={showWizard}
+                onOpenChange={(open) => {
+                    setShowWizard(open);
+                    if (!open) setEditingExercise(null);
+                }}
+                onComplete={async () => {
+                    setShowWizard(false);
+                    setEditingExercise(null);
+                    // Refresh current detail
+                    if (selectedIndex !== null && activeSession) {
+                        const currentEx = activeSession.exercises[selectedIndex];
+                        const updated = await db.exercises.get(currentEx.exerciseId);
+                        if (updated) setExerciseDetail(updated);
+                    }
+                }}
+            />
         </div>
     );
 };

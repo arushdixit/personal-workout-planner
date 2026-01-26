@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import ExerciseDetail from './ExerciseDetail';
+import ExerciseWizard from './ExerciseWizard';
 
 interface RoutineBuilderProps {
     routine?: Routine;
@@ -40,6 +41,8 @@ const RoutineBuilder = ({
     const [filterEquipment, setFilterEquipment] = useState<string>('all');
     const [selectedExerciseDetail, setSelectedExerciseDetail] = useState<Exercise | null>(null);
     const [showExerciseDetail, setShowExerciseDetail] = useState(false);
+    const [showWizard, setShowWizard] = useState(false);
+    const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
 
     useEffect(() => {
         if (routine) {
@@ -385,8 +388,33 @@ const RoutineBuilder = ({
                     exercise={selectedExerciseDetail}
                     open={showExerciseDetail}
                     onOpenChange={handleExerciseDetailChange}
+                    onEdit={() => {
+                        setEditingExercise(selectedExerciseDetail);
+                        setShowWizard(true);
+                    }}
                 />
             )}
+
+            <ExerciseWizard
+                exercise={editingExercise || undefined}
+                open={showWizard}
+                onOpenChange={(open) => {
+                    setShowWizard(open);
+                    if (!open) setEditingExercise(null);
+                }}
+                onComplete={async () => {
+                    setShowWizard(false);
+                    setEditingExercise(null);
+                    // Refresh exercises list if needed, but definitely refresh selected detail
+                    if (selectedExerciseDetail?.id) {
+                        const updated = await db.exercises.get(selectedExerciseDetail.id);
+                        if (updated) setSelectedExerciseDetail(updated);
+                    }
+                    // Refresh global list to show updated notes/info
+                    const all = await db.exercises.toArray();
+                    setAllExercises(all);
+                }}
+            />
         </div>
     );
 }

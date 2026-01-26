@@ -195,6 +195,19 @@ const ExerciseDetail = ({
                             unit={unit}
                             onUnitChange={onUnitChange!}
                         />
+                        {/* Permanent Coaching Notes Preview */}
+                        {exercise.personalNotes && (
+                            <div className="bg-purple-500/5 border border-purple-500/20 rounded-xl p-4 animate-in fade-in slide-in-from-top-2">
+                                <p className="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                    <Edit className="w-3 h-3" />
+                                    Your Coaching Notes
+                                </p>
+                                <p className="text-sm text-purple-100/80 leading-relaxed italic line-clamp-3">
+                                    "{exercise.personalNotes}"
+                                </p>
+                            </div>
+                        )}
+
                         <div>
                             <label className="text-sm font-medium text-muted-foreground mb-2 block">
                                 How did this feel?
@@ -385,7 +398,7 @@ const ExerciseDetail = ({
                                         >
                                             <MuscleIcon muscleName={muscle} isPrimary={true} size="md" />
                                             <div className="flex flex-col">
-                                                <span className="text-xs font-bold text-rose-500 uppercase tracking-widest mb-1">Primary</span>
+                                                <span className="text-xs font-bold text-rose-500 uppercase tracking-widest mb-1">Prime Mover</span>
                                                 <span className="text-lg font-bold capitalize text-white">
                                                     {muscle.replace(/[_-]/g, ' ')}
                                                 </span>
@@ -410,7 +423,7 @@ const ExerciseDetail = ({
                                         >
                                             <MuscleIcon muscleName={muscle} isPrimary={false} size="md" />
                                             <div className="flex flex-col">
-                                                <span className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-1">Secondary</span>
+                                                <span className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-1">Stabilizer</span>
                                                 <span className="text-lg font-bold capitalize text-white">
                                                     {muscle.replace(/[_-]/g, ' ')}
                                                 </span>

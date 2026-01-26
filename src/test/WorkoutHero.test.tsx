@@ -3,28 +3,11 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import WorkoutHero from '@/components/WorkoutHero';
 
 describe('WorkoutHero - Rendering', () => {
-  it('renders greeting text', () => {
-    const onStart = vi.fn();
-
-    render(
-      <WorkoutHero
-        greeting="Good morning"
-        workoutName="Push Day"
-        exercises={5}
-        estimatedTime={45}
-        onStart={onStart}
-      />
-    );
-
-    expect(screen.getByText('Good morning')).toBeInTheDocument();
-  });
-
   it('displays workout name', () => {
     const onStart = vi.fn();
 
     render(
       <WorkoutHero
-        greeting="Good morning"
         workoutName="Push Day"
         exercises={5}
         estimatedTime={45}
@@ -40,7 +23,6 @@ describe('WorkoutHero - Rendering', () => {
 
     render(
       <WorkoutHero
-        greeting="Good morning"
         workoutName="Push Day"
         exercises={5}
         estimatedTime={45}
@@ -56,7 +38,6 @@ describe('WorkoutHero - Rendering', () => {
 
     render(
       <WorkoutHero
-        greeting="Good morning"
         workoutName="Push Day"
         exercises={5}
         estimatedTime={45}
@@ -74,7 +55,6 @@ describe('WorkoutHero - Start Button', () => {
 
     render(
       <WorkoutHero
-        greeting="Good morning"
         workoutName="Push Day"
         exercises={5}
         estimatedTime={45}
@@ -91,7 +71,6 @@ describe('WorkoutHero - Start Button', () => {
 
     render(
       <WorkoutHero
-        greeting="Good morning"
         workoutName="Push Day"
         exercises={5}
         estimatedTime={45}
@@ -111,7 +90,6 @@ describe('WorkoutHero - Visual Design', () => {
     const onStart = vi.fn();
     const { container } = render(
       <WorkoutHero
-        greeting="Good morning"
         workoutName="Push Day"
         exercises={5}
         estimatedTime={45}
@@ -126,19 +104,8 @@ describe('WorkoutHero - Visual Design', () => {
   it('displays icons for stats', () => {
     const onStart = vi.fn();
 
-    render(
-      <WorkoutHero
-        greeting="Good morning"
-        workoutName="Push Day"
-        exercises={5}
-        estimatedTime={45}
-        onStart={onStart}
-      />
-    );
-
     const { container } = render(
       <WorkoutHero
-        greeting="Good morning"
         workoutName="Push Day"
         exercises={5}
         estimatedTime={45}
@@ -160,7 +127,6 @@ describe('WorkoutHero - Edge Cases', () => {
 
     render(
       <WorkoutHero
-        greeting="Good morning"
         workoutName="Push Day"
         exercises={1}
         estimatedTime={15}
@@ -176,7 +142,6 @@ describe('WorkoutHero - Edge Cases', () => {
 
     render(
       <WorkoutHero
-        greeting="Good morning"
         workoutName="Push Day"
         exercises={12}
         estimatedTime={90}
@@ -192,7 +157,6 @@ describe('WorkoutHero - Edge Cases', () => {
 
     render(
       <WorkoutHero
-        greeting="Good morning"
         workoutName=""
         exercises={5}
         estimatedTime={45}

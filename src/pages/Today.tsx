@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Calendar, Clock, Dumbbell, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -117,7 +118,7 @@ const TodayPage = (props: TodayPageProps) => {
     const getGreeting = () => {
         const hour = new Date().getHours();
         if (hour < 12) return 'Good morning';
-        if (hour < 18) return 'Good afternoon';
+        if (hour < 16) return 'Good afternoon';
         return 'Good evening';
     };
 
@@ -136,78 +137,89 @@ const TodayPage = (props: TodayPageProps) => {
     }
 
     return (
-        <div className="space-y-6 animate-slide-up">
+        <div className="space-y-6">
             {/* Header */}
             <div>
                 <h1 className="text-2xl font-bold mb-2">
                     {getGreeting()}, {currentUser?.name}
                 </h1>
-                <p className="text-muted-foreground">
-                    {todaysRoutine ? todaysRoutine.name : 'No routine assigned'}
-                </p>
+
             </div>
 
-            {/* Workout Hero */}
-            {todaysRoutine ? (
-                <WorkoutHero
-                    greeting={getGreeting()}
-                    workoutName={todaysRoutine.name}
-                    exercises={exerciseCount}
-                    estimatedTime={estimatedTime}
-                    onStart={handleStartWorkout}
-                />
-            ) : (
-                <Card className="glass-card p-8 text-center space-y-4">
-                    <div className="w-16 h-16 mx-auto rounded-full gradient-red flex items-center justify-center glow-red">
-                        <Dumbbell className="w-8 h-8 text-white" />
-                    </div>
-                    <div>
-                        <h3 className="text-lg font-semibold mb-1">No routine found</h3>
-                        <p className="text-muted-foreground text-sm mb-4">
-                            Create a routine to get started with your workouts
-                        </p>
-                        <Button onClick={handleCreateNewRoutine}>
-                            Create Routine
-                        </Button>
-                    </div>
-                </Card>
-            )}
-
-            {/* Change Routine Button */}
-            {todaysRoutine && (
-                <Button
-                    variant="ghost"
-                    onClick={() => setShowRoutineSelector(true)}
-                    className="w-full justify-between"
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={todaysRoutine?.id || 'empty-routine'}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20, scale: 0.98 }}
+                    transition={{
+                        duration: 0.4,
+                        ease: [0.23, 1, 0.32, 1] // Custom cubic-bezier for a premium feel
+                    }}
+                    className="space-y-6"
                 >
-                    <span>Change Routine</span>
-                    <ChevronDown className="w-4 h-4" />
-                </Button>
-            )}
+                    {/* Workout Hero */}
+                    {todaysRoutine ? (
+                        <WorkoutHero
+                            workoutName={todaysRoutine.name}
+                            exercises={exerciseCount}
+                            estimatedTime={estimatedTime}
+                            onStart={handleStartWorkout}
+                        />
+                    ) : (
+                        <Card className="glass-card p-8 text-center space-y-4">
+                            <div className="w-16 h-16 mx-auto rounded-full gradient-red flex items-center justify-center glow-red">
+                                <Dumbbell className="w-8 h-8 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold mb-1">No routine found</h3>
+                                <p className="text-muted-foreground text-sm mb-4">
+                                    Create a routine to get started with your workouts
+                                </p>
+                                <Button onClick={handleCreateNewRoutine}>
+                                    Create Routine
+                                </Button>
+                            </div>
+                        </Card>
+                    )}
 
-            {/* Exercise List */}
-            {todaysRoutine && todaysRoutine.exercises.length > 0 && (
-                <div className="space-y-3">
-                    <h3 className="text-lg font-semibold">Today's Exercises</h3>
-                    {todaysRoutine.exercises.map((exercise, index) => {
-                        const exerciseDetail = exerciseDetails[exercise.exerciseId];
-                        return (
-                            <WorkoutExerciseCard
-                                key={exercise.exerciseId}
-                                exercise={exercise}
-                                exerciseDetail={exerciseDetail}
-                                isNext={index === 0}
-                                onClick={() => {
-                                    if (exerciseDetail && onViewExercise) {
-                                        // Pass 'today' as the return tab
-                                        (onViewExercise as any)(exerciseDetail.id, 'today');
-                                    }
-                                }}
-                            />
-                        );
-                    })}
-                </div>
-            )}
+                    {/* Change Routine Button */}
+                    {todaysRoutine && (
+                        <Button
+                            variant="ghost"
+                            onClick={() => setShowRoutineSelector(true)}
+                            className="w-full justify-between"
+                        >
+                            <span>Change Routine</span>
+                            <ChevronDown className="w-4 h-4" />
+                        </Button>
+                    )}
+
+                    {/* Exercise List */}
+                    {todaysRoutine && todaysRoutine.exercises.length > 0 && (
+                        <div className="space-y-3">
+                            <h3 className="text-lg font-semibold">Today's Exercises</h3>
+                            {todaysRoutine.exercises.map((exercise, index) => {
+                                const exerciseDetail = exerciseDetails[exercise.exerciseId];
+                                return (
+                                    <WorkoutExerciseCard
+                                        key={`${todaysRoutine.id}-${exercise.exerciseId}`}
+                                        exercise={exercise}
+                                        exerciseDetail={exerciseDetail}
+                                        isNext={index === 0}
+                                        onClick={() => {
+                                            if (exerciseDetail && onViewExercise) {
+                                                // Pass 'today' as the return tab
+                                                (onViewExercise as any)(exerciseDetail.id, 'today');
+                                            }
+                                        }}
+                                    />
+                                );
+                            })}
+                        </div>
+                    )}
+                </motion.div>
+            </AnimatePresence>
 
             {/* Routine Selector Modal */}
             <RoutineSelectorModal
@@ -224,13 +236,13 @@ const TodayPage = (props: TodayPageProps) => {
                 onOpenChange={(open) => {
                     if (!open) setViewingExercise(null);
                 }}
-                onEdit={viewingExercise?.source === 'exercemus' ? () => {
+                onEdit={() => {
                     if (document.activeElement) {
                         (document.activeElement as HTMLElement).blur();
                     }
                     setEditingExercise(viewingExercise);
                     setShowWizard(true);
-                } : undefined}
+                }}
             />
 
             {/* Exercise Wizard Modal */}

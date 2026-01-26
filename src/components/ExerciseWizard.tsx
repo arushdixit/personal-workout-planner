@@ -156,7 +156,7 @@ const ExerciseWizard = ({ exercise, open, onOpenChange, onComplete }: ExerciseWi
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
-            <DrawerContent className="h-[96dvh] bg-background border-none flex flex-col focus:outline-none">
+            <DrawerContent className="h-[96dvh] bg-background border-none flex flex-col focus:outline-none z-[100]">
                 <DrawerHeader className="sr-only">
                     <DrawerTitle>{isEditMode ? 'Edit Exercise' : 'Add New Exercise'}</DrawerTitle>
                     <DrawerDescription>Fill in the details to customize your exercise intelligence.</DrawerDescription>
