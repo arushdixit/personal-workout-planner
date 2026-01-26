@@ -30,12 +30,10 @@ const AppContent = () => {
   }
 
   return (
-    <WorkoutProvider>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </WorkoutProvider>
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
 
@@ -44,11 +42,13 @@ const App = () => (
     <TooltipProvider>
       <BrowserRouter>
         <UserProvider>
-          <Toaster />
-          <Sonner />
-          <IOSInstallPrompt />
-          <AppContent />
-          <Analytics />
+          <WorkoutProvider>
+            <Toaster />
+            <Sonner />
+            <IOSInstallPrompt />
+            <AppContent />
+            <Analytics />
+          </WorkoutProvider>
         </UserProvider>
       </BrowserRouter>
     </TooltipProvider>

@@ -362,7 +362,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         );
 
         // Calculate detailed stats
-        let volume = 0;
+        let totalVolumeKg = 0;
         let completedSetsCount = 0;
         let exerciseCount = 0;
 
@@ -370,7 +370,13 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             let exCompleted = false;
             ex.sets.forEach(set => {
                 if (set.completed) {
-                    volume += (set.weight || 0) * (set.reps || 0);
+                    const weight = Number(set.weight) || 0;
+                    const reps = Number(set.reps) || 0;
+
+                    // Standardize everything to KG for the summary
+                    const weightInKg = set.unit === 'lbs' ? weight * 0.453592 : weight;
+
+                    totalVolumeKg += weightInKg * reps;
                     completedSetsCount++;
                     exCompleted = true;
                 }
@@ -378,28 +384,35 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             if (exCompleted) exerciseCount++;
         });
 
+        const finalVolume = Math.round(totalVolumeKg);
+
         setCompletedStats({
             duration,
             completedSets: completedSetsCount,
             totalSets: progress.total,
-            volume,
+            volume: finalVolume,
             exerciseCount
         });
 
         setShowSuccess(true);
 
-        await db.workout_sessions.update(activeSession.id!, {
-            status: 'completed',
-            endTime,
-            duration,
-        });
+        try {
+            await db.workout_sessions.update(activeSession.id!, {
+                status: 'completed',
+                endTime,
+                duration,
+            });
 
-        if (activeSession.userId) {
-            await updateLastCompletedRoutine(activeSession.userId, activeSession.routineId);
-            await refreshUsers();
+            if (activeSession.userId) {
+                console.log('[Workout] Cycling routine:', activeSession.routineId);
+                await updateLastCompletedRoutine(activeSession.userId, activeSession.routineId);
+                await refreshUsers();
+            }
+
+            await queueWorkoutOperation('complete', activeSession.id!);
+        } catch (err) {
+            console.error('[Workout] Error finishing workout:', err);
         }
-
-        await queueWorkoutOperation('complete', activeSession.id!);
 
         setActiveSession(null);
         setCurrentExerciseIndex(0);

@@ -155,7 +155,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                             </div>
                             <div className="space-y-1">
                                 <p className="text-4xl font-black text-white tabular-nums">{completedStats?.volume.toLocaleString()}</p>
-                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">KG Total</p>
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Total Kg Moved</p>
                             </div>
                         </div>
                         <div className="glass-card p-6 bg-white/[0.04] border-white/10 space-y-4 hover:bg-white/[0.08] transition-all">
@@ -316,12 +316,14 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                 ) : (
                     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
                         <div className="relative">
-                            <Trophy className="w-20 h-20 text-primary/10 animate-pulse" />
-                            <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-primary/20 animate-bounce" />
+                            <Trophy className="w-20 h-20 text-primary/20 animate-pulse" />
+                            <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-primary/30 animate-bounce" />
                         </div>
-                        <div className="space-y-1">
-                            <h3 className="text-xl font-bold opacity-20">Workout Completed</h3>
-                            <p className="text-muted-foreground text-sm opacity-20">Gathering your achievements...</p>
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-bold opacity-30 tracking-tight">Finishing up...</h3>
+                            <Button variant="ghost" onClick={handleClose} className="opacity-40">
+                                Back to Today
+                            </Button>
                         </div>
                     </div>
                 )}
