@@ -29,7 +29,7 @@ interface WorkoutContextType {
     nextExercise: () => void;
     previousExercise: () => void;
     skipRest: () => void;
-    endWorkout: () => Promise<void>;
+    endWorkout: () => Promise<{ duration: number; completedSets: number; totalSets: number } | null>;
     abandonWorkout: () => Promise<void>;
     clearActiveSession: () => Promise<void>;
     setMinimizedRest: (minimized: boolean) => void;
@@ -337,12 +337,18 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     }, []);
 
     const endWorkout = useCallback(async () => {
-        if (!activeSession) return;
+        if (!activeSession) return null;
 
         const endTime = new Date().toISOString();
         const duration = Math.floor(
             (new Date(endTime).getTime() - new Date(activeSession.startTime).getTime()) / 1000
         );
+
+        const stats = {
+            duration,
+            completedSets: progress.completed,
+            totalSets: progress.total
+        };
 
         await db.workout_sessions.update(activeSession.id!, {
             status: 'completed',
@@ -360,7 +366,9 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         setActiveSession(null);
         setCurrentExerciseIndex(0);
         setIsRestTimerActive(false);
-    }, [activeSession]);
+
+        return stats;
+    }, [activeSession, progress, refreshUsers]);
 
     const abandonWorkout = useCallback(async () => {
         if (!activeSession) return;

@@ -39,6 +39,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [showEndDialog, setShowEndDialog] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [completedStats, setCompletedStats] = useState<{ duration: number, completedSets: number, totalSets: number } | null>(null);
     const [endDialogType, setEndDialogType] = useState<'complete' | 'abandon'>('complete');
     const [exerciseDetail, setExerciseDetail] = useState<Exercise | null>(null);
 
@@ -61,7 +62,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
         loadExerciseDetail();
     }, [selectedIndex, activeSession]);
 
-    if (!activeSession) {
+    if (!activeSession && !showSuccess) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="w-8 h-8 gradient-red rounded-full animate-pulse-glow" />
@@ -82,7 +83,8 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     };
 
     const handleEndWorkout = async () => {
-        await endWorkout();
+        const stats = await endWorkout();
+        if (stats) setCompletedStats(stats);
         setShowEndDialog(false);
         setShowSuccess(true);
     };
@@ -120,104 +122,111 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
             </div>
 
             <div className="pt-24 pb-32 px-4 flex-1">
-                {view === 'list' ? (
-                    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div className="mb-6">
-                            <h2 className="text-3xl font-bold mb-1">{activeSession.routineName}</h2>
-                            <p className="text-muted-foreground">{activeSession.exercises.length} exercises total</p>
-                        </div>
+                {activeSession ? (
+                    view === 'list' ? (
+                        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="mb-6">
+                                <h2 className="text-3xl font-bold mb-1">{activeSession.routineName}</h2>
+                                <p className="text-muted-foreground">{activeSession.exercises.length} exercises total</p>
+                            </div>
 
-                        <div className="grid gap-3">
-                            {activeSession.exercises.map((ex, idx) => {
-                                const completedSets = ex.sets.filter(s => s.completed).length;
-                                const isAllCompleted = completedSets === ex.sets.length && ex.sets.length > 0;
-                                const isCurrentlyResting = isRestTimerActive && idx === currentExerciseIndex;
+                            <div className="grid gap-3">
+                                {activeSession.exercises.map((ex, idx) => {
+                                    const completedSets = ex.sets.filter(s => s.completed).length;
+                                    const isAllCompleted = completedSets === ex.sets.length && ex.sets.length > 0;
+                                    const isCurrentlyResting = isRestTimerActive && idx === currentExerciseIndex;
 
-                                return (
-                                    <button
-                                        key={idx}
-                                        onClick={() => {
-                                            setSelectedIndex(idx);
-                                            setView('detail');
-                                        }}
-                                        className={cn(
-                                            "w-full glass-card p-4 flex items-center gap-4 transition-all hover:bg-white/10 group text-left relative overflow-hidden",
-                                            isAllCompleted
-                                                ? "border-emerald-500/30 bg-emerald-500/5 ring-1 ring-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.05)]"
-                                                : "border-white/5",
-                                            isCurrentlyResting && "border-primary/40 bg-primary/5"
-                                        )}
-                                    >
-                                        {isAllCompleted && (
-                                            <div className="absolute right-0 top-0 w-24 h-24 -mr-8 -mt-8 bg-emerald-500/10 rounded-full blur-2xl animate-pulse" />
-                                        )}
+                                    return (
+                                        <button
+                                            key={idx}
+                                            onClick={() => {
+                                                setSelectedIndex(idx);
+                                                setView('detail');
+                                            }}
+                                            className={cn(
+                                                "w-full glass-card p-4 flex items-center gap-4 transition-all hover:bg-white/10 group text-left relative overflow-hidden",
+                                                isAllCompleted
+                                                    ? "border-emerald-500/30 bg-emerald-500/5 ring-1 ring-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.05)]"
+                                                    : "border-white/5",
+                                                isCurrentlyResting && "border-primary/40 bg-primary/5"
+                                            )}
+                                        >
+                                            {isAllCompleted && (
+                                                <div className="absolute right-0 top-0 w-24 h-24 -mr-8 -mt-8 bg-emerald-500/10 rounded-full blur-2xl animate-pulse" />
+                                            )}
 
-                                        <div className={cn(
-                                            "w-12 h-12 rounded-xl flex items-center justify-center transition-colors relative z-10",
-                                            isAllCompleted ? "bg-emerald-500/20 text-emerald-500" : "bg-white/5 text-muted-foreground",
-                                            isCurrentlyResting && "bg-primary/20 text-primary"
-                                        )}>
-                                            {isAllCompleted ? <CheckCircle2 className="w-6 h-6 animate-in zoom-in duration-300" /> : <Dumbbell className="w-6 h-6" />}
-                                        </div>
-
-                                        <div className="flex-1 relative z-10">
-                                            <div className="flex items-center gap-2">
-                                                <h3 className={cn(
-                                                    "font-semibold text-lg transition-colors",
-                                                    isAllCompleted ? "text-emerald-400" : "text-foreground"
-                                                )}>
-                                                    {ex.exerciseName}
-                                                </h3>
-                                                {isCurrentlyResting && (
-                                                    <div className="flex items-center gap-1.5 px-2 py-0.5 bg-primary/10 rounded-full animate-pulse">
-                                                        <Timer className="w-3 h-3 text-primary" />
-                                                        <span className="text-[10px] font-black text-primary tabular-nums">{restTimeLeft}s</span>
-                                                    </div>
-                                                )}
+                                            <div className={cn(
+                                                "w-12 h-12 rounded-xl flex items-center justify-center transition-colors relative z-10",
+                                                isAllCompleted ? "bg-emerald-500/20 text-emerald-500" : "bg-white/5 text-muted-foreground",
+                                                isCurrentlyResting && "bg-primary/20 text-primary"
+                                            )}>
+                                                {isAllCompleted ? <CheckCircle2 className="w-6 h-6 animate-in zoom-in duration-300" /> : <Dumbbell className="w-6 h-6" />}
                                             </div>
-                                            <p className="text-sm text-muted-foreground">
-                                                {completedSets} / {ex.sets.length} sets completed
-                                            </p>
-                                        </div>
 
-                                        <ChevronRight className={cn(
-                                            "w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform relative z-10",
-                                            isAllCompleted && "text-emerald-500"
-                                        )} />
-                                    </button>
-                                );
-                            })}
+                                            <div className="flex-1 relative z-10">
+                                                <div className="flex items-center gap-2">
+                                                    <h3 className={cn(
+                                                        "font-semibold text-lg transition-colors",
+                                                        isAllCompleted ? "text-emerald-400" : "text-foreground"
+                                                    )}>
+                                                        {ex.exerciseName}
+                                                    </h3>
+                                                    {isCurrentlyResting && (
+                                                        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-primary/10 rounded-full animate-pulse">
+                                                            <Timer className="w-3 h-3 text-primary" />
+                                                            <span className="text-[10px] font-black text-primary tabular-nums">{restTimeLeft}s</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {completedSets} / {ex.sets.length} sets completed
+                                                </p>
+                                            </div>
+
+                                            <ChevronRight className={cn(
+                                                "w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform relative z-10",
+                                                isAllCompleted && "text-emerald-500"
+                                            )} />
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                ) : (
-                    selectedIndex !== null && exerciseDetail && (
-                        <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                            <ExerciseDetail
-                                exercise={{
-                                    ...exerciseDetail,
-                                    name: activeSession.exercises[selectedIndex].exerciseName,
-                                    primaryMuscles: exerciseDetail.primaryMuscles || [],
-                                    secondaryMuscles: exerciseDetail.secondaryMuscles || [],
-                                    sets: activeSession.exercises[selectedIndex].sets,
-                                    tutorialUrl: exerciseDetail.tutorialUrl,
-                                    tips: exerciseDetail.tips,
-                                    beginnerFriendlyInstructions: exerciseDetail.beginnerFriendlyInstructions,
-                                    commonMistakes: exerciseDetail.commonMistakes,
-                                    injuryPreventionTips: exerciseDetail.injuryPreventionTips,
-                                    formCues: exerciseDetail.formCues,
-                                }}
-                                open={view === 'detail'}
-                                onOpenChange={(open) => !open && setView('list')}
-                                workoutMode={true}
-                                onSetComplete={(setId, weight, reps, unit) => handleSetComplete(selectedIndex, setId, weight, reps, unit)}
-                                onAddSet={() => handleAddSet(selectedIndex)}
-                                unit={getExerciseUnit(activeSession.exercises[selectedIndex].exerciseId)}
-                                onUnitChange={(unit) => setExerciseUnit(activeSession.exercises[selectedIndex].exerciseId, unit)}
-                                personalNote={activeSession.exercises[selectedIndex].personalNote}
-                                onNoteChange={(note) => handleNoteChange(selectedIndex, note)}
-                            />
-                        </div>
+                    ) : (
+                        selectedIndex !== null && exerciseDetail && (
+                            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                                <ExerciseDetail
+                                    exercise={{
+                                        ...exerciseDetail,
+                                        name: activeSession.exercises[selectedIndex].exerciseName,
+                                        primaryMuscles: exerciseDetail.primaryMuscles || [],
+                                        secondaryMuscles: exerciseDetail.secondaryMuscles || [],
+                                        sets: activeSession.exercises[selectedIndex].sets,
+                                        tutorialUrl: exerciseDetail.tutorialUrl,
+                                        tips: exerciseDetail.tips,
+                                        beginnerFriendlyInstructions: exerciseDetail.beginnerFriendlyInstructions,
+                                        commonMistakes: exerciseDetail.commonMistakes,
+                                        injuryPreventionTips: exerciseDetail.injuryPreventionTips,
+                                        formCues: exerciseDetail.formCues,
+                                    }}
+                                    open={view === 'detail'}
+                                    onOpenChange={(open) => !open && setView('list')}
+                                    workoutMode={true}
+                                    onSetComplete={(setId, weight, reps, unit) => handleSetComplete(selectedIndex, setId, weight, reps, unit)}
+                                    onAddSet={() => handleAddSet(selectedIndex)}
+                                    unit={getExerciseUnit(activeSession.exercises[selectedIndex].exerciseId)}
+                                    onUnitChange={(unit) => setExerciseUnit(activeSession.exercises[selectedIndex].exerciseId, unit)}
+                                    personalNote={activeSession.exercises[selectedIndex].personalNote}
+                                    onNoteChange={(note) => handleNoteChange(selectedIndex, note)}
+                                />
+                            </div>
+                        )
                     )
+                ) : (
+                    <div className="flex flex-col items-center justify-center min-h-[50vh] animate-pulse">
+                        <Trophy className="w-12 h-12 text-primary/20 mb-4" />
+                        <p className="text-muted-foreground">Saving your progress...</p>
+                    </div>
                 )}
             </div>
 
@@ -359,14 +368,14 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                             <div className="glass-card p-4 space-y-1">
                                 <div className="flex items-center justify-center gap-2 text-primary">
                                     <Activity className="w-4 h-4" />
-                                    <span className="text-2xl font-black">{progress.completed}</span>
+                                    <span className="text-2xl font-black">{completedStats?.completedSets ?? progress.completed}</span>
                                 </div>
                                 <p className="text-[10px] font-bold text-muted-foreground uppercase">Sets Logged</p>
                             </div>
                             <div className="glass-card p-4 space-y-1">
                                 <div className="flex items-center justify-center gap-2 text-primary">
                                     <Timer className="w-4 h-4" />
-                                    <span className="text-2xl font-black">{Math.floor(activeSession.duration ? activeSession.duration / 60 : 0)}m</span>
+                                    <span className="text-2xl font-black">{Math.floor((completedStats?.duration ?? (activeSession?.duration || 0)) / 60)}m</span>
                                 </div>
                                 <p className="text-[10px] font-bold text-muted-foreground uppercase">Duration</p>
                             </div>
