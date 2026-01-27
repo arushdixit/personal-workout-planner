@@ -115,7 +115,7 @@ const SetLogger = ({
 
                             <div className="flex flex-col gap-4">
                                 {/* First Row: Details */}
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-end gap-4">
                                     <div className={cn(
                                         "w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black shrink-0 transition-colors",
                                         isNext ? "bg-primary/20 text-primary" : isCompleted ? "bg-emerald-500/20 text-emerald-500" : "bg-white/5 text-muted-foreground"
@@ -166,7 +166,7 @@ const SetLogger = ({
                                     </div>
 
                                     {!isNext && isCompleted && (
-                                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                        <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
                                             <Check className="w-5 h-5 text-emerald-500" />
                                         </div>
                                     )}
