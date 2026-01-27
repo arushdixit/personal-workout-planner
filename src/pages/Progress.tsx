@@ -1,0 +1,274 @@
+import { useState, useEffect, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { TrendingUp, Loader2 } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
+import { db, WorkoutSession, Exercise } from '@/lib/db';
+import {
+    getOverviewStats,
+    getExerciseHistory,
+    calculateMuscleGroupVolume,
+    groupSessionsByDate,
+    filterByTimeRange,
+    findPersonalRecords,
+    TimeRange,
+} from '@/lib/progressUtils';
+import ProgressOverview from '@/components/ProgressOverview';
+import ExerciseProgressChart from '@/components/ExerciseProgressChart';
+import WorkoutCalendar from '@/components/WorkoutCalendar';
+import MuscleDistribution from '@/components/MuscleDistribution';
+import ComparisonChart from '@/components/ComparisonChart';
+import ExportProgress from '@/components/ExportProgress';
+import BodyMetricsChart from '@/components/BodyMetricsChart';
+import PRBadge from '@/components/PRBadge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+
+const Progress = () => {
+    const { currentUser } = useUser();
+    const [isLoading, setIsLoading] = useState(true);
+    const [sessions, setSessions] = useState<WorkoutSession[]>([]);
+    const [exercises, setExercises] = useState<Exercise[]>([]);
+    const [selectedExerciseId, setSelectedExerciseId] = useState<number | null>(null);
+    const [timeRange, setTimeRange] = useState<TimeRange>('30d');
+    const [userProfiles, setUserProfiles] = useState<any[]>([]);
+
+    // Load data
+    useEffect(() => {
+        const loadData = async () => {
+            if (!currentUser?.supabaseUserId) return;
+
+            setIsLoading(true);
+            try {
+                // Load all completed workout sessions
+                const allSessions = await db.workout_sessions
+                    .where('supabaseUserId')
+                    .equals(currentUser.supabaseUserId)
+                    .and(s => s.status === 'completed')
+                    .toArray();
+
+                setSessions(allSessions);
+
+                // Get unique exercise IDs from sessions
+                const exerciseIds = new Set<number>();
+                allSessions.forEach(session => {
+                    session.exercises.forEach(ex => exerciseIds.add(ex.exerciseId));
+                });
+
+                // Load exercise details
+                const exerciseList = await db.exercises
+                    .where('id')
+                    .anyOf([...exerciseIds])
+                    .toArray();
+
+                setExercises(exerciseList);
+
+                // Load user profiles for body metrics
+                const profiles = await db.users.toArray();
+                setUserProfiles(profiles);
+
+                // Auto-select first exercise with data
+                if (exerciseList.length > 0 && !selectedExerciseId) {
+                    setSelectedExerciseId(exerciseList[0].id!);
+                }
+            } catch (error) {
+                console.error('Error loading progress data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadData();
+    }, [currentUser]);
+
+    // Calculate stats
+    const overviewStats = useMemo(() => {
+        return getOverviewStats(sessions);
+    }, [sessions]);
+
+    const filteredSessions = useMemo(() => {
+        return filterByTimeRange(sessions, timeRange);
+    }, [sessions, timeRange]);
+
+    const exerciseHistory = useMemo(() => {
+        if (!selectedExerciseId) return [];
+        return getExerciseHistory(filteredSessions, selectedExerciseId);
+    }, [filteredSessions, selectedExerciseId]);
+
+    const calendarData = useMemo(() => {
+        return groupSessionsByDate(sessions);
+    }, [sessions]);
+
+    const muscleStats = useMemo(() => {
+        const exerciseMap = new Map(exercises.map(ex => [ex.id!, ex]));
+        return calculateMuscleGroupVolume(filteredSessions, exerciseMap);
+    }, [filteredSessions, exercises]);
+
+    const personalRecords = useMemo(() => {
+        if (!selectedExerciseId) return { maxWeight: null, max1RM: null, maxVolume: null };
+        return findPersonalRecords(exerciseHistory);
+    }, [exerciseHistory, selectedExerciseId]);
+
+    // Get exercises that have been performed
+    const exercisesWithData = useMemo(() => {
+        const exerciseIds = new Set<number>();
+        sessions.forEach(session => {
+            session.exercises.forEach(ex => exerciseIds.add(ex.exerciseId));
+        });
+
+        return exercises
+            .filter(ex => exerciseIds.has(ex.id!))
+            .sort((a, b) => a.name.localeCompare(b.name));
+    }, [sessions, exercises]);
+
+    const selectedExercise = exercises.find(ex => ex.id === selectedExerciseId);
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto" />
+                    <p className="text-muted-foreground">Loading your progress...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (sessions.length === 0) {
+        return (
+            <div className="min-h-screen bg-background">
+                <div className="max-w-4xl mx-auto px-4 py-8">
+                    <div className="flex items-center gap-3 mb-8">
+                        <TrendingUp className="w-8 h-8 text-primary" />
+                        <h1 className="text-3xl font-black tracking-tight">Progress</h1>
+                    </div>
+
+                    <div className="glass-card p-12 text-center space-y-6">
+                        <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-primary/20 to-rose-500/20 flex items-center justify-center">
+                            <TrendingUp className="w-12 h-12 text-primary" />
+                        </div>
+                        <div className="space-y-2">
+                            <h2 className="text-2xl font-black">Start Your Journey</h2>
+                            <p className="text-muted-foreground max-w-md mx-auto">
+                                Complete your first workout to start tracking your progress and see your gains over time!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-background pb-24">
+            <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+                {/* Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center justify-between"
+                >
+                    <div className="flex items-center gap-3">
+                        <TrendingUp className="w-8 h-8 text-primary" />
+                        <h1 className="text-3xl font-black tracking-tight">Progress</h1>
+                    </div>
+                    <ExportProgress sessions={sessions} unit={currentUser?.unitPreference || 'kg'} />
+                </motion.div>
+
+                {/* Overview Stats */}
+                <ProgressOverview stats={overviewStats} unit={currentUser?.unitPreference || 'kg'} />
+
+                {/* Monthly Comparison */}
+                <ComparisonChart sessions={sessions} unit={currentUser?.unitPreference || 'kg'} />
+
+                {/* Exercise Progress Section */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between gap-4">
+                        <h2 className="text-xl font-black">Exercise Progress</h2>
+
+                        {/* Time Range Selector */}
+                        <div className="flex gap-1.5 bg-white/5 p-1 rounded-xl">
+                            {(['7d', '30d', '90d', '365d', 'all'] as TimeRange[]).map((range) => (
+                                <button
+                                    key={range}
+                                    onClick={() => setTimeRange(range)}
+                                    className={cn(
+                                        "px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all",
+                                        timeRange === range
+                                            ? "bg-primary text-white shadow-lg"
+                                            : "text-muted-foreground hover:text-white hover:bg-white/10"
+                                    )}
+                                >
+                                    {range === '7d' && 'Week'}
+                                    {range === '30d' && 'Month'}
+                                    {range === '90d' && '3M'}
+                                    {range === '365d' && 'Year'}
+                                    {range === 'all' && 'All'}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Exercise Selector */}
+                    {exercisesWithData.length > 0 && (
+                        <Select
+                            value={selectedExerciseId?.toString()}
+                            onValueChange={(value) => setSelectedExerciseId(Number(value))}
+                        >
+                            <SelectTrigger className="glass-card border-white/10 h-12 text-base font-semibold">
+                                <SelectValue placeholder="Select an exercise" />
+                            </SelectTrigger>
+                            <SelectContent className="glass border-white/10 max-h-80">
+                                {exercisesWithData.map((exercise) => (
+                                    <SelectItem
+                                        key={exercise.id}
+                                        value={exercise.id!.toString()}
+                                        className="font-medium"
+                                    >
+                                        {exercise.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
+
+                    {/* Exercise Chart */}
+                    {selectedExercise && (
+                        <>
+                            {/* PR Badges */}
+                            <PRBadge
+                                records={personalRecords}
+                                exerciseName={selectedExercise.name}
+                                unit={currentUser?.unitPreference || 'kg'}
+                            />
+
+                            <ExerciseProgressChart
+                                exerciseHistory={exerciseHistory}
+                                exerciseName={selectedExercise.name}
+                                timeRange={timeRange}
+                                unit={currentUser?.unitPreference || 'kg'}
+                            />
+                        </>
+                    )}
+                </div>
+
+                {/* Body Metrics */}
+                {userProfiles.length > 0 && (
+                    <BodyMetricsChart
+                        profiles={userProfiles}
+                        unit={currentUser?.unitPreference || 'kg'}
+                    />
+                )}
+
+                {/* Workout Calendar */}
+                <WorkoutCalendar calendarData={calendarData} weeksToShow={12} />
+
+                {/* Muscle Distribution */}
+                {muscleStats.length > 0 && (
+                    <MuscleDistribution muscleStats={muscleStats} topN={9} />
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default Progress;

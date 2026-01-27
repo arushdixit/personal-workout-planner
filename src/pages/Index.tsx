@@ -4,16 +4,12 @@ import BottomNav from '@/components/BottomNav';
 import Library from '@/pages/Library';
 import Routines from '@/pages/Routines';
 import TodayPage from '@/pages/Today';
-import ProgressChart from '@/components/ProgressChart';
+import Progress from '@/pages/Progress';
 import WorkoutSession from '@/components/WorkoutSession';
 import WorkoutCountdown from '@/components/WorkoutCountdown';
 import Profile from '@/components/Profile';
 import { MinimizedRestTimer } from '@/components/RestTimer';
-import { User, Trophy, Target, LogOut, UserCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { UserCircle } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
 import { cn } from '@/lib/utils';
@@ -191,24 +187,7 @@ const Index = () => {
           />
         )}
 
-        {activeTab === 'progress' && (
-          <div className="space-y-6 animate-slide-up">
-            <h2 className="text-xl font-bold">Progress & Insights</h2>
-            <ProgressChart data={[]} title="Recent Performance" unit={currentUser?.unitPreference || 'kg'} />
-            <div className="grid grid-cols-2 gap-4">
-              <div className="glass-card p-4 text-center">
-                <Trophy className="w-8 h-8 mx-auto mb-2 text-primary" />
-                <p className="text-2xl font-bold">--</p>
-                <p className="text-xs text-muted-foreground">Personal Best</p>
-              </div>
-              <div className="glass-card p-4 text-center">
-                <Target className="w-8 h-8 mx-auto mb-2 text-primary" />
-                <p className="text-2xl font-bold">0</p>
-                <p className="text-xs text-muted-foreground">Workouts This Month</p>
-              </div>
-            </div>
-          </div>
-        )}
+        {activeTab === 'progress' && <Progress />}
 
         {activeTab === 'workout' && workoutId && (
           <div className="min-h-[100dvh] flex flex-col">
