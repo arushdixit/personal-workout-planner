@@ -155,10 +155,21 @@ const Index = () => {
               const returnTab = currentParams.get('returnTab');
               currentParams.delete('exerciseId');
               currentParams.delete('returnTab');
-              if (returnTab) {
-                currentParams.set('tab', returnTab);
-              }
-              setSearchParams(currentParams);
+
+              // Use requestAnimationFrame to defer navigation slightly
+              // This allows the modal close animation to start before tab changes
+              requestAnimationFrame(() => {
+                // Immediately update activeTab to prevent flickering
+                if (returnTab) {
+                  setActiveTab(returnTab);
+                  currentParams.set('tab', returnTab);
+                } else {
+                  // If no returnTab, stay on library but close the detail
+                  currentParams.set('tab', 'library');
+                }
+
+                setSearchParams(currentParams);
+              });
             }}
           />
         )}

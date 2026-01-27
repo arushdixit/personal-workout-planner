@@ -12,6 +12,11 @@ import { WorkoutProvider } from "./context/WorkoutContext";
 import AuthScreen from "./components/auth/AuthScreen";
 import { IOSInstallPrompt } from "./components/iOSInstallPrompt";
 
+// Load debug utilities in development
+if (import.meta.env.DEV) {
+  import("./lib/debugSync");
+}
+
 const queryClient = new QueryClient();
 
 const AppContent = () => {

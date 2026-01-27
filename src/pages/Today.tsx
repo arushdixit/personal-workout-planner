@@ -33,11 +33,24 @@ const TodayPage = (props: TodayPageProps) => {
     const [viewingExercise, setViewingExercise] = useState<Exercise | null>(null);
     const [showWizard, setShowWizard] = useState(false);
     const [editingExercise, setEditingExercise] = useState<Exercise | undefined>();
+    const [manuallySelectedRoutine, setManuallySelectedRoutine] = useState(false);
 
-    // Load today's routine on mount
+    // Load today's routine on mount or when user changes
     useEffect(() => {
+        // Don't reload if user manually selected a routine
+        if (manuallySelectedRoutine) return;
+
         loadTodaysRoutine();
-    }, [currentUser?.id, currentUser?.supabaseUserId, currentUser?.activeSplit, currentUser?.lastCompletedRoutineId]);
+    }, [currentUser?.id, currentUser?.supabaseUserId]);
+
+    // Reload routine when a workout is completed (lastCompletedRoutineId changes)
+    useEffect(() => {
+        if (manuallySelectedRoutine && currentUser?.lastCompletedRoutineId) {
+            // User completed a workout, reset manual selection and reload
+            setManuallySelectedRoutine(false);
+            loadTodaysRoutine();
+        }
+    }, [currentUser?.lastCompletedRoutineId]);
 
     // Load exercise details for the routine
     useEffect(() => {
@@ -46,16 +59,17 @@ const TodayPage = (props: TodayPageProps) => {
         const loadExerciseDetails = async () => {
             const details: Record<number, Exercise> = {};
             for (const ex of todaysRoutine.exercises) {
-                // Try by ID first
+                // Always look up by exerciseId first
                 let exercise = await db.exercises.get(ex.exerciseId);
 
-                // Fallback to searching by name if ID fails (handles ID shifts on library refreshes)
+                // Fallback to searching by name if ID fails
                 if (!exercise && ex.exerciseName) {
                     exercise = await db.exercises.where('name').equalsIgnoreCase(ex.exerciseName).first();
                 }
 
-                if (exercise) {
-                    details[ex.exerciseId] = exercise;
+                if (exercise && exercise.id) {
+                    // Use the actual exercise ID from the database, not the routine's exerciseId
+                    details[exercise.id] = exercise;
                 }
             }
             setExerciseDetails(details);
@@ -82,6 +96,7 @@ const TodayPage = (props: TodayPageProps) => {
         );
 
         setTodaysRoutine(result.routine);
+        setManuallySelectedRoutine(false); // Reset manual selection flag
         setIsLoading(false);
     };
 
@@ -94,6 +109,7 @@ const TodayPage = (props: TodayPageProps) => {
 
     const handleRoutineSelect = (routine: Routine) => {
         setTodaysRoutine(routine);
+        setManuallySelectedRoutine(true); // Mark as manually selected
         setShowRoutineSelector(false);
     };
 
@@ -204,7 +220,11 @@ const TodayPage = (props: TodayPageProps) => {
                         <div className="space-y-3">
                             <h3 className="text-lg font-semibold">Today's Exercises</h3>
                             {todaysRoutine.exercises.map((exercise, index) => {
-                                const exerciseDetail = exerciseDetails[exercise.exerciseId];
+                                // Find the exercise detail by looking through all details
+                                const exerciseDetail = Object.values(exerciseDetails).find(
+                                    ex => ex.name.toLowerCase() === exercise.exerciseName.toLowerCase()
+                                ) || exerciseDetails[exercise.exerciseId];
+
                                 return (
                                     <WorkoutExerciseCard
                                         key={`${todaysRoutine.id}-${exercise.exerciseId}`}
