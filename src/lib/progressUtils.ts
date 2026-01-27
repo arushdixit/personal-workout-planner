@@ -140,8 +140,7 @@ export function getExerciseHistory(
     const history: ExerciseProgressData[] = [];
 
     sessions
-        .filter(s => s.status === 'completed')
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .sort((a, b) => a.date.localeCompare(b.date))
         .forEach(session => {
             session.exercises.forEach(ex => {
                 if (ex.exerciseId === exerciseId) {
@@ -180,39 +179,37 @@ export function calculateMuscleGroupVolume(
 ): MuscleGroupStats[] {
     const muscleStats = new Map<string, MuscleGroupStats>();
 
-    sessions
-        .filter(s => s.status === 'completed')
-        .forEach(session => {
-            session.exercises.forEach(ex => {
-                const exercise = exercisesMap.get(ex.exerciseId);
-                if (!exercise) return;
+    sessions.forEach(session => {
+        session.exercises.forEach(ex => {
+            const exercise = exercisesMap.get(ex.exerciseId);
+            if (!exercise) return;
 
-                const volume = calculateVolume(ex.sets.filter(s => s.completed));
-                const completedSets = ex.sets.filter(s => s.completed).length;
+            const volume = calculateVolume(ex.sets.filter(s => s.completed));
+            const completedSets = ex.sets.filter(s => s.completed).length;
 
-                // Primary muscles get full volume
-                exercise.primaryMuscles.forEach(muscle => {
-                    const existing = muscleStats.get(muscle) || { muscle, volume: 0, sets: 0, frequency: 0 };
-                    muscleStats.set(muscle, {
-                        muscle,
-                        volume: existing.volume + volume,
-                        sets: existing.sets + completedSets,
-                        frequency: existing.frequency + 1,
-                    });
+            // Primary muscles get full volume
+            exercise.primaryMuscles.forEach(muscle => {
+                const existing = muscleStats.get(muscle) || { muscle, volume: 0, sets: 0, frequency: 0 };
+                muscleStats.set(muscle, {
+                    muscle,
+                    volume: existing.volume + volume,
+                    sets: existing.sets + completedSets,
+                    frequency: existing.frequency + 1,
                 });
+            });
 
-                // Secondary muscles get half volume (to avoid double-counting)
-                exercise.secondaryMuscles.forEach(muscle => {
-                    const existing = muscleStats.get(muscle) || { muscle, volume: 0, sets: 0, frequency: 0 };
-                    muscleStats.set(muscle, {
-                        muscle,
-                        volume: existing.volume + (volume * 0.5),
-                        sets: existing.sets + completedSets,
-                        frequency: existing.frequency + 0.5,
-                    });
+            // Secondary muscles get half volume (to avoid double-counting)
+            exercise.secondaryMuscles.forEach(muscle => {
+                const existing = muscleStats.get(muscle) || { muscle, volume: 0, sets: 0, frequency: 0 };
+                muscleStats.set(muscle, {
+                    muscle,
+                    volume: existing.volume + (volume * 0.5),
+                    sets: existing.sets + completedSets,
+                    frequency: existing.frequency + 0.5,
                 });
             });
         });
+    });
 
     return Array.from(muscleStats.values())
         .sort((a, b) => b.volume - a.volume);
@@ -223,7 +220,6 @@ export function calculateMuscleGroupVolume(
  */
 export function calculateTotalVolume(sessions: WorkoutSession[]): number {
     return sessions
-        .filter(s => s.status === 'completed')
         .reduce((total, session) => {
             const sessionVolume = session.exercises.reduce((exTotal, ex) => {
                 return exTotal + calculateVolume(ex.sets);
@@ -236,7 +232,7 @@ export function calculateTotalVolume(sessions: WorkoutSession[]): number {
  * Get overview statistics
  */
 export function getOverviewStats(sessions: WorkoutSession[]): OverviewStats {
-    const completedSessions = sessions.filter(s => s.status === 'completed');
+    const completedSessions = sessions;
 
     // Calculate week boundaries
     const now = new Date();
@@ -388,7 +384,7 @@ export function formatChartDate(dateStr: string, range: TimeRange): string {
     const date = parseISO(dateStr);
 
     if (range === '7d') {
-        return format(date, 'EEE'); // Mon, Tue, etc.
+        return format(date, 'MMM d'); // Jan 1 instead of Mon
     } else if (range === '30d') {
         return format(date, 'MMM d'); // Jan 1
     } else if (range === '90d' || range === '180d') {

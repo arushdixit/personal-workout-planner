@@ -96,7 +96,7 @@ const ProgressOverview = ({ stats, unit }: ProgressOverviewProps) => {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black tracking-tight">Your Progress</h2>
+                <h2 className="text-2xl font-black tracking-tight">Dashboard</h2>
                 {stats.currentStreak > 0 && (
                     <motion.div
                         initial={{ scale: 0 }}

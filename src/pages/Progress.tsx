@@ -162,18 +162,8 @@ const Progress = () => {
     return (
         <div className="min-h-screen bg-background pb-24">
             <div className="max-w-4xl mx-auto space-y-6">
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center justify-between"
-                >
-                    <div className="flex items-center gap-3">
-                        <TrendingUp className="w-8 h-8 text-primary" />
-                        <h1 className="text-3xl font-black tracking-tight">Progress</h1>
-                    </div>
-                    <ExportProgress sessions={sessions} unit={currentUser?.unitPreference || 'kg'} />
-                </motion.div>
+
+
 
                 {/* Tab Navigation - Added sliding "magic pill" animation */}
                 <div className="relative flex gap-1 bg-white/5 p-1 rounded-2xl border border-white/5">
@@ -293,7 +283,7 @@ const Progress = () => {
 
                     {/* CALENDAR TAB */}
                     {activeTab === 'calendar' && (
-                        <WorkoutCalendar calendarData={calendarData} weeksToShow={12} />
+                        <WorkoutCalendar calendarData={calendarData} />
                     )}
 
                     {/* ANALYSIS TAB */}

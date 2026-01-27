@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, CartesianGrid } from 'recharts';
-import { Star, TrendingUp, Trophy, Target } from 'lucide-react';
+import { TrendingUp, Trophy, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExerciseProgressData, TimeRange, formatChartDate, findPersonalRecords } from '@/lib/progressUtils';
 import { cn } from '@/lib/utils';
@@ -91,12 +91,7 @@ const ExerciseProgressChart = ({ exerciseHistory, exerciseName, timeRange, unit 
     };
 
     const renderChart = () => {
-        const isPRData = (date: string) => {
-            if (activeChart === 'weight') return personalRecords.maxWeight?.date === date;
-            if (activeChart === '1rm') return personalRecords.max1RM?.date === date;
-            if (activeChart === 'volume') return personalRecords.maxVolume?.date === date;
-            return false;
-        };
+
 
         const dataKey = activeChart === '1rm' ? '1rm' : activeChart;
         const color = getChartColor(activeChart);
@@ -136,19 +131,7 @@ const ExerciseProgressChart = ({ exerciseHistory, exerciseName, timeRange, unit 
 
         return (
             <LineChart data={chartData}>
-                <defs>
-                    <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor={color} />
-                        <stop offset="100%" stopColor={color} stopOpacity={0.6} />
-                    </linearGradient>
-                    <filter id="glow">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                        <feMerge>
-                            <feMergeNode in="coloredBlur" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                </defs>
+                <defs />
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.1} />
                 <XAxis
                     dataKey="date"
@@ -166,47 +149,14 @@ const ExerciseProgressChart = ({ exerciseHistory, exerciseName, timeRange, unit 
                 <Line
                     type="monotone"
                     dataKey={dataKey}
-                    stroke={`url(#${gradientId})`}
-                    strokeWidth={3}
-                    dot={(props: any) => {
-                        const { cx, cy, payload } = props;
-                        const isPR = isPRData(payload.fullDate);
-                        return (
-                            <g>
-                                {isPR && (
-                                    <>
-                                        <circle
-                                            cx={cx}
-                                            cy={cy}
-                                            r={12}
-                                            fill={color}
-                                            opacity={0.2}
-                                            className="animate-ping"
-                                        />
-                                        <Star
-                                            x={cx - 8}
-                                            y={cy - 8}
-                                            className="w-4 h-4 fill-amber-400 text-amber-400"
-                                        />
-                                    </>
-                                )}
-                                <circle
-                                    cx={cx}
-                                    cy={cy}
-                                    r={isPR ? 7 : 5}
-                                    fill={color}
-                                    stroke="hsl(var(--background))"
-                                    strokeWidth={2}
-                                />
-                            </g>
-                        );
-                    }}
+                    stroke={color}
+                    strokeWidth={2}
+                    dot={{ r: 3, fill: color, strokeWidth: 0 }}
                     activeDot={{
+                        r: 5,
                         fill: color,
-                        strokeWidth: 3,
-                        stroke: 'hsl(var(--background))',
-                        r: 8,
-                        filter: 'url(#glow)',
+                        stroke: 'white',
+                        strokeWidth: 2
                     }}
                 />
             </LineChart>
@@ -217,78 +167,12 @@ const ExerciseProgressChart = ({ exerciseHistory, exerciseName, timeRange, unit 
         <div className="space-y-4">
             {/* Header */}
             <div className="space-y-2">
-                <h3 className="text-xl font-black">{exerciseName}</h3>
 
-                {/* Chart Type Selector - Added sliding animation */}
-                <div className="relative flex gap-2 p-1 bg-white/5 rounded-xl border border-white/10">
-                    <button
-                        onClick={() => setActiveChart('weight')}
-                        className={cn(
-                            "relative flex-1 py-2 px-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors duration-300 z-10",
-                            activeChart === 'weight' ? "text-white" : "text-muted-foreground hover:text-white"
-                        )}
-                    >
-                        {activeChart === 'weight' && (
-                            <motion.div
-                                layoutId="activeChartTab"
-                                className="absolute inset-0 bg-primary/20 rounded-lg border border-primary/30"
-                                transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                            />
-                        )}
-                        <span className="relative z-20">Max Weight</span>
-                    </button>
-                    <button
-                        onClick={() => setActiveChart('1rm')}
-                        className={cn(
-                            "relative flex-1 py-2 px-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors duration-300 z-10",
-                            activeChart === '1rm' ? "text-amber-400" : "text-muted-foreground hover:text-white"
-                        )}
-                    >
-                        {activeChart === '1rm' && (
-                            <motion.div
-                                layoutId="activeChartTab"
-                                className="absolute inset-0 bg-amber-500/20 rounded-lg border border-amber-500/30"
-                                transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                            />
-                        )}
-                        <span className="relative z-20">Est. 1RM</span>
-                    </button>
-                    <button
-                        onClick={() => setActiveChart('volume')}
-                        className={cn(
-                            "relative flex-1 py-2 px-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors duration-300 z-10",
-                            activeChart === 'volume' ? "text-emerald-400" : "text-muted-foreground hover:text-white"
-                        )}
-                    >
-                        {activeChart === 'volume' && (
-                            <motion.div
-                                layoutId="activeChartTab"
-                                className="absolute inset-0 bg-emerald-500/20 rounded-lg border border-emerald-500/30"
-                                transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                            />
-                        )}
-                        <span className="relative z-20">Volume</span>
-                    </button>
-                </div>
+
+
             </div>
 
-            {/* Chart */}
-            <div className="glass-card p-4">
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={activeChart}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="h-64"
-                    >
-                        <ResponsiveContainer width="100%" height="100%">
-                            {renderChart()}
-                        </ResponsiveContainer>
-                    </motion.div>
-                </AnimatePresence>
-            </div>
+
 
             {/* Personal Records */}
             {(personalRecords.maxWeight || personalRecords.max1RM || personalRecords.maxVolume) && (
@@ -335,6 +219,74 @@ const ExerciseProgressChart = ({ exerciseHistory, exerciseName, timeRange, unit 
                     </div>
                 </div>
             )}
+            {/* Chart Type Selector - Added sliding animation */}
+            <div className="relative flex gap-2 p-1 bg-white/5 rounded-xl border border-white/10 !mt-10">
+                <button
+                    onClick={() => setActiveChart('weight')}
+                    className={cn(
+                        "relative flex-1 py-2 px-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors duration-300 z-10",
+                        activeChart === 'weight' ? "text-white" : "text-muted-foreground hover:text-white"
+                    )}
+                >
+                    {activeChart === 'weight' && (
+                        <motion.div
+                            layoutId="activeChartTab"
+                            className="absolute inset-0 bg-primary/20 rounded-lg border border-primary/30"
+                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                        />
+                    )}
+                    <span className="relative z-20">Max Weight</span>
+                </button>
+                <button
+                    onClick={() => setActiveChart('1rm')}
+                    className={cn(
+                        "relative flex-1 py-2 px-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors duration-300 z-10",
+                        activeChart === '1rm' ? "text-amber-400" : "text-muted-foreground hover:text-white"
+                    )}
+                >
+                    {activeChart === '1rm' && (
+                        <motion.div
+                            layoutId="activeChartTab"
+                            className="absolute inset-0 bg-amber-500/20 rounded-lg border border-amber-500/30"
+                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                        />
+                    )}
+                    <span className="relative z-20">Est. 1RM</span>
+                </button>
+                <button
+                    onClick={() => setActiveChart('volume')}
+                    className={cn(
+                        "relative flex-1 py-2 px-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors duration-300 z-10",
+                        activeChart === 'volume' ? "text-emerald-400" : "text-muted-foreground hover:text-white"
+                    )}
+                >
+                    {activeChart === 'volume' && (
+                        <motion.div
+                            layoutId="activeChartTab"
+                            className="absolute inset-0 bg-emerald-500/20 rounded-lg border border-emerald-500/30"
+                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                        />
+                    )}
+                    <span className="relative z-20">Volume</span>
+                </button>
+            </div>
+            {/* Chart */}
+            <div className="glass-card p-4">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeChart}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="h-64"
+                    >
+                        <ResponsiveContainer width="100%" height="100%">
+                            {renderChart()}
+                        </ResponsiveContainer>
+                    </motion.div>
+                </AnimatePresence>
+            </div>
         </div>
     );
 };
