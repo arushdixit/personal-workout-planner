@@ -32,10 +32,11 @@ interface RoutinesProps {
     showBuilderOnLoad?: boolean;
     selectedRoutineId?: string | null;
     onViewRoutine?: (routineId: string) => void;
+    onOpenBuilder?: () => void;
     onCloseEditor?: () => void;
 }
 
-const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine, onCloseEditor }: RoutinesProps) => {
+const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine, onOpenBuilder, onCloseEditor }: RoutinesProps) => {
     const { currentUser } = useUser();
     const [routines, setRoutines] = useState<Routine[]>([]);
     const [loading, setLoading] = useState(true);
@@ -164,6 +165,8 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
         setShowBuilder(true);
         if (onViewRoutine && routine.id) {
             onViewRoutine(routine.id);
+        } else if (onOpenBuilder) {
+            onOpenBuilder();
         }
     };
 
@@ -174,7 +177,7 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
             await deleteRoutineOptimistic(deleteTarget.id);
             toast.success('Routine deleted');
             setDeleteTarget(null);
-            
+
             const updatedRoutines = routines.filter(r => r.id !== deleteTarget.id);
             setRoutines(updatedRoutines);
         } catch (err) {
@@ -189,7 +192,7 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
         try {
             const newRoutine = await duplicateRoutine(routine.id, supabaseUserId, currentUser.id);
             toast.success('Routine duplicated');
-            
+
             setRoutines(prev => [...prev, newRoutine]);
         } catch (err) {
             console.error('Failed to duplicate routine:', err);
@@ -240,102 +243,108 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
                 localUserId={currentUser?.id || 0}
             />
         ) : (
-        <div className="space-y-6 animate-slide-up pb-20">
-            <div className="flex items-center justify-between">
-                <div className="flex-1">
-                    <h1 className="text-2xl font-bold">My Routines</h1>
-                    <div className="flex items-center gap-3 mt-1">
-                        <p className="text-muted-foreground text-sm">
-                            {routines.length} {routines.length === 1 ? 'routine' : 'routines'}
-                        </p>
-                        <CacheStatus
-                            state={cacheState}
-                            lastSynced={lastSynced}
-                            pendingSync={pendingSync}
-                            onRefresh={handleRefresh}
-                            isRefreshing={isRefreshing}
-                        />
+            <div className="space-y-6 animate-slide-up pb-20">
+                <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                        <h1 className="text-2xl font-bold">My Routines</h1>
+                        <div className="flex items-center gap-3 mt-1">
+                            <p className="text-muted-foreground text-sm">
+                                {routines.length} {routines.length === 1 ? 'routine' : 'routines'}
+                            </p>
+                            <CacheStatus
+                                state={cacheState}
+                                lastSynced={lastSynced}
+                                pendingSync={pendingSync}
+                                onRefresh={handleRefresh}
+                                isRefreshing={isRefreshing}
+                            />
+                        </div>
                     </div>
-                </div>
-                <Button
-                    variant="default"
-                    size="sm"
-                    onClick={() => setShowBuilder(true)}
-                    className="gradient-red glow-red border-none"
-                >
-                    <Plus className="w-4 h-4 mr-2" /> Create
-                </Button>
-            </div>
-
-            {routines.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                    <Dumbbell className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg font-medium mb-2">No routines yet</p>
-                    <p className="text-sm mb-4">Create your first workout routine to get started!</p>
-                    <Button onClick={() => setShowBuilder(true)} className="gradient-red glow-red border-none">
-                        <Plus className="w-4 h-4 mr-2" /> Create Your First Routine
+                    <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => {
+                            setShowBuilder(true);
+                            if (onOpenBuilder) onOpenBuilder();
+                        }}
+                        className="gradient-red glow-red border-none"
+                    >
+                        <Plus className="w-4 h-4 mr-2" /> Create
                     </Button>
                 </div>
-            ) : (
-                <div className="space-y-4">
-                    {routines.map((routine, index) => (
-                        <Card
-                            key={routine.id}
-                            className="glass border-white/10 animate-slide-up hover:border-primary/50 transition-all duration-300 group cursor-pointer"
-                            style={{ animationDelay: `${index * 0.05}s` }}
-                            onClick={() => handleEdit(routine)}
-                        >
-                            <CardContent className="p-4">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                        <h3 className="font-semibold text-lg mb-1">{routine.name}</h3>
-                                        {routine.description && (
-                                            <p className="text-sm text-muted-foreground mb-3">{routine.description}</p>
-                                        )}
-                                        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                                            <div className="flex items-center gap-1">
-                                                <Dumbbell className="w-3 h-3" />
-                                                <span>{routine.exercises.length} exercises</span>
-                                            </div>
-                                            <div className="flex items-center gap-1">
-                                                <Clock className="w-3 h-3" />
-                                                <span>~{Math.round(calculateEstimatedTime(routine))} min</span>
+
+                {routines.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                        <Dumbbell className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p className="text-lg font-medium mb-2">No routines yet</p>
+                        <p className="text-sm mb-4">Create your first workout routine to get started!</p>
+                        <Button onClick={() => {
+                            setShowBuilder(true);
+                            if (onOpenBuilder) onOpenBuilder();
+                        }} className="gradient-red glow-red border-none">
+                            <Plus className="w-4 h-4 mr-2" /> Create Your First Routine
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {routines.map((routine, index) => (
+                            <Card
+                                key={routine.id}
+                                className="glass border-white/10 animate-slide-up hover:border-primary/50 transition-all duration-300 group cursor-pointer"
+                                style={{ animationDelay: `${index * 0.05}s` }}
+                                onClick={() => handleEdit(routine)}
+                            >
+                                <CardContent className="p-4">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex-1">
+                                            <h3 className="font-semibold text-lg mb-1">{routine.name}</h3>
+                                            {routine.description && (
+                                                <p className="text-sm text-muted-foreground mb-3">{routine.description}</p>
+                                            )}
+                                            <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                                                <div className="flex items-center gap-1">
+                                                    <Dumbbell className="w-3 h-3" />
+                                                    <span>{routine.exercises.length} exercises</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <Clock className="w-3 h-3" />
+                                                    <span>~{Math.round(calculateEstimatedTime(routine))} min</span>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div className="flex gap-1" onClick={e => e.stopPropagation()}>
+                                            <Button variant="ghost" size="icon" onClick={() => handleEdit(routine)} aria-label="Edit Routine">
+                                                <Edit className="w-4 h-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => handleDuplicate(routine)} aria-label="Duplicate Routine">
+                                                <Copy className="w-4 h-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(routine)} className="text-red-500 hover:text-red-400" aria-label="Delete Routine">
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <div className="flex gap-1" onClick={e => e.stopPropagation()}>
-                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(routine)} aria-label="Edit Routine">
-                                            <Edit className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" onClick={() => handleDuplicate(routine)} aria-label="Duplicate Routine">
-                                            <Copy className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(routine)} className="text-red-500 hover:text-red-400" aria-label="Delete Routine">
-                                            <Trash2 className="w-4 h-4" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            )}
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                )}
 
-            <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-                <AlertDialogContent className="glass border-white/10">
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Routine?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This action cannot be undone.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel className="glass">Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-        </div>
+                <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+                    <AlertDialogContent className="glass border-white/10">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Routine?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel className="glass">Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            </div>
         )
     );
 };

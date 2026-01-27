@@ -136,7 +136,10 @@ const Index = () => {
 
   return (
     <div className="dark h-[100dvh] bg-background flex flex-col overflow-hidden">
-      <main className="flex-1 overflow-y-auto custom-scrollbar px-4 pt-6 space-y-6">
+      <main className={cn(
+        "flex-1 overflow-y-auto custom-scrollbar",
+        (activeTab === 'routines' && showBuilder) || activeTab === 'workout' ? "" : "px-4 pt-6 space-y-6"
+      )}>
         {activeTab === 'today' && (
           <TodayPage
             onStartWorkout={handleStartWorkout}
@@ -183,6 +186,7 @@ const Index = () => {
             showBuilderOnLoad={showBuilder}
             selectedRoutineId={searchParams.get('routineId')}
             onViewRoutine={handleViewRoutine}
+            onOpenBuilder={handleNavigateToRoutines}
             onCloseEditor={handleCloseRoutineEditor}
           />
         )}
