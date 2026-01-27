@@ -19,6 +19,8 @@ interface WorkoutContextType {
     restTimeLeft: number;
     isRestTimerMinimized: boolean;
     showSuccess: boolean;
+    activeView: 'list' | 'detail';
+    selectedExerciseIndex: number | null;
     completedStats: {
         duration: number;
         completedSets: number;
@@ -42,6 +44,7 @@ interface WorkoutContextType {
     setMinimizedRest: (minimized: boolean) => void;
     adjustRestTime: (delta: number) => void;
     clearSuccess: () => void;
+    setWorkoutView: (view: 'list' | 'detail', index?: number | null) => void;
 }
 
 const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
@@ -61,6 +64,8 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         volume: number;
         exerciseCount: number;
     } | null>(null);
+    const [activeView, setActiveView] = useState<'list' | 'detail'>('list');
+    const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<number | null>(null);
 
     // Load any active session on mount
     useEffect(() => {
@@ -76,6 +81,19 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
                 if (session) {
                     setActiveSession(session);
+
+                    // Recover saved UI state if it exists for this session
+                    const savedState = localStorage.getItem(`workout_ui_state_${session.id}`);
+                    if (savedState) {
+                        try {
+                            const { view, index } = JSON.parse(savedState);
+                            setActiveView(view);
+                            setSelectedExerciseIndex(index);
+                        } catch (e) {
+                            console.error('Failed to restore UI state', e);
+                        }
+                    }
+
                     // Find current exercise index based on first incomplete
                     const incompleteIndex = session.exercises.findIndex(
                         ex => ex.sets.some(set => !set.completed)
@@ -103,6 +121,16 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         }
         return () => clearInterval(timer);
     }, [isRestTimerActive, restTimeLeft]);
+
+    // Persist UI state change
+    useEffect(() => {
+        if (activeSession?.id) {
+            localStorage.setItem(`workout_ui_state_${activeSession.id}`, JSON.stringify({
+                view: activeView,
+                index: selectedExerciseIndex
+            }));
+        }
+    }, [activeView, selectedExerciseIndex, activeSession?.id]);
 
     // Computed values
     const currentExercise = useMemo(() =>
@@ -441,12 +469,15 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     }, [activeSession]);
 
     const clearActiveSession = useCallback(async () => {
-        if (!activeSession) return;
-        await db.workout_sessions.delete(activeSession.id!);
-        setActiveSession(null);
-        setCurrentExerciseIndex(0);
-        setIsRestTimerActive(false);
+        if (activeSession?.id) {
+            localStorage.removeItem(`workout_ui_state_${activeSession.id}`);
+        }
     }, [activeSession]);
+
+    const setWorkoutView = useCallback((view: 'list' | 'detail', index: number | null = null) => {
+        setActiveView(view);
+        setSelectedExerciseIndex(index);
+    }, []);
 
     const value: WorkoutContextType = {
         activeSession,
@@ -472,7 +503,10 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         adjustRestTime,
         showSuccess,
         completedStats,
-        clearSuccess
+        clearSuccess,
+        activeView,
+        selectedExerciseIndex,
+        setWorkoutView
     };
 
     return (

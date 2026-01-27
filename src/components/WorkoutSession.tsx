@@ -34,11 +34,13 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
         showSuccess,
         completedStats,
         clearSuccess,
+        activeView,
+        selectedExerciseIndex,
+        setWorkoutView,
     } = useWorkout();
     const { currentUser } = useUser();
 
-    const [view, setView] = useState<'list' | 'detail'>('list');
-    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    // Local UI state
     const [showEndDialog, setShowEndDialog] = useState(false);
     const [endDialogType, setEndDialogType] = useState<'complete' | 'abandon'>('complete');
     const [exerciseDetail, setExerciseDetail] = useState<Exercise | null>(null);
@@ -48,8 +50,8 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
 
     useEffect(() => {
         const loadExerciseDetail = async () => {
-            if (selectedIndex === null || !activeSession) return;
-            const currentEx = activeSession.exercises[selectedIndex];
+            if (selectedExerciseIndex === null || !activeSession) return;
+            const currentEx = activeSession.exercises[selectedExerciseIndex];
             let exercise = await db.exercises.get(currentEx.exerciseId);
             if (!exercise && currentEx.exerciseName) {
                 exercise = await db.exercises.where('name').equalsIgnoreCase(currentEx.exerciseName).first();
@@ -63,7 +65,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
             }
         };
         loadExerciseDetail();
-    }, [selectedIndex, activeSession]);
+    }, [selectedExerciseIndex, activeSession]);
 
     const handleSetComplete = async (exerciseIdx: number, setId: number, weight: number, reps: number, unit: 'kg' | 'lbs') => {
         await completeSet(exerciseIdx, setId, weight, reps, unit);
@@ -234,8 +236,8 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
         <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
             {/* Top Bar */}
             <div className="fixed top-0 left-0 right-0 z-50 p-4 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b border-white/5">
-                {view === 'detail' ? (
-                    <button onClick={() => setView('list')} className="p-2 rounded-full hover:bg-white/10 transition-colors">
+                {activeView === 'detail' ? (
+                    <button onClick={() => setWorkoutView('list')} className="p-2 rounded-full hover:bg-white/10 transition-colors">
                         <ChevronLeft className="w-6 h-6" />
                     </button>
                 ) : (
@@ -250,7 +252,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
             {/* Scrollable Content */}
             <div className="pt-24 pb-32 px-4 flex-1 overflow-y-auto">
                 {activeSession ? (
-                    view === 'list' ? (
+                    activeView === 'list' ? (
                         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="mb-6">
                                 <h2 className="text-3xl font-bold mb-1">{activeSession.routineName}</h2>
@@ -266,7 +268,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                     return (
                                         <button
                                             key={idx}
-                                            onClick={() => { setSelectedIndex(idx); setView('detail'); }}
+                                            onClick={() => { setWorkoutView('detail', idx); }}
                                             className={cn(
                                                 "w-full glass-card p-4 flex items-center gap-4 transition-all hover:bg-white/10 group text-left relative overflow-hidden",
                                                 isAllCompleted ? "border-emerald-500/30 bg-emerald-500/5 ring-1 ring-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.05)]" : "border-white/5",
@@ -301,23 +303,23 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                             </div>
                         </div>
                     ) : (
-                        selectedIndex !== null && exerciseDetail && (
+                        selectedExerciseIndex !== null && exerciseDetail && (
                             <ExerciseDetail
                                 exercise={{
                                     ...exerciseDetail,
-                                    name: activeSession.exercises[selectedIndex].exerciseName,
+                                    name: activeSession.exercises[selectedExerciseIndex].exerciseName,
                                     primaryMuscles: exerciseDetail.primaryMuscles || [],
                                     secondaryMuscles: exerciseDetail.secondaryMuscles || [],
-                                    sets: activeSession.exercises[selectedIndex].sets,
+                                    sets: activeSession.exercises[selectedExerciseIndex].sets,
                                 }}
-                                open={view === 'detail'}
-                                onOpenChange={(open) => !open && setView('list')}
+                                open={activeView === 'detail'}
+                                onOpenChange={(open) => !open && setWorkoutView('list')}
                                 workoutMode={true}
-                                onSetComplete={(setId, weight, reps, unit) => handleSetComplete(selectedIndex, setId, weight, reps, unit)}
-                                onAddSet={() => handleAddSet(selectedIndex)}
+                                onSetComplete={(setId, weight, reps, unit) => handleSetComplete(selectedExerciseIndex, setId, weight, reps, unit)}
+                                onAddSet={() => handleAddSet(selectedExerciseIndex)}
                                 unit={currentUser?.unitPreference || 'kg'}
-                                personalNote={activeSession.exercises[selectedIndex].personalNote}
-                                onNoteChange={(note) => handleNoteChange(selectedIndex, note)}
+                                personalNote={activeSession.exercises[selectedExerciseIndex].personalNote}
+                                onNoteChange={(note) => handleNoteChange(selectedExerciseIndex, note)}
                                 lastSessionNote={lastSessionNote}
                                 onEdit={() => {
                                     setEditingExercise(exerciseDetail);
@@ -343,7 +345,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
             </div>
 
             {/* Bottom Controls */}
-            {view === 'list' && activeSession && (
+            {activeView === 'list' && activeSession && (
                 <div className="fixed bottom-6 left-0 right-0 z-30 px-4 pb-safe">
                     <div className="flex gap-3 max-w-lg mx-auto">
                         <Button
@@ -412,8 +414,8 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                     setShowWizard(false);
                     setEditingExercise(null);
                     // Refresh current detail
-                    if (selectedIndex !== null && activeSession) {
-                        const currentEx = activeSession.exercises[selectedIndex];
+                    if (selectedExerciseIndex !== null && activeSession) {
+                        const currentEx = activeSession.exercises[selectedExerciseIndex];
                         const updated = await db.exercises.get(currentEx.exerciseId);
                         if (updated) setExerciseDetail(updated);
                     }
