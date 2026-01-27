@@ -23,7 +23,6 @@ import ExerciseDetail from '@/components/ExerciseDetail';
 import RoutineSelectorModal from '@/components/RoutineSelectorModal';
 import RoutineBuilder from '@/components/RoutineBuilder';
 import { cn } from '@/lib/utils';
-import { importExercemusData } from '@/lib/exercemus';
 import { useUser } from '@/context/UserContext';
 
 interface LibraryProps {
@@ -83,9 +82,7 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
     const loadExercises = async () => {
         setLoading(true);
         try {
-            // Ensure Exercemus data is imported and up to date
-            await importExercemusData();
-
+            // Data is imported on app mount in Index.tsx
             const all = await db.exercises.toArray();
             setExercises(all);
         } catch (err) {

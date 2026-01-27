@@ -6,7 +6,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Slider } from '@/components/ui/slider';
 import { ChevronLeft, ChevronRight, Dumbbell, User } from 'lucide-react';
 import { db, UserProfile } from '@/lib/db';
-import { importExercemusData } from '@/lib/exercemus';
 
 interface OnboardingProps {
     onComplete: () => void;
@@ -31,7 +30,7 @@ const Onboarding = ({ onComplete, supabaseUserId }: OnboardingProps) => {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-        const newUser: Omit<UserProfile, 'id'> = {
+            const newUser: Omit<UserProfile, 'id'> = {
                 ...formData,
                 supabaseUserId,
                 onboarded: true,
@@ -41,9 +40,7 @@ const Onboarding = ({ onComplete, supabaseUserId }: OnboardingProps) => {
             const userId = await db.users.add(newUser);
             localStorage.setItem('prolifts_active_user', String(userId));
 
-            // Import Exercemus exercise database (it will check if already done)
-            await importExercemusData();
-
+            // Exercise data is imported on app mount in Index.tsx
             onComplete();
         } catch (err) {
             console.error('Onboarding failed:', err);

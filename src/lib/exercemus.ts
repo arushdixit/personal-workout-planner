@@ -54,6 +54,18 @@ function mapEquipment(exercemusEquip: string[]): EquipmentType {
 let importInProgress: Promise<void> | null = null;
 
 export async function importExercemusData() {
+    // Only run in browser environment
+    if (typeof window === 'undefined') {
+        console.log('Skipping Exercemus import in non-browser environment');
+        return;
+    }
+
+    // Check if IndexedDB is available
+    if (!window.indexedDB) {
+        console.error('IndexedDB is not available in this browser');
+        return;
+    }
+
     // If an import is already in progress, wait for it to complete
     if (importInProgress) {
         console.log('Import already in progress, waiting...');
@@ -61,32 +73,31 @@ export async function importExercemusData() {
         return;
     }
 
-    console.log('Checking for Exercemus data...');
-
-    // Version of the enriched data - increment this when JSON is updated
-    const DATA_VERSION = 3; // Incremented to restore difficulty levels (Beginner/Intermediate/Advanced)
-
-    const existingCount = await db.exercises.where('source').equals('exercemus').count();
-
-    // Check if we need to refresh data by comparing version numbers
-    const sample = await db.exercises.where('source').equals('exercemus').first();
-    const currentVersion = sample?.dataVersion || 0;
-    const needsRefresh = sample && currentVersion < DATA_VERSION;
-
-
-    if (existingCount > 0 && !needsRefresh) {
-        console.log('Exercemus data already imported and up to date.');
-        return;
-    }
-
-    if (needsRefresh) {
-        console.log(`Exercemus data is outdated (v${currentVersion} < v${DATA_VERSION}), clearing for refresh...`);
-        await db.exercises.where('source').equals('exercemus').delete();
-    }
-
-    // Set the lock before starting the import
+    // Set the lock IMMEDIATELY before any async operations
     importInProgress = (async () => {
         try {
+            console.log('Checking for Exercemus data...');
+
+            // Version of the enriched data - increment this when JSON is updated
+            const DATA_VERSION = 3; // Incremented to restore difficulty levels (Beginner/Intermediate/Advanced)
+
+            const existingCount = await db.exercises.where('source').equals('exercemus').count();
+
+            // Check if we need to refresh data by comparing version numbers
+            const sample = await db.exercises.where('source').equals('exercemus').first();
+            const currentVersion = sample?.dataVersion || 0;
+            const needsRefresh = sample && currentVersion < DATA_VERSION;
+
+            if (existingCount > 0 && !needsRefresh) {
+                console.log('Exercemus data already imported and up to date.');
+                return;
+            }
+
+            if (needsRefresh) {
+                console.log(`Exercemus data is outdated (v${currentVersion} < v${DATA_VERSION}), clearing for refresh...`);
+                await db.exercises.where('source').equals('exercemus').delete();
+            }
+
             console.log('Loading enriched-exercemus-data.json...');
             // Dynamic import to keep main bundle small
             const module = await import('./enriched-exercemus-data.json');
@@ -145,8 +156,8 @@ export async function importExercemusData() {
             }
 
             console.log('Exercemus enrichment import complete.');
-        } catch (err) {
-            console.error('CRITICAL: Failed to import Exercemus data:', err);
+        } catch (error) {
+            console.error('CRITICAL: Failed to import Exercemus data:', error);
         } finally {
             // Clear the lock when done
             importInProgress = null;
