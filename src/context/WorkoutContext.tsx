@@ -10,7 +10,6 @@ interface WorkoutContextType {
     // State
     activeSession: WorkoutSession | null;
     currentExerciseIndex: number;
-    exerciseUnitOverrides: Record<number, 'kg' | 'lbs'>;
 
     // Computed
     currentExercise: WorkoutSessionExercise | null;
@@ -43,10 +42,6 @@ interface WorkoutContextType {
     setMinimizedRest: (minimized: boolean) => void;
     adjustRestTime: (delta: number) => void;
     clearSuccess: () => void;
-
-    // Unit Override
-    setExerciseUnit: (exerciseId: number, unit: 'kg' | 'lbs') => void;
-    getExerciseUnit: (exerciseId: number) => 'kg' | 'lbs';
 }
 
 const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
@@ -55,7 +50,6 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     const { refreshUsers } = useUser();
     const [activeSession, setActiveSession] = useState<WorkoutSession | null>(null);
     const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-    const [exerciseUnitOverrides, setExerciseUnitOverrides] = useState<Record<number, 'kg' | 'lbs'>>({});
     const [isRestTimerActive, setIsRestTimerActive] = useState(false);
     const [restTimeLeft, setRestTimeLeft] = useState(0);
     const [isRestTimerMinimized, setIsRestTimerMinimized] = useState(false);
@@ -198,7 +192,6 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         setActiveSession(createdSession);
         setCurrentExerciseIndex(0);
-        setExerciseUnitOverrides({});
         setIsRestTimerActive(false);
 
         queueWorkoutOperation('create', localId as number).catch(console.error);
@@ -273,7 +266,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
             const lastSet = ex.sets[ex.sets.length - 1];
             const newSetNumber = ex.sets.length + 1;
-            const unit = exerciseUnitOverrides[ex.exerciseId] || lastSet?.unit || 'kg';
+            const unit = lastSet?.unit || 'kg';
             const newSet: WorkoutSet = {
                 id: Date.now(),
                 setNumber: newSetNumber,
@@ -291,7 +284,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
         setActiveSession({ ...activeSession, exercises: updatedExercises });
-    }, [activeSession, exerciseUnitOverrides]);
+    }, [activeSession]);
 
     const removeExtraSet = useCallback((exerciseIndex: number) => {
         if (!activeSession) return;
@@ -455,21 +448,9 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         setIsRestTimerActive(false);
     }, [activeSession]);
 
-    const setExerciseUnit = useCallback((exerciseId: number, unit: 'kg' | 'lbs') => {
-        setExerciseUnitOverrides(prev => ({
-            ...prev,
-            [exerciseId]: unit,
-        }));
-    }, []);
-
-    const getExerciseUnit = useCallback((exerciseId: number): 'kg' | 'lbs' => {
-        return exerciseUnitOverrides[exerciseId] || 'kg';
-    }, [exerciseUnitOverrides]);
-
     const value: WorkoutContextType = {
         activeSession,
         currentExerciseIndex,
-        exerciseUnitOverrides,
         currentExercise,
         progress,
         isWorkoutComplete,
@@ -489,8 +470,6 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         clearActiveSession,
         setMinimizedRest,
         adjustRestTime,
-        setExerciseUnit,
-        getExerciseUnit,
         showSuccess,
         completedStats,
         clearSuccess

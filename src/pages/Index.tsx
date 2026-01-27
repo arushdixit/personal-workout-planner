@@ -7,12 +7,16 @@ import TodayPage from '@/pages/Today';
 import ProgressChart from '@/components/ProgressChart';
 import WorkoutSession from '@/components/WorkoutSession';
 import WorkoutCountdown from '@/components/WorkoutCountdown';
+import Profile from '@/components/Profile';
 import { MinimizedRestTimer } from '@/components/RestTimer';
 import { User, Trophy, Target, LogOut, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
+import { cn } from '@/lib/utils';
 
 const Index = () => {
   const { currentUser, allUsers, switchUser, logout } = useUser();
@@ -186,7 +190,7 @@ const Index = () => {
         {activeTab === 'progress' && (
           <div className="space-y-6 animate-slide-up">
             <h2 className="text-xl font-bold">Progress & Insights</h2>
-            <ProgressChart data={[]} title="Recent Performance" unit="kg" />
+            <ProgressChart data={[]} title="Recent Performance" unit={currentUser?.unitPreference || 'kg'} />
             <div className="grid grid-cols-2 gap-4">
               <div className="glass-card p-4 text-center">
                 <Trophy className="w-8 h-8 mx-auto mb-2 text-primary" />
@@ -213,45 +217,7 @@ const Index = () => {
         )}
 
         {activeTab === 'profile' && (
-          <div className="space-y-6 animate-slide-up">
-            <div className="glass-card p-6 text-center">
-              <div className="w-24 h-24 mx-auto mb-4 rounded-full gradient-red flex items-center justify-center glow-red">
-                <User className="w-12 h-12 text-white" />
-              </div>
-              <h2 className="text-xl font-bold">{currentUser?.name}</h2>
-              <p className="text-muted-foreground uppercase text-xs font-bold tracking-widest">
-                {currentUser?.activeSplit} Athlete
-              </p>
-            </div>
-
-            <div className="space-y-3 pb-24">
-              <Label className="text-xs uppercase text-muted-foreground px-1">Switch Profile</Label>
-              {allUsers.map((u) => (
-                <button
-                  key={u.id}
-                  onClick={() => {
-                    if (u.id) {
-                      switchUser(u.id);
-                      const currentParams = new URLSearchParams(searchParams.toString());
-                      currentParams.set('tab', 'today');
-                      setSearchParams(currentParams);
-                    }
-                  }}
-                  className={`w-full glass-card p-4 flex items-center gap-4 ${u.id === currentUser?.id ? 'border-primary/30' : ''}`}
-                >
-                  <UserCircle className={`w-5 h-5 ${u.id === currentUser?.id ? 'text-primary' : 'text-muted-foreground'}`} />
-                  <span className="font-medium">{u.name} {u.id === currentUser?.id && '(Active)'}</span>
-                </button>
-              ))}
-              <Button
-                variant="destructive"
-                className="w-full bg-red-900/20 text-red-500 border-red-900/50"
-                onClick={logout}
-              >
-                <LogOut className="w-4 h-4 mr-2" /> Logout Session
-              </Button>
-            </div>
-          </div>
+          <Profile currentUser={currentUser} />
         )}
       </main>
       {activeTab !== 'workout' && (

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { db, UserProfile } from '@/lib/db';
 import { supabase } from '@/lib/supabaseClient';
 import { pullUserExercises } from '@/lib/syncManager';
+import { convertWeight } from '@/lib/units';
 import { User } from '@supabase/supabase-js';
 
 interface UserContextType {
@@ -20,6 +21,7 @@ interface UserContextType {
     ) => Promise<void>;
     logout: () => void;
     setSupabaseUser: (user: User | null) => void;
+    updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -157,6 +159,60 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         await db.users.add(newUser);
     };
 
+    const updateProfile = async (updates: Partial<UserProfile>) => {
+        if (!currentUser || !currentUser.id) return;
+
+        let finalUpdates = { ...updates };
+        const oldUnit = currentUser.unitPreference || 'kg';
+        const newUnit = updates.unitPreference;
+
+        // Handle weight conversion if unit changes
+        if (newUnit && newUnit !== oldUnit) {
+            const newWeight = convertWeight(currentUser.weight, oldUnit, newUnit);
+            finalUpdates.weight = newWeight;
+
+            // Convert all historical sessions
+            const sessions = await db.workout_sessions.where('userId').equals(currentUser.id).toArray();
+            console.log(`[UserContext] Converting ${sessions.length} sessions to ${newUnit}`);
+
+            for (const session of sessions) {
+                let sessionChanged = false;
+                const updatedExercises = session.exercises.map(ex => {
+                    let exChanged = false;
+                    const updatedSets = ex.sets.map(s => {
+                        if (s.unit !== newUnit) {
+                            sessionChanged = true;
+                            exChanged = true;
+                            return {
+                                ...s,
+                                weight: convertWeight(s.weight, s.unit || 'kg', newUnit),
+                                unit: newUnit
+                            };
+                        }
+                        return s;
+                    });
+                    return exChanged ? { ...ex, sets: updatedSets } : ex;
+                });
+
+                if (sessionChanged) {
+                    await db.workout_sessions.update(session.id!, { exercises: updatedExercises });
+                }
+            }
+        }
+
+        await db.users.update(currentUser.id, finalUpdates);
+        const updatedProfile = { ...currentUser, ...finalUpdates };
+        setCurrentUser(updatedProfile);
+        setAllUsers(prev => prev.map(u => u.id === currentUser.id ? updatedProfile : u));
+
+        // Update user metadata in Supabase
+        if (supabaseUser) {
+            await supabase.auth.updateUser({
+                data: finalUpdates
+            });
+        }
+    };
+
     const logout = async () => {
         await supabase.auth.signOut();
         setCurrentUser(null);
@@ -165,7 +221,20 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     return (
-        <UserContext.Provider value={{ currentUser, allUsers, loading, refreshing, isAuthenticated, switchUser, refreshUsers: () => refreshUsers(supabaseUser?.id), signIn, signUp, logout, setSupabaseUser }}>
+        <UserContext.Provider value={{
+            currentUser,
+            allUsers,
+            loading,
+            refreshing,
+            isAuthenticated,
+            switchUser,
+            refreshUsers: () => refreshUsers(supabaseUser?.id),
+            signIn,
+            signUp,
+            logout,
+            setSupabaseUser,
+            updateProfile
+        }}>
             {children}
         </UserContext.Provider>
     );

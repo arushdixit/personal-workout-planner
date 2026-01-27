@@ -12,7 +12,6 @@ interface SetLoggerProps {
     onAddSet: () => void;
     onRemoveSet?: () => void;
     unit: 'kg' | 'lbs';
-    onUnitChange: (unit: 'kg' | 'lbs') => void;
     canAddSet?: boolean;
     canRemoveSet?: boolean;
 }
@@ -23,7 +22,6 @@ const SetLogger = ({
     onAddSet,
     onRemoveSet,
     unit,
-    onUnitChange,
     canAddSet = true,
     canRemoveSet = false,
 }: SetLoggerProps) => {
@@ -74,26 +72,6 @@ const SetLogger = ({
                         <span className="text-muted-foreground text-sm">/ {sets.length} sets</span>
                     </div>
                 </div>
-                <div className="flex bg-white/5 rounded-xl p-1.5 border border-white/5">
-                    <button
-                        onClick={() => onUnitChange('kg')}
-                        className={cn(
-                            "px-4 py-1.5 text-xs font-black rounded-lg transition-all",
-                            unit === 'kg' ? "bg-white/10 text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]" : "text-muted-foreground hover:text-white/60"
-                        )}
-                    >
-                        KG
-                    </button>
-                    <button
-                        onClick={() => onUnitChange('lbs')}
-                        className={cn(
-                            "px-4 py-1.5 text-xs font-black rounded-lg transition-all",
-                            unit === 'lbs' ? "bg-white/10 text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]" : "text-muted-foreground hover:text-white/60"
-                        )}
-                    >
-                        LBS
-                    </button>
-                </div>
             </div>
 
             {/* Sets List */}
@@ -116,7 +94,7 @@ const SetLogger = ({
                         <div
                             key={set.id}
                             className={cn(
-                                "relative overflow-hidden transition-all duration-500 rounded-3xl border",
+                                "relative overflow-hidden transition-all duration-500 rounded-2xl border",
                                 isNext
                                     ? "bg-primary/5 border-primary/30 p-5 ring-1 ring-primary/20 shadow-[0_0_30px_rgba(239,68,68,0.05)]"
                                     : isCompleted
@@ -148,20 +126,25 @@ const SetLogger = ({
                                     <div className="flex-1 grid grid-cols-2 gap-3">
                                         <div className="space-y-1">
                                             <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block ml-1">Weight</span>
-                                            <Input
-                                                type="number"
-                                                inputMode="decimal"
-                                                disabled={isDisabled}
-                                                value={currentValues.weight}
-                                                onChange={(e) => handleInputChange(set.id, 'weight', e.target.value, set)}
-                                                onBlur={() => isCompleted && handleLogSet(set)}
-                                                placeholder={unit}
-                                                className={cn(
-                                                    "h-12 text-center text-lg font-black bg-black/20 border-0 focus-visible:ring-2 focus-visible:ring-primary/50 transition-all rounded-xl",
-                                                    isCompleted && "text-emerald-400 focus:text-foreground",
-                                                    (isNext || isResting) && "bg-white/5"
-                                                )}
-                                            />
+                                            <div className="relative group">
+                                                <Input
+                                                    type="number"
+                                                    inputMode="decimal"
+                                                    disabled={isDisabled}
+                                                    value={currentValues.weight}
+                                                    onChange={(e) => handleInputChange(set.id, 'weight', e.target.value, set)}
+                                                    onBlur={() => isCompleted && handleLogSet(set)}
+                                                    placeholder="0"
+                                                    className={cn(
+                                                        "h-12 text-center text-lg font-black bg-black/20 border-0 focus-visible:ring-2 focus-visible:ring-primary/50 transition-all rounded-xl w-full",
+                                                        isCompleted ? "text-emerald-400 focus:text-foreground" : "text-foreground",
+                                                        (isNext || isResting) && "bg-white/5"
+                                                    )}
+                                                />
+                                                <div className="absolute right-3 top-0 bottom-0 flex items-center pointer-events-none">
+                                                    <span className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-tighter">{unit}</span>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div className="space-y-1">
                                             <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block ml-1">Reps</span>

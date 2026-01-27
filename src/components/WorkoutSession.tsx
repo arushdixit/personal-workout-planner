@@ -8,6 +8,7 @@ import ExerciseWizard from './ExerciseWizard';
 import WorkoutTimer from './WorkoutTimer';
 import RestTimer, { MinimizedRestTimer } from './RestTimer';
 import { useWorkout } from '@/context/WorkoutContext';
+import { useUser } from '@/context/UserContext';
 import { db, Exercise } from '@/lib/db';
 import { getLastExerciseNote } from '@/lib/workoutSession';
 import { cn } from '@/lib/utils';
@@ -30,12 +31,11 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
         updatePersonalNote,
         endWorkout,
         abandonWorkout,
-        getExerciseUnit,
-        setExerciseUnit,
         showSuccess,
         completedStats,
         clearSuccess,
     } = useWorkout();
+    const { currentUser } = useUser();
 
     const [view, setView] = useState<'list' | 'detail'>('list');
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -315,8 +315,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                 workoutMode={true}
                                 onSetComplete={(setId, weight, reps, unit) => handleSetComplete(selectedIndex, setId, weight, reps, unit)}
                                 onAddSet={() => handleAddSet(selectedIndex)}
-                                unit={getExerciseUnit(activeSession.exercises[selectedIndex].exerciseId)}
-                                onUnitChange={(unit) => setExerciseUnit(activeSession.exercises[selectedIndex].exerciseId, unit)}
+                                unit={currentUser?.unitPreference || 'kg'}
                                 personalNote={activeSession.exercises[selectedIndex].personalNote}
                                 onNoteChange={(note) => handleNoteChange(selectedIndex, note)}
                                 lastSessionNote={lastSessionNote}

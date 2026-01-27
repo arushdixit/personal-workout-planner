@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Slider } from '@/components/ui/slider';
 import { ChevronLeft, ChevronRight, Dumbbell, User } from 'lucide-react';
 import { db, UserProfile } from '@/lib/db';
+import { convertWeight } from '@/lib/units';
 
 interface OnboardingProps {
     onComplete: () => void;
@@ -21,6 +22,7 @@ const Onboarding = ({ onComplete, supabaseUserId }: OnboardingProps) => {
         age: 25,
         height: 175,
         weight: 70,
+        unitPreference: 'kg' as 'kg' | 'lbs',
         activeSplit: 'PPL' as 'PPL' | 'UpperLower' | 'FullBody',
     });
 
@@ -108,24 +110,57 @@ const Onboarding = ({ onComplete, supabaseUserId }: OnboardingProps) => {
 
                     {step === 3 && (
                         <div className="space-y-6">
+                            <div className="space-y-2">
+                                <Label className="text-xs uppercase text-muted-foreground">Measurement Unit</Label>
+                                <RadioGroup
+                                    value={formData.unitPreference}
+                                    onValueChange={v => {
+                                        const newUnit = v as 'kg' | 'lbs';
+                                        const newWeight = convertWeight(formData.weight, formData.unitPreference, newUnit);
+                                        setFormData({ ...formData, unitPreference: newUnit, weight: newWeight });
+                                    }}
+                                    className="grid grid-cols-2 gap-4"
+                                >
+                                    {['kg', 'lbs'].map(u => (
+                                        <div key={u}>
+                                            <RadioGroupItem value={u} id={u} className="peer sr-only" />
+                                            <Label
+                                                htmlFor={u}
+                                                className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-white/5 p-4 hover:bg-white/10 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary"
+                                            >
+                                                <span className="text-sm font-bold uppercase">{u}</span>
+                                            </Label>
+                                        </div>
+                                    ))}
+                                </RadioGroup>
+                            </div>
+
                             <div className="space-y-4">
-                                <Label>Height: {formData.height} cm</Label>
+                                <Label className="flex justify-between">
+                                    <span>Height</span>
+                                    <span className="text-primary font-bold">{formData.height} cm</span>
+                                </Label>
                                 <Slider
                                     value={[formData.height]}
                                     onValueChange={v => setFormData({ ...formData, height: v[0] })}
                                     min={120}
                                     max={200}
                                     step={1}
+                                    className="py-4"
                                 />
                             </div>
                             <div className="space-y-4">
-                                <Label>Weight: {formData.weight} kg</Label>
+                                <Label className="flex justify-between">
+                                    <span>Weight</span>
+                                    <span className="text-primary font-bold">{formData.weight} {formData.unitPreference}</span>
+                                </Label>
                                 <Slider
                                     value={[formData.weight]}
                                     onValueChange={v => setFormData({ ...formData, weight: v[0] })}
-                                    min={30}
-                                    max={100}
+                                    min={formData.unitPreference === 'kg' ? 30 : 65}
+                                    max={formData.unitPreference === 'kg' ? 150 : 330}
                                     step={1}
+                                    className="py-4"
                                 />
                             </div>
                         </div>

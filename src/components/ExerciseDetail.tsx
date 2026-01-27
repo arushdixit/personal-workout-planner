@@ -22,7 +22,6 @@ interface ExerciseDetailProps {
     onSetComplete?: (setId: number, weight: number, reps: number, unit: 'kg' | 'lbs') => void;
     onAddSet?: () => void;
     unit?: 'kg' | 'lbs';
-    onUnitChange?: (unit: 'kg' | 'lbs') => void;
     personalNote?: string;
     onNoteChange?: (note: string) => void;
     lastSessionNote?: string;
@@ -39,7 +38,6 @@ const ExerciseDetail = ({
     onSetComplete,
     onAddSet,
     unit = 'kg',
-    onUnitChange,
     personalNote,
     onNoteChange,
     lastSessionNote
@@ -195,7 +193,6 @@ const ExerciseDetail = ({
                             onSetComplete={onSetComplete!}
                             onAddSet={onAddSet!}
                             unit={unit}
-                            onUnitChange={onUnitChange!}
                         />
                         {/* Permanent Coaching Notes Preview */}
                         {exercise.personalNotes && (
