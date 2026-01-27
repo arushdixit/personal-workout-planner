@@ -219,40 +219,55 @@ const ExerciseProgressChart = ({ exerciseHistory, exerciseName, timeRange, unit 
             <div className="space-y-2">
                 <h3 className="text-xl font-black">{exerciseName}</h3>
 
-                {/* Chart Type Selector */}
-                <div className="flex gap-2">
+                {/* Chart Type Selector - Added sliding animation */}
+                <div className="relative flex gap-2 p-1 bg-white/5 rounded-xl border border-white/10">
                     <button
                         onClick={() => setActiveChart('weight')}
                         className={cn(
-                            "flex-1 py-2 px-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all",
-                            activeChart === 'weight'
-                                ? "bg-primary/20 text-primary border border-primary/30"
-                                : "bg-white/5 text-muted-foreground hover:bg-white/10"
+                            "relative flex-1 py-2 px-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors duration-300 z-10",
+                            activeChart === 'weight' ? "text-white" : "text-muted-foreground hover:text-white"
                         )}
                     >
-                        Max Weight
+                        {activeChart === 'weight' && (
+                            <motion.div
+                                layoutId="activeChartTab"
+                                className="absolute inset-0 bg-primary/20 rounded-lg border border-primary/30"
+                                transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                            />
+                        )}
+                        <span className="relative z-20">Max Weight</span>
                     </button>
                     <button
                         onClick={() => setActiveChart('1rm')}
                         className={cn(
-                            "flex-1 py-2 px-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all",
-                            activeChart === '1rm'
-                                ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                                : "bg-white/5 text-muted-foreground hover:bg-white/10"
+                            "relative flex-1 py-2 px-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors duration-300 z-10",
+                            activeChart === '1rm' ? "text-amber-400" : "text-muted-foreground hover:text-white"
                         )}
                     >
-                        Est. 1RM
+                        {activeChart === '1rm' && (
+                            <motion.div
+                                layoutId="activeChartTab"
+                                className="absolute inset-0 bg-amber-500/20 rounded-lg border border-amber-500/30"
+                                transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                            />
+                        )}
+                        <span className="relative z-20">Est. 1RM</span>
                     </button>
                     <button
                         onClick={() => setActiveChart('volume')}
                         className={cn(
-                            "flex-1 py-2 px-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all",
-                            activeChart === 'volume'
-                                ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                                : "bg-white/5 text-muted-foreground hover:bg-white/10"
+                            "relative flex-1 py-2 px-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors duration-300 z-10",
+                            activeChart === 'volume' ? "text-emerald-400" : "text-muted-foreground hover:text-white"
                         )}
                     >
-                        Volume
+                        {activeChart === 'volume' && (
+                            <motion.div
+                                layoutId="activeChartTab"
+                                className="absolute inset-0 bg-emerald-500/20 rounded-lg border border-emerald-500/30"
+                                transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                            />
+                        )}
+                        <span className="relative z-20">Volume</span>
                     </button>
                 </div>
             </div>

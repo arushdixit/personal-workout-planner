@@ -31,6 +31,7 @@ const Progress = () => {
     const [selectedExerciseId, setSelectedExerciseId] = useState<number | null>(null);
     const [timeRange, setTimeRange] = useState<TimeRange>('30d');
     const [userProfiles, setUserProfiles] = useState<any[]>([]);
+    const [activeTab, setActiveTab] = useState<'overview' | 'exercises' | 'calendar' | 'analysis'>('overview');
 
     // Load data
     useEffect(() => {
@@ -136,7 +137,7 @@ const Progress = () => {
     if (sessions.length === 0) {
         return (
             <div className="min-h-screen bg-background">
-                <div className="max-w-4xl mx-auto px-4 py-8">
+                <div className="max-w-4xl mx-auto ">
                     <div className="flex items-center gap-3 mb-8">
                         <TrendingUp className="w-8 h-8 text-primary" />
                         <h1 className="text-3xl font-black tracking-tight">Progress</h1>
@@ -160,7 +161,7 @@ const Progress = () => {
 
     return (
         <div className="min-h-screen bg-background pb-24">
-            <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+            <div className="max-w-4xl mx-auto space-y-6">
                 {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
@@ -174,98 +175,142 @@ const Progress = () => {
                     <ExportProgress sessions={sessions} unit={currentUser?.unitPreference || 'kg'} />
                 </motion.div>
 
-                {/* Overview Stats */}
-                <ProgressOverview stats={overviewStats} unit={currentUser?.unitPreference || 'kg'} />
-
-                {/* Monthly Comparison */}
-                <ComparisonChart sessions={sessions} unit={currentUser?.unitPreference || 'kg'} />
-
-                {/* Exercise Progress Section */}
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between gap-4">
-                        <h2 className="text-xl font-black">Exercise Progress</h2>
-
-                        {/* Time Range Selector */}
-                        <div className="flex gap-1.5 bg-white/5 p-1 rounded-xl">
-                            {(['7d', '30d', '90d', '365d', 'all'] as TimeRange[]).map((range) => (
-                                <button
-                                    key={range}
-                                    onClick={() => setTimeRange(range)}
-                                    className={cn(
-                                        "px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all",
-                                        timeRange === range
-                                            ? "bg-primary text-white shadow-lg"
-                                            : "text-muted-foreground hover:text-white hover:bg-white/10"
-                                    )}
-                                >
-                                    {range === '7d' && 'Week'}
-                                    {range === '30d' && 'Month'}
-                                    {range === '90d' && '3M'}
-                                    {range === '365d' && 'Year'}
-                                    {range === 'all' && 'All'}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Exercise Selector */}
-                    {exercisesWithData.length > 0 && (
-                        <Select
-                            value={selectedExerciseId?.toString()}
-                            onValueChange={(value) => setSelectedExerciseId(Number(value))}
+                {/* Tab Navigation - Added sliding "magic pill" animation */}
+                <div className="relative flex gap-1 bg-white/5 p-1 rounded-2xl border border-white/5">
+                    {[
+                        { id: 'overview', label: 'Overview', icon: '📊' },
+                        { id: 'exercises', label: 'Exercises', icon: '💪' },
+                        { id: 'calendar', label: 'Calendar', icon: '📅' },
+                        { id: 'analysis', label: 'Analysis', icon: '🎯' },
+                    ].map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id as any)}
+                            className={cn(
+                                "relative flex-1 flex flex-col items-center justify-center py-2.5 px-1 rounded-xl text-xs sm:text-sm font-bold transition-colors duration-300 z-10",
+                                activeTab === tab.id ? "text-white" : "text-muted-foreground hover:text-white"
+                            )}
                         >
-                            <SelectTrigger className="glass-card border-white/10 h-12 text-base font-semibold">
-                                <SelectValue placeholder="Select an exercise" />
-                            </SelectTrigger>
-                            <SelectContent className="glass border-white/10 max-h-80">
-                                {exercisesWithData.map((exercise) => (
-                                    <SelectItem
-                                        key={exercise.id}
-                                        value={exercise.id!.toString()}
-                                        className="font-medium"
-                                    >
-                                        {exercise.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
-
-                    {/* Exercise Chart */}
-                    {selectedExercise && (
-                        <>
-                            {/* PR Badges */}
-                            <PRBadge
-                                records={personalRecords}
-                                exerciseName={selectedExercise.name}
-                                unit={currentUser?.unitPreference || 'kg'}
-                            />
-
-                            <ExerciseProgressChart
-                                exerciseHistory={exerciseHistory}
-                                exerciseName={selectedExercise.name}
-                                timeRange={timeRange}
-                                unit={currentUser?.unitPreference || 'kg'}
-                            />
-                        </>
-                    )}
+                            {activeTab === tab.id && (
+                                <motion.div
+                                    layoutId="activeProgressTab"
+                                    className="absolute inset-0 bg-primary rounded-xl shadow-xl shadow-primary/20"
+                                    transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                                />
+                            )}
+                            <span className="relative z-20 text-xl sm:text-2xl mb-1 leading-none">{tab.icon}</span>
+                            <span className="relative z-20 truncate w-full text-center">{tab.label}</span>
+                        </button>
+                    ))}
                 </div>
 
-                {/* Body Metrics */}
-                {userProfiles.length > 0 && (
-                    <BodyMetricsChart
-                        profiles={userProfiles}
-                        unit={currentUser?.unitPreference || 'kg'}
-                    />
-                )}
+                {/* Tab Content */}
+                <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-6"
+                >
+                    {/* OVERVIEW TAB */}
+                    {activeTab === 'overview' && (
+                        <>
+                            <ProgressOverview stats={overviewStats} unit={currentUser?.unitPreference || 'kg'} />
+                            <ComparisonChart sessions={sessions} unit={currentUser?.unitPreference || 'kg'} />
+                        </>
+                    )}
 
-                {/* Workout Calendar */}
-                <WorkoutCalendar calendarData={calendarData} weeksToShow={12} />
+                    {/* EXERCISES TAB */}
+                    {activeTab === 'exercises' && (
+                        <div className="space-y-4">
+                            {/* Time Range Selector - Stretched to full width */}
+                            <div className="w-full">
+                                <div className="flex gap-1.5 bg-white/5 p-1 rounded-xl w-full">
+                                    {(['7d', '30d', '90d', '365d', 'all'] as TimeRange[]).map((range) => (
+                                        <button
+                                            key={range}
+                                            onClick={() => setTimeRange(range)}
+                                            className={cn(
+                                                "flex-1 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all",
+                                                timeRange === range
+                                                    ? "bg-primary text-white shadow-lg"
+                                                    : "text-muted-foreground hover:text-white hover:bg-white/10"
+                                            )}
+                                        >
+                                            {range === '7d' && 'Week'}
+                                            {range === '30d' && 'Month'}
+                                            {range === '90d' && '3M'}
+                                            {range === '365d' && 'Year'}
+                                            {range === 'all' && 'All'}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
 
-                {/* Muscle Distribution */}
-                {muscleStats.length > 0 && (
-                    <MuscleDistribution muscleStats={muscleStats} topN={9} />
-                )}
+                            {/* Exercise Selector */}
+                            {exercisesWithData.length > 0 && (
+                                <Select
+                                    value={selectedExerciseId?.toString()}
+                                    onValueChange={(value) => setSelectedExerciseId(Number(value))}
+                                >
+                                    <SelectTrigger className="glass-card border-white/10 h-12 text-base font-semibold">
+                                        <SelectValue placeholder="Select an exercise" />
+                                    </SelectTrigger>
+                                    <SelectContent className="glass border-white/10 max-h-80">
+                                        {exercisesWithData.map((exercise) => (
+                                            <SelectItem
+                                                key={exercise.id}
+                                                value={exercise.id!.toString()}
+                                                className="font-medium"
+                                            >
+                                                {exercise.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+
+                            {/* Exercise Chart */}
+                            {selectedExercise && (
+                                <>
+                                    {/* PR Badges */}
+                                    <PRBadge
+                                        records={personalRecords}
+                                        exerciseName={selectedExercise.name}
+                                        unit={currentUser?.unitPreference || 'kg'}
+                                    />
+
+                                    <ExerciseProgressChart
+                                        exerciseHistory={exerciseHistory}
+                                        exerciseName={selectedExercise.name}
+                                        timeRange={timeRange}
+                                        unit={currentUser?.unitPreference || 'kg'}
+                                    />
+                                </>
+                            )}
+                        </div>
+                    )}
+
+                    {/* CALENDAR TAB */}
+                    {activeTab === 'calendar' && (
+                        <WorkoutCalendar calendarData={calendarData} weeksToShow={12} />
+                    )}
+
+                    {/* ANALYSIS TAB */}
+                    {activeTab === 'analysis' && (
+                        <>
+                            {muscleStats.length > 0 && (
+                                <MuscleDistribution muscleStats={muscleStats} topN={9} />
+                            )}
+                            {userProfiles.length > 0 && (
+                                <BodyMetricsChart
+                                    profiles={userProfiles}
+                                    unit={currentUser?.unitPreference || 'kg'}
+                                />
+                            )}
+                        </>
+                    )}
+                </motion.div>
             </div>
         </div>
     );

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { createPortal } from 'react-dom';
 import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import SetLogger from './SetLogger';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -136,52 +137,60 @@ const ExerciseDetail = ({
                 )}
             </div>
 
-            {/* Tabs */}
-            <div className="flex-shrink-0 flex gap-2 px-6 border-b border-white/5">
-                {workoutMode && (
+            {/* Tabs - Added sliding "magic pill" animation */}
+            <div className="flex-shrink-0 flex gap-2 px-6 py-2 border-b border-white/5">
+                <div className="relative flex w-full p-1 bg-white/5 rounded-xl">
+                    {workoutMode && (
+                        <button
+                            onClick={() => setActiveTab('sets')}
+                            className={cn(
+                                "relative flex-1 py-1.5 text-xs font-bold transition-colors duration-300 z-10",
+                                activeTab === 'sets' ? "text-white" : "text-muted-foreground hover:text-white"
+                            )}
+                        >
+                            {activeTab === 'sets' && (
+                                <motion.div
+                                    layoutId="activeExerciseTab"
+                                    className="absolute inset-0 bg-primary rounded-lg shadow-lg"
+                                    transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                                />
+                            )}
+                            <span className="relative z-20">Sets</span>
+                        </button>
+                    )}
                     <button
-                        onClick={() => setActiveTab('sets')}
+                        onClick={() => setActiveTab('instructions')}
                         className={cn(
-                            "px-6 py-3 text-sm font-bold transition-all relative",
-                            activeTab === 'sets'
-                                ? "text-white"
-                                : "text-muted-foreground hover:text-white/70"
+                            "relative flex-1 py-1.5 text-xs font-bold transition-colors duration-300 z-10",
+                            activeTab === 'instructions' ? "text-white" : "text-muted-foreground hover:text-white"
                         )}
                     >
-                        Sets
-                        {activeTab === 'sets' && (
-                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
+                        {activeTab === 'instructions' && (
+                            <motion.div
+                                layoutId="activeExerciseTab"
+                                className="absolute inset-0 bg-primary rounded-lg shadow-lg"
+                                transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                            />
                         )}
+                        <span className="relative z-20">Instructions</span>
                     </button>
-                )}
-                <button
-                    onClick={() => setActiveTab('instructions')}
-                    className={cn(
-                        "px-6 py-3 text-sm font-bold transition-all relative",
-                        activeTab === 'instructions'
-                            ? "text-white"
-                            : "text-muted-foreground hover:text-white/70"
-                    )}
-                >
-                    Instructions
-                    {activeTab === 'instructions' && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
-                    )}
-                </button>
-                <button
-                    onClick={() => setActiveTab('target')}
-                    className={cn(
-                        "px-6 py-3 text-sm font-bold transition-all relative",
-                        activeTab === 'target'
-                            ? "text-white"
-                            : "text-muted-foreground hover:text-white/70"
-                    )}
-                >
-                    Target
-                    {activeTab === 'target' && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
-                    )}
-                </button>
+                    <button
+                        onClick={() => setActiveTab('target')}
+                        className={cn(
+                            "relative flex-1 py-1.5 text-xs font-bold transition-colors duration-300 z-10",
+                            activeTab === 'target' ? "text-white" : "text-muted-foreground hover:text-white"
+                        )}
+                    >
+                        {activeTab === 'target' && (
+                            <motion.div
+                                layoutId="activeExerciseTab"
+                                className="absolute inset-0 bg-primary rounded-lg shadow-lg"
+                                transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                            />
+                        )}
+                        <span className="relative z-20">Target</span>
+                    </button>
+                </div>
             </div>
 
             {/* Tab Content */}

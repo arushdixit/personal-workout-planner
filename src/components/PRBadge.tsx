@@ -86,35 +86,11 @@ const PRBadge = ({ records, exerciseName, unit }: PRBadgeProps) => {
         }
     };
 
-    // Render PR badges for existing records
-    const renderPRBadges = () => {
-        const badges = [];
-        if (records.maxWeight) badges.push({ type: 'weight', record: records.maxWeight });
-        if (records.max1RM) badges.push({ type: '1rm', record: records.max1RM });
-        if (records.maxVolume) badges.push({ type: 'volume', record: records.maxVolume });
 
-        if (badges.length === 0) return null;
-
-        return (
-            <div className="flex gap-2 flex-wrap">
-                {badges.map(({ type, record }) => (
-                    <div
-                        key={type}
-                        className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-full border border-amber-500/30"
-                    >
-                        {getPRIcon(type)}
-                        <span className="text-xs font-black text-amber-400">
-                            {record.value} {unit}
-                        </span>
-                    </div>
-                ))}
-            </div>
-        );
-    };
 
     return (
         <>
-            {renderPRBadges()}
+
 
             {/* PR Notification Toast */}
             <AnimatePresence>

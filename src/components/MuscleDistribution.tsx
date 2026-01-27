@@ -176,8 +176,8 @@ const MuscleDistribution = ({ muscleStats, topN = 9 }: MuscleDistributionProps) 
                 </ResponsiveContainer>
             </div>
 
-            {/* Legend */}
-            <div className="grid grid-cols-3 gap-2">
+            {/* Legend - Responsive grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {chartData.map((muscle, idx) => (
                     <div key={idx} className="flex items-center gap-2">
                         <div
@@ -191,8 +191,8 @@ const MuscleDistribution = ({ muscleStats, topN = 9 }: MuscleDistributionProps) 
                 ))}
             </div>
 
-            {/* Top Muscle Stats */}
-            <div className="grid grid-cols-3 gap-3 pt-2 border-t border-white/5">
+            {/* Top Muscle Stats - Stacked on small mobile */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 border-t border-white/5">
                 {filteredStats.slice(0, 3).map((stat, idx) => (
                     <div key={idx} className="space-y-1">
                         <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">

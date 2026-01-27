@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -225,27 +225,41 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
 
     return (
         <div className="space-y-6 animate-slide-up pb-10">
-            {/* View Switcher */}
-            <div className="flex p-1 bg-white/5 rounded-xl border border-white/10">
-                <button
-                    onClick={() => setView('my')}
-                    className={cn(
-                        "flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all",
-                        view === 'my' ? "glass gradient-red-text shadow-xl" : "text-muted-foreground hover:text-foreground"
-                    )}
-                >
-                    <User className="w-4 h-4" />
-                    My Exercises
-                </button>
+            {/* View Switcher - Flipped order: Global first, My second */}
+            <div className="relative flex p-1 bg-white/5 rounded-xl border border-white/10 overflow-hidden">
                 <button
                     onClick={() => setView('global')}
                     className={cn(
-                        "flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all",
-                        view === 'global' ? "glass gradient-red-text shadow-xl" : "text-muted-foreground hover:text-foreground"
+                        "relative flex-1 flex items-center justify-center gap-2 py-2 text-sm font-bold transition-colors duration-300 z-10",
+                        view === 'global' ? "text-white" : "text-muted-foreground hover:text-white"
                     )}
                 >
-                    <Globe className="w-4 h-4" />
-                    Global Library
+                    {view === 'global' && (
+                        <motion.div
+                            layoutId="activeLibraryTab"
+                            className="absolute inset-0 bg-primary/20 rounded-lg border border-primary/30"
+                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                        />
+                    )}
+                    <Globe className="w-4 h-4 relative z-20" />
+                    <span className="relative z-20">Global Library</span>
+                </button>
+                <button
+                    onClick={() => setView('my')}
+                    className={cn(
+                        "relative flex-1 flex items-center justify-center gap-2 py-2 text-sm font-bold transition-colors duration-300 z-10",
+                        view === 'my' ? "text-white" : "text-muted-foreground hover:text-white"
+                    )}
+                >
+                    {view === 'my' && (
+                        <motion.div
+                            layoutId="activeLibraryTab"
+                            className="absolute inset-0 bg-primary/20 rounded-lg border border-primary/30"
+                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                        />
+                    )}
+                    <User className="w-4 h-4 relative z-20" />
+                    <span className="relative z-20">My Exercises</span>
                 </button>
             </div>
 
