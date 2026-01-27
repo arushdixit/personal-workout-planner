@@ -50,7 +50,17 @@ function mapEquipment(exercemusEquip: string[]): EquipmentType {
     return 'Other';
 }
 
+// Lock to prevent concurrent imports
+let importInProgress: Promise<void> | null = null;
+
 export async function importExercemusData() {
+    // If an import is already in progress, wait for it to complete
+    if (importInProgress) {
+        console.log('Import already in progress, waiting...');
+        await importInProgress;
+        return;
+    }
+
     console.log('Checking for Exercemus data...');
 
     // Version of the enriched data - increment this when JSON is updated
@@ -63,6 +73,7 @@ export async function importExercemusData() {
     const currentVersion = sample?.dataVersion || 0;
     const needsRefresh = sample && currentVersion < DATA_VERSION;
 
+
     if (existingCount > 0 && !needsRefresh) {
         console.log('Exercemus data already imported and up to date.');
         return;
@@ -73,66 +84,75 @@ export async function importExercemusData() {
         await db.exercises.where('source').equals('exercemus').delete();
     }
 
-    try {
-        console.log('Loading enriched-exercemus-data.json...');
-        // Dynamic import to keep main bundle small
-        const module = await import('./enriched-exercemus-data.json');
-        const data = module.default || module;
+    // Set the lock before starting the import
+    importInProgress = (async () => {
+        try {
+            console.log('Loading enriched-exercemus-data.json...');
+            // Dynamic import to keep main bundle small
+            const module = await import('./enriched-exercemus-data.json');
+            const data = module.default || module;
 
-        console.log(`JSON loaded successfully, keys: ${Object.keys(data).join(', ')}`);
-        if (data.exercises) {
-            console.log(`Found ${data.exercises.length} exercises in JSON`);
-        } else {
-            console.error('No exercises key found in loaded data');
+            console.log(`JSON loaded successfully, keys: ${Object.keys(data).join(', ')}`);
+            if (data.exercises) {
+                console.log(`Found ${data.exercises.length} exercises in JSON`);
+            } else {
+                console.error('No exercises key found in loaded data');
+            }
+
+            if (!data || !data.exercises) {
+                console.error('Invalid Exercemus data format:', data);
+                return;
+            }
+
+            const exercisesToInsert: Exercise[] = data.exercises.map((ex: any) => ({
+                name: ex.name,
+                primaryMuscles: mapMuscles(ex.primary_muscles || []),
+                secondaryMuscles: mapMuscles(ex.secondary_muscles || []),
+                equipment: mapEquipment(ex.equipment || []),
+                source: 'exercemus',
+                category: ex.category || 'strength',
+                description: ex.description || '',
+                instructions: ex.instructions || [],
+                tips: ex.tips || [],
+                aliases: ex.aliases || [],
+                tempo: ex.tempo_recommendation || ex.tempo || '',
+                difficulty: ex.difficulty || 'Intermediate',
+                beginnerFriendlyInstructions: ex.beginner_friendly_instructions || [],
+                formCuesArray: ex.form_cues || [],
+                formCues: (ex.form_cues || []).join(', '),
+                commonMistakes: ex.common_mistakes || [],
+                injuryPreventionTips: ex.injury_prevention_tips || [],
+                variationOf: ex.variation_on || ex.variations_on || [],
+                tutorialUrl: ex.video || '',
+                dataVersion: DATA_VERSION, // Track which version of data this is
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            }));
+
+            // Filter out exercises with no name or no primary muscles
+            const validExercises = exercisesToInsert.filter(ex => ex.name && ex.primaryMuscles.length > 0);
+
+            console.log(`Importing ${validExercises.length} enriched exercises from Exercemus...`);
+
+            // Insert in chunks to avoid blocking or memory issues
+            const chunkSize = 100;
+            let insertedCount = 0;
+            for (let i = 0; i < validExercises.length; i += chunkSize) {
+                const chunk = validExercises.slice(i, i + chunkSize);
+                await db.exercises.bulkAdd(chunk);
+                insertedCount += chunk.length;
+                console.log(`Progress: ${insertedCount}/${validExercises.length} exercises imported`);
+            }
+
+            console.log('Exercemus enrichment import complete.');
+        } catch (err) {
+            console.error('CRITICAL: Failed to import Exercemus data:', err);
+        } finally {
+            // Clear the lock when done
+            importInProgress = null;
         }
+    })();
 
-        if (!data || !data.exercises) {
-            console.error('Invalid Exercemus data format:', data);
-            return;
-        }
-
-        const exercisesToInsert: Exercise[] = data.exercises.map((ex: any) => ({
-            name: ex.name,
-            primaryMuscles: mapMuscles(ex.primary_muscles || []),
-            secondaryMuscles: mapMuscles(ex.secondary_muscles || []),
-            equipment: mapEquipment(ex.equipment || []),
-            source: 'exercemus',
-            category: ex.category || 'strength',
-            description: ex.description || '',
-            instructions: ex.instructions || [],
-            tips: ex.tips || [],
-            aliases: ex.aliases || [],
-            tempo: ex.tempo_recommendation || ex.tempo || '',
-            difficulty: ex.difficulty || 'Intermediate',
-            beginnerFriendlyInstructions: ex.beginner_friendly_instructions || [],
-            formCuesArray: ex.form_cues || [],
-            formCues: (ex.form_cues || []).join(', '),
-            commonMistakes: ex.common_mistakes || [],
-            injuryPreventionTips: ex.injury_prevention_tips || [],
-            variationOf: ex.variation_on || ex.variations_on || [],
-            tutorialUrl: ex.video || '',
-            dataVersion: DATA_VERSION, // Track which version of data this is
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-        }));
-
-        // Filter out exercises with no name or no primary muscles
-        const validExercises = exercisesToInsert.filter(ex => ex.name && ex.primaryMuscles.length > 0);
-
-        console.log(`Importing ${validExercises.length} enriched exercises from Exercemus...`);
-
-        // Insert in chunks to avoid blocking or memory issues
-        const chunkSize = 100;
-        let insertedCount = 0;
-        for (let i = 0; i < validExercises.length; i += chunkSize) {
-            const chunk = validExercises.slice(i, i + chunkSize);
-            await db.exercises.bulkAdd(chunk);
-            insertedCount += chunk.length;
-            console.log(`Progress: ${insertedCount}/${validExercises.length} exercises imported`);
-        }
-
-        console.log('Exercemus enrichment import complete.');
-    } catch (err) {
-        console.error('CRITICAL: Failed to import Exercemus data:', err);
-    }
+    // Wait for the import to complete
+    await importInProgress;
 }
