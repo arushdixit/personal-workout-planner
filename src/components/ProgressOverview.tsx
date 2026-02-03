@@ -18,14 +18,9 @@ interface StatCardProps {
     trend?: 'up' | 'down' | 'neutral';
 }
 
-const StatCard = ({ label, value, subtext, icon, gradient, delay = 0, trend }: StatCardProps) => {
+const StatCard = ({ label, value, subtext, icon, gradient, trend }: StatCardProps) => {
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay, type: 'spring', stiffness: 100 }}
-            className="glass-card p-5 hover:bg-white/[0.08] transition-all group relative overflow-hidden"
-        >
+        <div className="glass-card p-5 hover:bg-white/[0.08] transition-all group relative overflow-hidden">
             {/* Background gradient glow */}
             <div className={cn(
                 "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity blur-2xl -z-10",
@@ -68,7 +63,7 @@ const StatCard = ({ label, value, subtext, icon, gradient, delay = 0, trend }: S
                     </p>
                 )}
             </div>
-        </motion.div>
+        </div>
     );
 };
 
@@ -118,7 +113,6 @@ const ProgressOverview = ({ stats, unit }: ProgressOverviewProps) => {
                     value={stats.totalWorkouts}
                     icon={<Activity className="w-6 h-6 text-white" />}
                     gradient="bg-gradient-to-br from-primary/30 to-rose-500/30"
-                    delay={0.1}
                 />
 
                 <StatCard
@@ -127,7 +121,6 @@ const ProgressOverview = ({ stats, unit }: ProgressOverviewProps) => {
                     subtext={`${stats.totalVolume.toLocaleString()} ${unit} total`}
                     icon={<Target className="w-6 h-6 text-white" />}
                     gradient="bg-gradient-to-br from-emerald-500/30 to-teal-500/30"
-                    delay={0.15}
                 />
 
                 <StatCard
@@ -136,7 +129,6 @@ const ProgressOverview = ({ stats, unit }: ProgressOverviewProps) => {
                     subtext={`${stats.lastWeekWorkouts} last week`}
                     icon={<Calendar className="w-6 h-6 text-white" />}
                     gradient="bg-gradient-to-br from-blue-500/30 to-cyan-500/30"
-                    delay={0.2}
                     trend={weekTrend}
                 />
 
@@ -146,7 +138,6 @@ const ProgressOverview = ({ stats, unit }: ProgressOverviewProps) => {
                     subtext={`${stats.totalSets} total sets`}
                     icon={<Timer className="w-6 h-6 text-white" />}
                     gradient="bg-gradient-to-br from-purple-500/30 to-pink-500/30"
-                    delay={0.25}
                 />
             </div>
         </div>

@@ -232,7 +232,7 @@ const ExerciseProgressChart = ({ exerciseHistory, exerciseName, timeRange, unit 
                         <motion.div
                             layoutId="activeChartTab"
                             className="absolute inset-0 bg-primary/20 rounded-lg border border-primary/30"
-                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                            transition={{ duration: 0.3 }}
                         />
                     )}
                     <span className="relative z-20">Max Weight</span>
@@ -248,7 +248,7 @@ const ExerciseProgressChart = ({ exerciseHistory, exerciseName, timeRange, unit 
                         <motion.div
                             layoutId="activeChartTab"
                             className="absolute inset-0 bg-amber-500/20 rounded-lg border border-amber-500/30"
-                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                            transition={{ duration: 0.3 }}
                         />
                     )}
                     <span className="relative z-20">Est. 1RM</span>
@@ -264,7 +264,7 @@ const ExerciseProgressChart = ({ exerciseHistory, exerciseName, timeRange, unit 
                         <motion.div
                             layoutId="activeChartTab"
                             className="absolute inset-0 bg-emerald-500/20 rounded-lg border border-emerald-500/30"
-                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                            transition={{ duration: 0.3 }}
                         />
                     )}
                     <span className="relative z-20">Volume</span>
@@ -275,9 +275,9 @@ const ExerciseProgressChart = ({ exerciseHistory, exerciseName, timeRange, unit 
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={activeChart}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         className="h-64"
                     >

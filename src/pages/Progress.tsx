@@ -194,12 +194,11 @@ const Progress = () => {
                     ))}
                 </div>
 
-                {/* Tab Content */}
                 <motion.div
                     key={activeTab}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
                     className="space-y-6"
                 >
                     {/* OVERVIEW TAB */}
