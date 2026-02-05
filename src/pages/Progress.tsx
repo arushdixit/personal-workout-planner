@@ -22,6 +22,7 @@ import BodyMetricsChart from '@/components/BodyMetricsChart';
 import PRBadge from '@/components/PRBadge';
 import CoachsCorner from '@/components/CoachsCorner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { pullWorkoutSessions } from '@/lib/workoutSyncManager';
 import { cn } from '@/lib/utils';
 
 const Progress = () => {
@@ -41,6 +42,9 @@ const Progress = () => {
 
             setIsLoading(true);
             try {
+                // Proactively pull latest sessions from Supabase
+                await pullWorkoutSessions(currentUser.supabaseUserId, currentUser.id!);
+
                 // Load all completed workout sessions
                 const allSessions = await db.workout_sessions
                     .where('supabaseUserId')

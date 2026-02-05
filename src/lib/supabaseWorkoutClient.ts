@@ -257,6 +257,27 @@ export async function fetchWorkoutSessions(
     return data || [];
 }
 
+export async function fetchAllWorkoutSessionsWithDetails(userId: string) {
+    const { data, error } = await supabase
+        .from('workout_sessions')
+        .select(`
+            *,
+            session_exercises (
+                *,
+                session_sets (*)
+            )
+        `)
+        .eq('user_id', userId)
+        .order('date', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching all workout sessions with details:', error);
+        throw error;
+    }
+
+    return data || [];
+}
+
 export async function fetchWorkoutSessionDetails(sessionId: number) {
     const { data: session, error: sessionError } = await supabase
         .from('workout_sessions')

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { db, UserProfile } from '@/lib/db';
 import { supabase } from '@/lib/supabaseClient';
 import { pullUserExercises } from '@/lib/syncManager';
+import { pullWorkoutSessions } from '@/lib/workoutSyncManager';
 import { convertWeight } from '@/lib/units';
 import { User } from '@supabase/supabase-js';
 
@@ -76,8 +77,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     setAllUsers(users);
                     if (users.length > 0) {
                         setCurrentUser(users[0]);
-                        // Exercise data is imported on app mount in Index.tsx
+                        // Exercise and workout data is imported on app mount in Index.tsx
                         pullUserExercises(user.id).catch(console.error);
+                        pullWorkoutSessions(user.id, users[0].id!).catch(console.error);
                     } else {
                         console.log('[Auth] No local profile found, checking user metadata');
                         // Try to restore profile from Supabase user metadata
@@ -97,8 +99,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                             const userProfile = await db.users.get(userId as number);
                             setCurrentUser(userProfile);
                             setAllUsers(userProfile ? [userProfile] : []);
-                            // Exercise data is imported on app mount in Index.tsx
+                            // Exercise and workout data is imported on app mount in Index.tsx
                             pullUserExercises(user.id).catch(console.error);
+                            pullWorkoutSessions(user.id, userId as number).catch(console.error);
                         } else {
                             setCurrentUser(null);
                         }

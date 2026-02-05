@@ -6,10 +6,66 @@ import {
     updateSessionSet as updateRemoteSet,
     addSessionSet as addRemoteSet,
     updateSessionExercise as updateRemoteExerciseNote,
+    fetchAllWorkoutSessionsWithDetails,
 } from './supabaseWorkoutClient';
 import { addToSyncQueue, updateOperationStatus, removeOperation, getPendingOperations, type QueuedOperation, type SyncType, type EntityType } from './syncQueue';
 
 let isProcessing = false;
+
+export async function pullWorkoutSessions(supabaseUserId: string, localUserId: number): Promise<void> {
+    try {
+        console.log('[WorkoutSync] Pulling workout sessions from remote...');
+        const remoteSessions = await fetchAllWorkoutSessionsWithDetails(supabaseUserId);
+
+        for (const remoteSession of remoteSessions) {
+            // Check if this session already exists locally by remoteId
+            const existingLocally = await db.workout_sessions
+                .where('remoteId')
+                .equals(remoteSession.id)
+                .first();
+
+            if (!existingLocally) {
+                console.log(`[WorkoutSync] Importing remote session: ${remoteSession.id} (${remoteSession.date})`);
+
+                // Map Supabase structure to local WorkoutSession interface
+                const newSession: any = {
+                    remoteId: remoteSession.id,
+                    userId: localUserId,
+                    supabaseUserId: supabaseUserId,
+                    routineId: remoteSession.routine_id,
+                    routineName: remoteSession.routine_name,
+                    date: remoteSession.date,
+                    startTime: remoteSession.start_time,
+                    endTime: remoteSession.end_time || undefined,
+                    duration: remoteSession.duration_seconds || undefined,
+                    status: remoteSession.status as any,
+                    syncedAt: new Date().toISOString(),
+                    exercises: remoteSession.session_exercises.map((ex: any) => ({
+                        exerciseId: ex.exercise_id,
+                        exerciseName: ex.exercise_name,
+                        order: ex.exercise_order,
+                        personalNote: ex.personal_note || undefined,
+                        restSeconds: ex.rest_seconds || 90, // Default if missing
+                        sets: ex.session_sets.map((set: any) => ({
+                            id: set.id,
+                            setNumber: set.set_number,
+                            reps: set.reps,
+                            weight: set.weight,
+                            unit: set.unit || 'kg',
+                            completed: set.completed,
+                            completedAt: set.completed_at || undefined,
+                        })),
+                    })),
+                };
+
+                await db.workout_sessions.add(newSession);
+            }
+        }
+        console.log('[WorkoutSync] Completed pulling workout sessions');
+    } catch (error) {
+        console.error('[WorkoutSync] Failed to pull workout sessions:', error);
+    }
+}
 
 export type WorkoutSyncType = 'create' | 'complete' | 'abandon' | 'set_complete' | 'set_update' | 'add_set' | 'exercise_note';
 
