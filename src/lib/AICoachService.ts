@@ -1,7 +1,5 @@
 import { db, UserProfile, Exercise, WorkoutSession, WorkoutSet } from './db';
-import { lookupExercise } from './openrouter';
-
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+import { supabase } from './supabaseClient';
 
 export interface CoachContext {
     user: UserProfile;
@@ -28,17 +26,6 @@ export interface CoachMessage {
 }
 
 export async function getCoachResponse(messages: CoachMessage[], context: CoachContext): Promise<string | null> {
-    const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
-    const model = import.meta.env.VITE_OPENROUTER_MODEL || 'openai/gpt-4o-mini';
-
-    console.debug('AICoach: API Key Status:', !!apiKey ? 'Present' : 'MISSING');
-    console.debug('AICoach: Model:', model);
-
-    if (!apiKey || apiKey === 'your_api_key_here') {
-        console.warn('OpenRouter API key not configured');
-        return "I'm sorry, I cannot provide advice right now because your AI key is not configured. Please check your settings.";
-    }
-
     const sessionContext = context.sessionInfo ? `
 ACTIVE WORKOUT SESSION:
 - Routine: ${context.sessionInfo.routineName}
@@ -76,45 +63,27 @@ GUIDELINES:
 5. Address the user by name occasionally.
 `;
 
-    console.debug('AICoach: Full System Prompt sent:', systemPrompt);
-
     try {
-        const response = await fetch(OPENROUTER_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-                'HTTP-Referer': window.location.origin,
-                'X-Title': 'Pro-Lifts AI Coach',
-            },
-            body: JSON.stringify({
-                model,
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    ...messages
-                ],
-                temperature: 0.7,
-                max_tokens: 1000,
-            }),
+        const { data, error } = await supabase.functions.invoke('ai-coach', {
+            body: {
+                messages,
+                systemPrompt,
+                model: import.meta.env.VITE_OPENROUTER_MODEL,
+                temperature: 0.7
+            }
         });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('AICoach: OpenRouter API error:', response.status, errorText);
+        if (error) {
+            console.error('AICoach: Edge Function error:', error);
             return "I'm having trouble connecting to my brain right now. Please try again in a moment.";
         }
 
-        const data = await response.json();
-        console.debug('AICoach: Raw API Response:', data);
-
-        if (!data.choices || data.choices.length === 0) {
+        if (!data?.choices || data.choices.length === 0) {
             console.warn('AICoach: API returned no choices');
             return "I thought of something, but it slipped my mind. Can you repeat that?";
         }
 
-        const content = data.choices[0].message?.content || null;
-        console.debug('AICoach: Returning content to UI:', content);
-        return content;
+        return data.choices[0].message?.content || null;
     } catch (error) {
         console.error('AICoach: Fetch failed:', error);
         return "Connection lost. I'm here, but I can't hear you clearly. Check your internet.";
@@ -173,11 +142,6 @@ export async function aggregateCoachContext(
 }
 
 export async function getPerformanceInsights(context: CoachContext): Promise<{ winning: string; warning: string; insight: string } | null> {
-    const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
-    const model = import.meta.env.VITE_OPENROUTER_MODEL || 'openai/gpt-4o-mini';
-
-    if (!apiKey || apiKey === 'your_api_key_here') return null;
-
     const systemPrompt = `You are "Pro-Coach Analyst". Analyze the user's last 30 days of training.
 Based on their stats, volume trends, and feedback, provide exactly 3 sections:
 1. WINNING: One positive trend or consistency win.
@@ -193,29 +157,19 @@ Return ONLY a valid JSON object:
 }`;
 
     try {
-        const response = await fetch(OPENROUTER_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-                'HTTP-Referer': window.location.origin,
-                'X-Title': 'Pro-Lifts Performance Analyst',
-            },
-            body: JSON.stringify({
-                model,
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: "Analyze my progress and give me my 'Coach's Corner' update." }
-                ],
+        const { data, error } = await supabase.functions.invoke('ai-coach', {
+            body: {
+                messages: [{ role: 'user', content: "Analyze my progress and give me my 'Coach's Corner' update." }],
+                systemPrompt,
+                model: import.meta.env.VITE_OPENROUTER_MODEL,
                 temperature: 0.5,
                 response_format: { type: "json_object" }
-            }),
+            }
         });
 
-        if (!response.ok) return null;
+        if (error || !data?.choices || data.choices.length === 0) return null;
 
-        const data = await response.json();
-        const rawContent = data.choices?.[0]?.message?.content;
+        const rawContent = data.choices[0].message?.content;
         if (!rawContent) return null;
 
         const content = JSON.parse(rawContent);

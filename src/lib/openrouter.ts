@@ -1,6 +1,5 @@
-// OpenRouter API integration for AI-assisted exercise lookup
-
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+// OpenRouter API integration via secure Supabase Edge Function
+import { supabase } from './supabaseClient';
 
 interface ExerciseSuggestion {
     primaryMuscles: string[];
@@ -11,14 +10,6 @@ interface ExerciseSuggestion {
 }
 
 export async function lookupExercise(exerciseName: string): Promise<ExerciseSuggestion | null> {
-    const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
-    const model = import.meta.env.VITE_OPENROUTER_MODEL || 'openai/gpt-4o-mini';
-
-    if (!apiKey || apiKey === 'your_api_key_here') {
-        console.warn('OpenRouter API key not configured');
-        return null;
-    }
-
     const systemPrompt = `You are a fitness expert. Given an exercise name, provide detailed information about it.
 Return ONLY a valid JSON object with no markdown or extra text, using this exact structure:
 {
@@ -32,37 +23,22 @@ Return ONLY a valid JSON object with no markdown or extra text, using this exact
 Valid muscle groups: abs, adductors, biceps, calves, chest, deltoids, forearm, gluteal, hamstring, lower-back, neck, obliques, quadriceps, trapezius, triceps, upper-back, tibialis`;
 
     try {
-        const response = await fetch(OPENROUTER_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-                'HTTP-Referer': window.location.origin,
-                'X-Title': 'Pro-Lifts Fitness',
-            },
-            body: JSON.stringify({
-                model,
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: `Exercise: ${exerciseName}` },
-                ],
-                temperature: 0.3,
-                max_tokens: 500,
-            }),
+        const { data, error } = await supabase.functions.invoke('ai-coach', {
+            body: {
+                messages: [{ role: 'user', content: `Exercise: ${exerciseName}` }],
+                systemPrompt,
+                model: import.meta.env.VITE_OPENROUTER_MODEL,
+                temperature: 0.3
+            }
         });
 
-        if (!response.ok) {
-            console.error('OpenRouter API error:', response.status);
+        if (error || !data?.choices || data.choices.length === 0) {
+            console.error('Exercise lookup failed via Edge Function:', error);
             return null;
         }
 
-        const data = await response.json();
-        const content = data.choices?.[0]?.message?.content;
-
-        if (!content) {
-            console.error('No content in OpenRouter response');
-            return null;
-        }
+        const content = data.choices[0].message?.content;
+        if (!content) return null;
 
         // Parse the JSON response
         const parsed = JSON.parse(content.trim());
