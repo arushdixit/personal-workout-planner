@@ -1,15 +1,18 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
-import { format, subDays, parseISO, startOfWeek } from 'date-fns';
-import { Calendar as CalendarIcon, Flame } from 'lucide-react';
+import { format, subDays, addDays, parseISO, startOfWeek } from 'date-fns';
+import { Calendar as CalendarIcon, Flame, X } from 'lucide-react';
 import { CalendarData } from '@/lib/progressUtils';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
 
 interface WorkoutCalendarProps {
     calendarData: CalendarData[];
 }
 
 const WorkoutCalendar = ({ calendarData }: WorkoutCalendarProps) => {
+    const [selectedDay, setSelectedDay] = useState<any>(null);
     const endDate = new Date();
     const rawStartDate = subDays(endDate, 90);
     const startDate = startOfWeek(rawStartDate, { weekStartsOn: 1 }); // Snap to Monday
@@ -22,6 +25,8 @@ const WorkoutCalendar = ({ calendarData }: WorkoutCalendarProps) => {
 
     const getIntensityClass = (count: number) => {
         if (count === 0) return 'color-empty';
+        if (count < 2) return 'color-active opacity-60';
+        if (count < 4) return 'color-active opacity-85';
         return 'color-active';
     };
 
@@ -44,6 +49,7 @@ const WorkoutCalendar = ({ calendarData }: WorkoutCalendarProps) => {
                     .workout-calendar-container .react-calendar-heatmap {
                         width: 100%;
                         height: auto;
+                        overflow: visible;
                     }
 
                     .workout-calendar-container .react-calendar-heatmap text {
@@ -54,61 +60,115 @@ const WorkoutCalendar = ({ calendarData }: WorkoutCalendarProps) => {
                         letter-spacing: 0.05em;
                     }
 
-                    /* Position month labels clearly above the heatmap */
                     .workout-calendar-container .react-calendar-heatmap .react-calendar-heatmap-month-label {
-                        dominant-baseline: text-before-edge;
-                        transform: translateY(-12px);
+                        fill: white;
+                        font-family: inherit;
+                        font-size: 8px;
+                        font-weight: 800;
+                        text-transform: uppercase;
+                    }
+
+                    .workout-calendar-container .react-calendar-heatmap .react-calendar-heatmap-weekday-label {
+                        display: none;
                     }
 
                     .workout-calendar-container .react-calendar-heatmap .color-empty {
-                        fill: hsl(var(--muted) / 0.1);
-                        stroke: none;
+                        fill: rgba(255, 255, 255, 0.04);
+                        stroke: rgba(255, 255, 255, 0.1);
+                        stroke-width: 0.5px;
                     }
 
                     .workout-calendar-container .react-calendar-heatmap .color-active {
                         fill: hsl(var(--primary));
-                        filter: drop-shadow(0 0 8px hsl(var(--primary) / 0.4));
+                        filter: drop-shadow(0 0 8px hsl(var(--primary) / 0.3));
                         stroke: none;
                     }
 
                     .workout-calendar-container .react-calendar-heatmap rect {
-                        rx: 3px;
-                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        rx: 2px;
+                        transition: all 0.2s ease;
                     }
 
                     .workout-calendar-container .react-calendar-heatmap rect:hover {
                         fill: white !important;
                         filter: drop-shadow(0 0 12px white);
-                        cursor: crosshair;
-                        transform: scale(1.1);
-                        transform-origin: center;
+                        cursor: pointer;
+                        transform: translateY(-1px);
                     }
                     
                     /* Visual separation between months */
                     .workout-calendar-container .react-calendar-heatmap-month-label {
                         fill: white !important;
-                        font-family: inherit;
                     }
+
                 `}</style>
 
-                <div className="pt-4">
-                    <CalendarHeatmap
-                        startDate={startDate}
-                        endDate={endDate}
-                        values={heatmapValues}
-                        gutterSize={3}
-                        classForValue={(value: any) => {
-                            if (!value) return 'color-empty';
-                            return getIntensityClass(value.count);
-                        }}
-                        titleForValue={(value: any) => {
-                            if (!value || !value.date) return 'Rest day';
-                            return `${format(parseISO(value.date), 'MMM d, yyyy')}: ${value.count} workout${value.count > 1 ? 's' : ''}`;
-                        }}
-                        showWeekdayLabels={true}
-                        weekdayLabels={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
-                    />
+                <div className="pt-4 relative">
+                    <div className="min-w-0">
+                        <CalendarHeatmap
+                            startDate={startDate}
+                            endDate={endDate}
+                            values={heatmapValues}
+                            gutterSize={2.5}
+                            classForValue={(value: any) => {
+                                if (!value) return 'color-empty';
+                                return getIntensityClass(value.count);
+                            }}
+                            showWeekdayLabels={false}
+                            onClick={(value: any) => {
+                                if (value && value.count > 0) {
+                                    setSelectedDay(value);
+                                }
+                            }}
+                            transformDayElement={(element, value) => {
+                                if (!value || value.count === 0) return element;
+                                return element;
+                            }}
+                        />
+                    </div>
 
+                    {/* Popover for selected day details */}
+                    {selectedDay && (
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+                            <Popover open={!!selectedDay} onOpenChange={(open) => !open && setSelectedDay(null)}>
+                                <PopoverTrigger asChild>
+                                    <div className="w-0 h-0" />
+                                </PopoverTrigger>
+                                <PopoverContent className="glass border-white/10 p-4 w-60 animate-in fade-in zoom-in duration-200">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                                            Workout Detail
+                                        </div>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-5 w-5 rounded-full hover:bg-white/5"
+                                            onClick={() => setSelectedDay(null)}
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </Button>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h4 className="text-xl font-black tracking-tight leading-tight">
+                                            {format(parseISO(selectedDay.date), 'EEEE')}
+                                        </h4>
+                                        <p className="text-muted-foreground text-xs font-medium">
+                                            {format(parseISO(selectedDay.date), 'MMMM d, yyyy')}
+                                        </p>
+                                    </div>
+                                    <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                                            <Flame className="w-5 h-5 text-primary" />
+                                        </div>
+                                        <div>
+                                            <div className="text-lg font-black leading-none">{selectedDay.count}</div>
+                                            <div className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Workouts Logged</div>
+                                        </div>
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                    )}
                 </div>
             </div>
 

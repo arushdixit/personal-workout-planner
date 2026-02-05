@@ -210,7 +210,6 @@ const Progress = () => {
                     {/* OVERVIEW TAB */}
                     {activeTab === 'overview' && (
                         <>
-                            <CoachsCorner />
                             <ProgressOverview stats={overviewStats} unit={currentUser?.unitPreference || 'kg'} />
                             <ComparisonChart sessions={sessions} unit={currentUser?.unitPreference || 'kg'} />
                         </>
@@ -304,6 +303,7 @@ const Progress = () => {
                                     unit={currentUser?.unitPreference || 'kg'}
                                 />
                             )}
+                            <CoachsCorner />
                         </>
                     )}
                 </motion.div>
