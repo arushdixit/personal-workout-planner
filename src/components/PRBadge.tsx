@@ -108,8 +108,8 @@ const PRBadge = ({ records, exerciseName, unit }: PRBadgeProps) => {
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <h4 className="font-black text-white uppercase tracking-wider text-sm">
-                                            🎉 New PR!
+                                        <h4 className="font-black text-white uppercase tracking-wider text-sm flex items-center gap-1">
+                                            <Sparkles className="w-4 h-4 text-amber-500" /> New PR!
                                         </h4>
                                     </div>
                                     <p className="text-2xl font-black text-amber-400 tabular-nums mb-1">

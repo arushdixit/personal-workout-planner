@@ -81,7 +81,7 @@ const ExerciseDetail = ({
             aria-label={`${exercise.name} details`}
             tabIndex={-1}
             className={cn(
-                "fixed top-0 left-0 right-0 bottom-0 z-50 bg-background flex flex-col focus:outline-none overflow-hidden transition-all duration-300",
+                "fixed inset-0 z-[80] bg-background flex flex-col focus:outline-none overflow-hidden transition-all duration-300",
                 open ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
             )}
         >

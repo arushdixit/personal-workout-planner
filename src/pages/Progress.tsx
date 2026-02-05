@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Loader2 } from 'lucide-react';
+import { LayoutDashboard, Dumbbell, Calendar, LineChart, TrendingUp, Loader2 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { db, WorkoutSession, Exercise } from '@/lib/db';
 import {
@@ -20,6 +20,7 @@ import ComparisonChart from '@/components/ComparisonChart';
 import ExportProgress from '@/components/ExportProgress';
 import BodyMetricsChart from '@/components/BodyMetricsChart';
 import PRBadge from '@/components/PRBadge';
+import CoachsCorner from '@/components/CoachsCorner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
@@ -168,10 +169,10 @@ const Progress = () => {
                 {/* Tab Navigation - Added sliding "magic pill" animation */}
                 <div className="relative flex gap-1 bg-white/5 p-1 rounded-2xl border border-white/5">
                     {[
-                        { id: 'overview', label: 'Overview', icon: '📊' },
-                        { id: 'exercises', label: 'Exercises', icon: '💪' },
-                        { id: 'calendar', label: 'Calendar', icon: '📅' },
-                        { id: 'analysis', label: 'Analysis', icon: '🎯' },
+                        { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+                        { id: 'exercises', label: 'Exercises', icon: Dumbbell },
+                        { id: 'calendar', label: 'Calendar', icon: Calendar },
+                        { id: 'analysis', label: 'Analysis', icon: LineChart },
                     ].map((tab) => (
                         <button
                             key={tab.id}
@@ -188,7 +189,12 @@ const Progress = () => {
                                     transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
                                 />
                             )}
-                            <span className="relative z-20 text-xl sm:text-2xl mb-1 leading-none">{tab.icon}</span>
+                            <span className="relative z-20 mb-1 leading-none">
+                                <tab.icon className={cn(
+                                    "w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300",
+                                    activeTab === tab.id ? "scale-110" : "scale-100"
+                                )} />
+                            </span>
                             <span className="relative z-20 truncate w-full text-center">{tab.label}</span>
                         </button>
                     ))}
@@ -204,6 +210,7 @@ const Progress = () => {
                     {/* OVERVIEW TAB */}
                     {activeTab === 'overview' && (
                         <>
+                            <CoachsCorner />
                             <ProgressOverview stats={overviewStats} unit={currentUser?.unitPreference || 'kg'} />
                             <ComparisonChart sessions={sessions} unit={currentUser?.unitPreference || 'kg'} />
                         </>

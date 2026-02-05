@@ -9,6 +9,7 @@ import WorkoutSession from '@/components/WorkoutSession';
 import WorkoutCountdown from '@/components/WorkoutCountdown';
 import Profile from '@/components/Profile';
 import { MinimizedRestTimer } from '@/components/RestTimer';
+import GlobalAICoach from '@/components/GlobalAICoach';
 import { UserCircle } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
@@ -210,6 +211,7 @@ const Index = () => {
       )}
 
       <MinimizedRestTimer />
+      <GlobalAICoach />
 
       {showCountdown && (
         <WorkoutCountdown onComplete={handleCountdownComplete} />

@@ -118,7 +118,7 @@ ${sessions.slice(0, 10).map(s => {
         }).join('\n')}
 
 ────────────────────────────────
-Keep crushing it! 💪
+Keep crushing it!
 `;
 
         downloadFile(text.trim(), `workout-summary-${format(new Date(), 'yyyy-MM-dd')}.txt`, 'text/plain');

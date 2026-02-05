@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { X, CheckCircle2, ChevronRight, Dumbbell, ChevronLeft, Timer, Trophy, Star, ArrowRight, Activity, Flame, Medal, Target, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -233,7 +234,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     }
 
     return (
-        <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
+        <div className="fixed inset-0 bg-background text-foreground overflow-hidden flex flex-col z-[70]">
             {/* Top Bar */}
             <div className="fixed top-0 left-0 right-0 z-50 p-4 flex items-center justify-between bg-background/80 backdrop-blur-xl border-b border-white/5">
                 {activeView === 'detail' ? (
@@ -250,7 +251,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
             </div>
 
             {/* Scrollable Content */}
-            <div className="pt-24 pb-32 px-4 flex-1 overflow-y-auto">
+            <main className="flex-1 overflow-y-auto overscroll-contain pt-24 pb-36 px-4 custom-scrollbar">
                 {activeSession ? (
                     activeView === 'list' ? (
                         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -342,7 +343,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                         </div>
                     </div>
                 )}
-            </div>
+            </main>
 
             {/* Bottom Controls */}
             {activeView === 'list' && activeSession && (

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
-import { format, subDays, parseISO } from 'date-fns';
+import { format, subDays, parseISO, startOfWeek } from 'date-fns';
 import { Calendar as CalendarIcon, Flame } from 'lucide-react';
 import { CalendarData } from '@/lib/progressUtils';
 
@@ -11,7 +11,8 @@ interface WorkoutCalendarProps {
 
 const WorkoutCalendar = ({ calendarData }: WorkoutCalendarProps) => {
     const endDate = new Date();
-    const startDate = subDays(endDate, 90); // Show last 3 months by default
+    const rawStartDate = subDays(endDate, 90);
+    const startDate = startOfWeek(rawStartDate, { weekStartsOn: 1 }); // Snap to Monday
 
     // Convert our data to the format expected by react-calendar-heatmap
     const heatmapValues = calendarData.map(day => ({
@@ -104,8 +105,10 @@ const WorkoutCalendar = ({ calendarData }: WorkoutCalendarProps) => {
                             if (!value || !value.date) return 'Rest day';
                             return `${format(parseISO(value.date), 'MMM d, yyyy')}: ${value.count} workout${value.count > 1 ? 's' : ''}`;
                         }}
-                        showWeekdayLabels={false}
+                        showWeekdayLabels={true}
+                        weekdayLabels={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
                     />
+
                 </div>
             </div>
 

@@ -45,6 +45,11 @@ interface WorkoutContextType {
     adjustRestTime: (delta: number) => void;
     clearSuccess: () => void;
     setWorkoutView: (view: 'list' | 'detail', index?: number | null) => void;
+    isCoachOpen: boolean;
+    setIsCoachOpen: (open: boolean) => void;
+    coachMessages: any[];
+    setCoachMessages: (messages: any[] | ((prev: any[]) => any[])) => void;
+    clearCoachMessages: () => void;
 }
 
 const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
@@ -66,6 +71,46 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     } | null>(null);
     const [activeView, setActiveView] = useState<'list' | 'detail'>('list');
     const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<number | null>(null);
+    const [isCoachOpen, setIsCoachOpen] = useState(() => {
+        return localStorage.getItem('ai_coach_open') === 'true';
+    });
+    const [coachMessages, setCoachMessages] = useState<any[]>([]);
+
+    // Load coach messages from storage on mount or when session changes
+    useEffect(() => {
+        if (activeSession?.id) {
+            const saved = localStorage.getItem(`coach_messages_${activeSession.id}`);
+            if (saved) {
+                try {
+                    setCoachMessages(JSON.parse(saved));
+                } catch (e) {
+                    console.error('Failed to load coach messages', e);
+                    setCoachMessages([{ role: 'assistant', content: "Hey! I'm your Pro-Coach. How can I help you with your workout today?" }]);
+                }
+            } else {
+                setCoachMessages([{ role: 'assistant', content: "Hey! I'm your Pro-Coach. How can I help you with your workout today?" }]);
+            }
+        }
+    }, [activeSession?.id]);
+
+    // Persist coach messages
+    useEffect(() => {
+        if (activeSession?.id && coachMessages.length > 0) {
+            localStorage.setItem(`coach_messages_${activeSession.id}`, JSON.stringify(coachMessages));
+        }
+    }, [coachMessages, activeSession?.id]);
+
+    const clearCoachMessages = useCallback(() => {
+        setCoachMessages([{ role: 'assistant', content: "Hey! I'm your Pro-Coach. How can I help you with your workout today?" }]);
+        if (activeSession?.id) {
+            localStorage.removeItem(`coach_messages_${activeSession.id}`);
+        }
+    }, [activeSession?.id]);
+
+    // Effect to persist coach open state
+    useEffect(() => {
+        localStorage.setItem('ai_coach_open', isCoachOpen.toString());
+    }, [isCoachOpen]);
 
     // Load any active session on mount
     useEffect(() => {
@@ -506,7 +551,12 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         clearSuccess,
         activeView,
         selectedExerciseIndex,
-        setWorkoutView
+        setWorkoutView,
+        isCoachOpen,
+        setIsCoachOpen,
+        coachMessages,
+        setCoachMessages,
+        clearCoachMessages
     };
 
     return (
