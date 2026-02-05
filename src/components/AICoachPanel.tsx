@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
     Drawer,
     DrawerContent,
@@ -47,6 +47,16 @@ const AICoachPanel = ({ open, onOpenChange, sessionInfo, currentExercise }: AICo
     const [loading, setLoading] = useState(false);
     const [context, setContext] = useState<CoachContext | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Auto-resize textarea
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = '48px';
+            const scrollHeight = textareaRef.current.scrollHeight;
+            textareaRef.current.style.height = Math.min(scrollHeight, 120) + 'px';
+        }
+    }, [input]);
 
     // Automated Advice State
     const [automatedAdvice, setAutomatedAdvice] = useState<string | null>(null);
@@ -250,20 +260,26 @@ const AICoachPanel = ({ open, onOpenChange, sessionInfo, currentExercise }: AICo
 
                     {/* Chat Input */}
                     <div className="p-4 bg-background border-t border-white/5">
-                        <div className="relative flex items-center gap-2">
-                            <Input
+                        <div className="relative flex items-end gap-2">
+                            <Textarea
+                                ref={textareaRef}
                                 placeholder="Ask about form, pain, or progress..."
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        handleSendMessage();
+                                    }
+                                }}
                                 disabled={loading}
-                                className="bg-white/5 border-white/10 h-12 rounded-xl pr-12 focus-visible:ring-primary/20"
+                                className="bg-white/5 border-white/10 min-h-[48px] max-h-[120px] rounded-xl pr-12 focus-visible:ring-primary/20 resize-none py-3 overflow-y-auto w-full leading-normal"
                             />
                             <Button
                                 size="icon"
                                 onClick={handleSendMessage}
                                 disabled={loading || !input.trim()}
-                                className="absolute right-1.5 w-9 h-9 rounded-lg gradient-red border-none"
+                                className="absolute right-1.5 bottom-1.5 w-9 h-9 rounded-lg gradient-red border-none"
                             >
                                 <Send className="w-4 h-4" />
                             </Button>
