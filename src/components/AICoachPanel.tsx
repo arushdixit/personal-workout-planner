@@ -17,6 +17,7 @@ import {
     CoachMessage,
     CoachContext,
     getCoachResponse,
+    getCoachResponseStream,
     aggregateCoachContext
 } from '@/lib/AICoachService';
 import { useWorkout } from '@/context/WorkoutContext';
@@ -116,17 +117,41 @@ const AICoachPanel = ({ open, onOpenChange, sessionInfo, currentExercise }: AICo
         setLoading(true);
 
         console.debug('AICoachPanel: Sending message:', input);
+
+        let streamedContent = '';
+        let hasStartedStreaming = false;
+
         try {
-            const response = await getCoachResponse(newMessages, context);
-            console.debug('AICoachPanel: Received response:', response);
-            if (response) {
-                setMessages([...newMessages, { role: 'assistant', content: response }]);
-            } else {
-                console.warn('AICoachPanel: Received empty or null response from service');
-            }
+            await getCoachResponseStream(
+                newMessages,
+                context,
+                // onChunk: Update the message as chunks arrive
+                (chunk: string) => {
+                    streamedContent += chunk;
+
+                    // On first chunk, hide loading and show the message bubble
+                    if (!hasStartedStreaming) {
+                        hasStartedStreaming = true;
+                        setLoading(false);
+                    }
+
+                    setMessages([...newMessages, { role: 'assistant', content: streamedContent }]);
+                },
+                // onComplete: Finalize the message
+                () => {
+                    console.debug('AICoachPanel: Stream completed with content:', streamedContent);
+                    setLoading(false);
+                },
+                // onError: Handle errors
+                (error: string) => {
+                    console.error('AICoachPanel: Stream error:', error);
+                    setMessages([...newMessages, { role: 'assistant', content: error }]);
+                    setLoading(false);
+                }
+            );
         } catch (error) {
             console.error('AICoachPanel: Error getting coach response:', error);
-        } finally {
+            setMessages([...newMessages, { role: 'assistant', content: "I'm having trouble connecting right now. Please try again." }]);
             setLoading(false);
         }
     };

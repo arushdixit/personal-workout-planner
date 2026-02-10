@@ -14,7 +14,7 @@ serve(async (req) => {
     }
 
     try {
-        const { messages, systemPrompt, model: requestedModel, temperature = 0.7, response_format } = await req.json()
+        const { messages, systemPrompt, model: requestedModel, temperature = 0.7, response_format, stream = false } = await req.json()
 
         // 1. Get secrets from Supabase environment
         const apiKey = Deno.env.get('OPENROUTER_API_KEY')
@@ -26,7 +26,7 @@ serve(async (req) => {
             throw new Error('Missing OPENROUTER_API_KEY secret in Supabase')
         }
 
-        console.log(`Calling OpenRouter with model: ${finalModel}`)
+        console.log(`Calling OpenRouter with model: ${finalModel}, stream: ${stream}`)
 
         // 2. Call OpenRouter
         const response = await fetch(OPENROUTER_API_URL, {
@@ -44,6 +44,7 @@ serve(async (req) => {
                 ],
                 temperature,
                 response_format,
+                stream,
             }),
         })
 
@@ -56,6 +57,19 @@ serve(async (req) => {
             });
         }
 
+        // If streaming, forward the stream to the client
+        if (stream) {
+            return new Response(response.body, {
+                headers: {
+                    ...corsHeaders,
+                    'Content-Type': 'text/event-stream',
+                    'Cache-Control': 'no-cache',
+                    'Connection': 'keep-alive',
+                },
+            })
+        }
+
+        // Non-streaming response
         const data = await response.json()
 
         return new Response(JSON.stringify(data), {

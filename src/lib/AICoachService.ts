@@ -90,6 +90,124 @@ GUIDELINES:
     }
 }
 
+export async function getCoachResponseStream(
+    messages: CoachMessage[],
+    context: CoachContext,
+    onChunk: (chunk: string) => void,
+    onComplete: () => void,
+    onError: (error: string) => void
+): Promise<void> {
+    const sessionContext = context.sessionInfo ? `
+ACTIVE WORKOUT SESSION:
+- Routine: ${context.sessionInfo.routineName}
+- Progress: ${context.sessionInfo.exercisesProgress?.map(ex => `[${ex.completedCount}/${ex.totalSets}] ${ex.name}`).join(', ') || 'Just started'}
+- Total Exercises: ${context.sessionInfo.totalExercises}
+` : '';
+
+    const exerciseContext = context.currentExercise ? `
+CURRENT EXERCISE: ${context.currentExercise.name}
+- Sets performed so far: ${context.currentExercise.sets.length}
+- Recent Set Data: ${JSON.stringify(context.currentExercise.sets)}
+- User's Personal Cues: ${context.currentExercise.personalNotes || 'None'}
+` : 'The user is resting or between exercises.';
+
+    const systemPrompt = `You are "Pro-Coach", a high-performance fitness coach for the Pro-Lifts app. 
+Your tone is professional, encouraging, and emphasizes safety.
+
+USER PROFILE:
+- Name: ${context.user.name}
+- Biological Context: ${context.user.gender}, ${context.user.age} yrs
+- Stats: ${context.user.height}cm, ${context.user.weight}kg
+${sessionContext}
+${exerciseContext}
+
+RELEVANT HISTORY (Injury/Pain Notes from past 20 sessions):
+${context.recentHistory.relevantFeedback.join('\n') || 'No major issues reported recently.'}
+
+PHASE: Active Workout. The user is currently training.
+
+GUIDELINES:
+1. Simplify terminology. Instead of RPE, talk about "Reps in Reserve" or "How close to failure".
+2. Prioritize safety. If the user mentions pain, suggest alternatives or form adjustments immediately.
+3. Be concise. Users are in the middle of a workout.
+4. If you lack data to make a recommendation, ask for it politely.
+5. Address the user by name occasionally.
+`;
+
+    try {
+        // Get the Supabase URL and anon key
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+        if (!supabaseUrl || !supabaseAnonKey) {
+            onError("Configuration error. Please check your settings.");
+            return;
+        }
+
+        const response = await fetch(`${supabaseUrl}/functions/v1/ai-coach`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${supabaseAnonKey}`,
+            },
+            body: JSON.stringify({
+                messages,
+                systemPrompt,
+                model: import.meta.env.VITE_OPENROUTER_MODEL,
+                temperature: 0.7,
+                stream: true
+            })
+        });
+
+        if (!response.ok) {
+            onError("I'm having trouble connecting to my brain right now. Please try again in a moment.");
+            return;
+        }
+
+        if (!response.body) {
+            onError("No response received from the server.");
+            return;
+        }
+
+        // Parse the streaming response
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value);
+            const lines = chunk.split('\n').filter(line => line.trim() !== '');
+
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const data = line.slice(6);
+                    if (data === '[DONE]') {
+                        onComplete();
+                        return;
+                    }
+
+                    try {
+                        const parsed = JSON.parse(data);
+                        const content = parsed.choices?.[0]?.delta?.content;
+                        if (content) {
+                            onChunk(content);
+                        }
+                    } catch (e) {
+                        console.warn('Failed to parse SSE chunk:', e);
+                    }
+                }
+            }
+        }
+
+        onComplete();
+    } catch (error) {
+        console.error('AICoach: Stream failed:', error);
+        onError("Connection lost. I'm here, but I can't hear you clearly. Check your internet.");
+    }
+}
+
 export async function aggregateCoachContext(
     userId: number,
     exerciseId?: number,
