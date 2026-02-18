@@ -333,20 +333,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                             />
                         )
                     )
-                ) : (
-                    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
-                        <div className="relative">
-                            <Trophy className="w-20 h-20 text-primary/20 animate-pulse" />
-                            <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-primary/30 animate-bounce" />
-                        </div>
-                        <div className="space-y-4">
-                            <h3 className="text-xl font-bold opacity-30 tracking-tight">Finishing up...</h3>
-                            <Button variant="ghost" onClick={onClose} className="opacity-40">
-                                Back to Today
-                            </Button>
-                        </div>
-                    </div>
-                )}
+                ) : null}
             </main>
 
             {/* Bottom Controls */}
