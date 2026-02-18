@@ -48,13 +48,18 @@ const ExerciseDetail = ({
     const [activeTab, setActiveTab] = useState<Tab>(workoutMode ? 'sets' : 'instructions');
     const [showConfirmComplete, setShowConfirmComplete] = useState(false);
     const dialogRef = useRef<HTMLDivElement>(null);
+    // Local-only note state — only saved to DB on explicit user action (back button or Complete Exercise)
+    const [localNote, setLocalNote] = useState(personalNote || '');
 
-    // Close modal when exercise changes or open becomes false
+    // Reset local note when switching to a different exercise
     useEffect(() => {
-        if (!exercise || !open) {
-            return;
-        }
-    }, [exercise, open]);
+        setLocalNote(personalNote || '');
+    }, [personalNote]);
+
+    const flushNote = () => onNoteChange?.(localNote);
+
+
+
 
     // Focus the modal when it opens
     useEffect(() => {
@@ -88,7 +93,7 @@ const ExerciseDetail = ({
             {/* Header */}
             <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 z-50 bg-background border-b border-white/5">
                 <button
-                    onClick={() => onOpenChange(false)}
+                    onClick={() => { flushNote(); onOpenChange(false); }}
                     className="p-2 -ml-2 hover:bg-white/5 rounded-full transition-colors"
                     aria-label="Go back"
                 >
@@ -237,8 +242,8 @@ const ExerciseDetail = ({
                             </label>
                             <Textarea
                                 placeholder="Add notes about form, pain, or progress..."
-                                value={personalNote || ''}
-                                onChange={(e) => onNoteChange?.(e.target.value)}
+                                value={localNote}
+                                onChange={(e) => setLocalNote(e.target.value)}
                                 className="min-h-[100px]"
                             />
                         </div>
@@ -249,6 +254,7 @@ const ExerciseDetail = ({
                                 variant="gradient"
                                 className="w-full h-14 text-lg font-bold"
                                 onClick={() => {
+                                    flushNote();
                                     const allCompleted = exercise.sets?.every(s => s.completed);
                                     if (allCompleted) {
                                         onOpenChange(false);

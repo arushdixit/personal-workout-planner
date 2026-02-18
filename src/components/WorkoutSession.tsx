@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import { createPortal } from 'react-dom';
-import { X, CheckCircle2, ChevronRight, Dumbbell, ChevronLeft, Timer, Trophy, Star, ArrowRight, Activity, Flame, Medal, Target, Sparkles } from 'lucide-react';
+
+import { CheckCircle2, ChevronRight, Dumbbell, ChevronLeft, Timer, Trophy, Star, ArrowRight, Activity, Flame, Medal, Target, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import ExerciseDetail from './ExerciseDetail';
 import ExerciseWizard from './ExerciseWizard';
 import WorkoutTimer from './WorkoutTimer';
-import RestTimer, { MinimizedRestTimer } from './RestTimer';
+import RestTimer from './RestTimer';
 import { useWorkout } from '@/context/WorkoutContext';
 import { useUser } from '@/context/UserContext';
 import { db, Exercise } from '@/lib/db';
@@ -402,7 +402,6 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
             </Dialog>
 
             <RestTimer />
-            <MinimizedRestTimer />
 
             <ExerciseWizard
                 exercise={editingExercise || undefined}

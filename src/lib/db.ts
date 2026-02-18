@@ -52,7 +52,7 @@ export interface Exercise {
 }
 
 export interface WorkoutSet {
-    id: number;
+    id: number | string;
     setNumber: number;
     reps: number;
     weight: number;
@@ -116,7 +116,7 @@ export interface RoutineExercise {
     notes?: string;
 }
 
-export interface Routine {
+export interface LocalRoutine {
     id?: string; // Supabase UUID
     userId: string; // Supabase user ID
     localUserId: number; // Local Dexie user ID
@@ -127,6 +127,9 @@ export interface Routine {
     updatedAt: string;
     syncedAt?: string; // Last successful sync timestamp
 }
+
+/** @deprecated Use LocalRoutine instead */
+export type Routine = LocalRoutine;
 
 export interface SyncOperation {
     id?: number;

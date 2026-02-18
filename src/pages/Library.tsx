@@ -337,11 +337,10 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
                         <p className="text-sm">Try adjusting your filters or search terms.</p>
                     </div>
                 ) : view === 'my' ? (
-                    (displayExercises as Exercise[]).map((ex, index) => (
+                    (displayExercises as Exercise[]).map((ex) => (
                         <Card
                             key={ex.id}
-                            className="glass border-white/10 animate-slide-up hover:border-primary/50 transition-all duration-300 group cursor-pointer"
-                            style={{ animationDelay: `${index * 0.03}s` }}
+                            className="glass border-white/10 hover:border-primary/50 transition-all duration-300 group cursor-pointer"
                             onClick={() => handleExerciseClick(ex)}
                         >
                             <CardContent className="p-4">
@@ -539,7 +538,17 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
                     setShowWizard(open);
                     if (!open) setEditingExercise(undefined);
                 }}
-                onComplete={handleWizardComplete}
+                onComplete={async () => {
+                    setShowWizard(false);
+                    const editedExerciseId = editingExercise?.id;
+                    setEditingExercise(undefined);
+                    await loadExercises();
+                    // If we were viewing an exercise, refresh it with updated data
+                    if (editedExerciseId && viewingExercise?.id === editedExerciseId) {
+                        const updated = await db.exercises.get(editedExerciseId);
+                        if (updated) setViewingExercise(updated);
+                    }
+                }}
             />
 
             <ExerciseDetail
@@ -611,27 +620,7 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
                 }}
             />
 
-            {/* Exercise Wizard Modal */}
-            <ExerciseWizard
-                exercise={editingExercise}
-                open={showWizard}
-                onOpenChange={(open) => {
-                    setShowWizard(open);
-                    if (!open) setEditingExercise(undefined);
-                }}
-                onComplete={async () => {
-                    setShowWizard(false);
-                    setEditingExercise(undefined);
-                    // Refresh exercises list to show updated notes/info
-                    const all = await db.exercises.toArray();
-                    setExercises(all);
-                    // Also refresh the currently viewing exercise if it's the one we edited
-                    if (viewingExercise?.id) {
-                        const updated = await db.exercises.get(viewingExercise.id);
-                        if (updated) setViewingExercise(updated);
-                    }
-                }}
-            />
+
         </div>
     );
 };

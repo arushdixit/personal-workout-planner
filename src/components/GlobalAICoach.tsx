@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BotMessageSquare } from 'lucide-react';
@@ -26,8 +26,32 @@ const GlobalAICoach = () => {
         loadExerciseDetail();
     }, [selectedExerciseIndex, activeSession]);
 
+    // ALL hooks must be called before any early return
+    const sessionInfo = useMemo(() => {
+        if (!activeSession) return null;
+        return {
+            routineName: activeSession.routineName,
+            totalExercises: activeSession.exercises.length,
+            exercisesProgress: activeSession.exercises.map(ex => ({
+                name: ex.exerciseName,
+                completedCount: ex.sets.filter(s => s.completed).length,
+                totalSets: ex.sets.length
+            }))
+        };
+    }, [activeSession]);
+
+    const currentExercise = useMemo(() => {
+        if (!activeSession || selectedExerciseIndex === null) return undefined;
+        return {
+            id: activeSession.exercises[selectedExerciseIndex].exerciseId,
+            name: activeSession.exercises[selectedExerciseIndex].exerciseName,
+            sets: activeSession.exercises[selectedExerciseIndex].sets,
+            personalNotes: exerciseDetail?.personalNotes
+        };
+    }, [selectedExerciseIndex, activeSession, exerciseDetail]);
+
     // Only show if session is active and not on success screen
-    if (!activeSession || showSuccess) return null;
+    if (!activeSession || showSuccess || !sessionInfo) return null;
 
     return (
         <>
@@ -57,21 +81,8 @@ const GlobalAICoach = () => {
             <AICoachPanel
                 open={isCoachOpen}
                 onOpenChange={setIsCoachOpen}
-                sessionInfo={{
-                    routineName: activeSession.routineName,
-                    totalExercises: activeSession.exercises.length,
-                    exercisesProgress: activeSession.exercises.map(ex => ({
-                        name: ex.exerciseName,
-                        completedCount: ex.sets.filter(s => s.completed).length,
-                        totalSets: ex.sets.length
-                    }))
-                }}
-                currentExercise={selectedExerciseIndex !== null ? {
-                    id: activeSession.exercises[selectedExerciseIndex].exerciseId,
-                    name: activeSession.exercises[selectedExerciseIndex].exerciseName,
-                    sets: activeSession.exercises[selectedExerciseIndex].sets,
-                    personalNotes: exerciseDetail?.personalNotes
-                } : undefined}
+                sessionInfo={sessionInfo}
+                currentExercise={currentExercise}
             />
         </>
     );

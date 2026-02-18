@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { db, UserProfile } from '@/lib/db';
 import { supabase } from '@/lib/supabaseClient';
 import { pullUserExercises } from '@/lib/syncManager';
@@ -223,6 +223,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsAuthenticated(false);
     };
 
+    const refreshUsersCallback = useCallback(
+        () => refreshUsers(supabaseUser?.id),
+        [supabaseUser?.id] // eslint-disable-line react-hooks/exhaustive-deps
+    );
+
     return (
         <UserContext.Provider value={{
             currentUser,
@@ -231,7 +236,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             refreshing,
             isAuthenticated,
             switchUser,
-            refreshUsers: () => refreshUsers(supabaseUser?.id),
+            refreshUsers: refreshUsersCallback,
             signIn,
             signUp,
             logout,

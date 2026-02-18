@@ -12,7 +12,7 @@ import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
 import { determineTodaysRoutine, calculateWorkoutDuration } from '@/lib/routineCycling';
 import { fetchRoutines } from '@/lib/routineCache';
-import { db, Routine, Exercise } from '@/lib/db';
+import { db, LocalRoutine, Exercise } from '@/lib/db';
 import { cn } from '@/lib/utils';
 
 interface TodayPageProps {
@@ -26,7 +26,7 @@ const TodayPage = (props: TodayPageProps) => {
     const { currentUser } = useUser();
     const { activeSession, startWorkout } = useWorkout();
 
-    const [todaysRoutine, setTodaysRoutine] = useState<Routine | null>(null);
+    const [todaysRoutine, setTodaysRoutine] = useState<LocalRoutine | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [showRoutineSelector, setShowRoutineSelector] = useState(false);
     const [exerciseDetails, setExerciseDetails] = useState<Record<number, Exercise>>({});
@@ -107,7 +107,7 @@ const TodayPage = (props: TodayPageProps) => {
         onStartWorkout();
     }, [todaysRoutine, currentUser, startWorkout, onStartWorkout]);
 
-    const handleRoutineSelect = (routine: Routine) => {
+    const handleRoutineSelect = (routine: LocalRoutine) => {
         setTodaysRoutine(routine);
         setManuallySelectedRoutine(true); // Mark as manually selected
         setShowRoutineSelector(false);

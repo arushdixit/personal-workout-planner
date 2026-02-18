@@ -6,7 +6,7 @@ import {
     upsertUserExercise as upsertExerciseRemote,
     fetchUserExercises as fetchUserExercisesRemote,
 } from './supabaseClient';
-import { db, Routine } from './db';
+import { db, LocalRoutine } from './db';
 import {
     getPendingOperations,
     updateOperationStatus,
@@ -114,7 +114,7 @@ async function processExerciseOperation(operation: QueuedOperation): Promise<voi
 async function processCreateRoutine(operation: QueuedOperation): Promise<void> {
     if (!operation.id) return;
 
-    const routineData = operation.data as Omit<Routine, 'id'>;
+    const routineData = operation.data as Omit<LocalRoutine, 'id'>;
 
     try {
         const remoteRoutine = await createRoutineRemote({
@@ -205,12 +205,16 @@ export async function pullUserExercises(userId: string): Promise<void> {
         console.log('[SyncManager] Pulling user exercises from remote...');
         const remoteExercises = await fetchUserExercisesRemote(userId);
 
+        // Build a name→exercise map once instead of one DB query per remote exercise
+        const allLocalExercises = await db.exercises.toArray();
+        const localByName = new Map(
+            allLocalExercises.map(ex => [ex.name.toLowerCase(), ex])
+        );
+
         for (const remoteEx of remoteExercises) {
-            // Find the exercise locally by name (since local ID might be different)
-            const localEx = await db.exercises.where('name').equalsIgnoreCase(remoteEx.name).first();
+            const localEx = localByName.get(remoteEx.name.toLowerCase());
 
             if (localEx && remoteEx.personal_notes !== localEx.personalNotes) {
-                // Only update notes on existing exercises, never create duplicates
                 await db.exercises.update(localEx.id!, {
                     personalNotes: remoteEx.personal_notes,
                     updatedAt: remoteEx.updated_at || new Date().toISOString()

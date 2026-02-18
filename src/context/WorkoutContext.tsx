@@ -1,10 +1,9 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode, useMemo } from 'react';
-import { db, WorkoutSession, WorkoutSessionExercise, WorkoutSet, Routine } from '@/lib/db';
+import { db, WorkoutSession, WorkoutSessionExercise, WorkoutSet, LocalRoutine } from '@/lib/db';
 import { updateLastCompletedRoutine } from '@/lib/routineCycling';
 import { useUser } from './UserContext';
 import { queueWorkoutOperation } from '@/lib/workoutSyncManager';
 import { v4 as uuidv4 } from 'uuid';
-import { getLastExercisePerformance } from '@/lib/workoutSession';
 
 interface WorkoutContextType {
     // State
@@ -30,11 +29,11 @@ interface WorkoutContextType {
     } | null;
 
     // Actions
-    startWorkout: (routine: Routine, userId: number, supabaseUserId: string) => Promise<WorkoutSession>;
+    startWorkout: (routine: LocalRoutine, userId: number, supabaseUserId: string) => Promise<WorkoutSession>;
     completeSet: (exerciseIndex: number, setId: number, weight: number, reps: number, unit: 'kg' | 'lbs') => Promise<void>;
-    addExtraSet: (exerciseIndex: number) => void;
-    removeExtraSet: (exerciseIndex: number) => void;
-    updatePersonalNote: (exerciseIndex: number, note: string) => void;
+    addExtraSet: (exerciseIndex: number) => Promise<void>;
+    removeExtraSet: (exerciseIndex: number) => Promise<void>;
+    updatePersonalNote: (exerciseIndex: number, note: string) => Promise<void>;
     nextExercise: () => void;
     previousExercise: () => void;
     skipRest: () => void;
@@ -115,7 +114,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     // Load any active session on mount
     useEffect(() => {
         const loadActiveSession = async () => {
-            const currentUser = await db.users.toArray().then(users => users[0]);
+            const currentUser = await db.users.limit(1).first();
             if (currentUser?.id) {
                 const session = await db.workout_sessions
                     .where('userId')
@@ -205,7 +204,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
     // Actions
     const startWorkout = useCallback(async (
-        routine: Routine,
+        routine: LocalRoutine,
         userId: number,
         supabaseUserId: string
     ): Promise<WorkoutSession> => {
@@ -218,11 +217,26 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         const now = new Date().toISOString();
         const today = now.split('T')[0];
 
+        const allCompletedSessions = await db.workout_sessions
+            .where('userId')
+            .equals(userId)
+            .and(s => s.status === 'completed')
+            .toArray();
+
         const exercises = await Promise.all(routine.exercises.map(async (ex, index) => {
-            const lastPerformance = await getLastExercisePerformance(userId, ex.exerciseId);
-            const defaultWeight = lastPerformance?.[0]?.weight || 0;
-            const defaultReps = lastPerformance?.[0]?.reps || parseReps(ex.reps);
-            const defaultUnit = lastPerformance?.[0]?.unit || 'kg';
+            // Filter in memory — avoids N separate full-table scans
+            const relevantSessions = allCompletedSessions
+                .filter(s => s.exercises.some(e => e.exerciseId === ex.exerciseId))
+                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+            const lastPerformance = relevantSessions.length > 0
+                ? relevantSessions[0].exercises
+                    .find(e => e.exerciseId === ex.exerciseId)?.sets || []
+                : [];
+
+            const defaultWeight = lastPerformance[0]?.weight || 0;
+            const defaultReps = lastPerformance[0]?.reps || parseReps(ex.reps);
+            const defaultUnit = lastPerformance[0]?.unit || 'kg';
 
             return {
                 exerciseId: ex.exerciseId,
@@ -230,9 +244,9 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
                 order: ex.order,
                 restSeconds: ex.restSeconds,
                 sets: Array.from({ length: ex.sets }, (_, setIndex) => {
-                    const historicalSet = lastPerformance?.[setIndex];
+                    const historicalSet = lastPerformance[setIndex];
                     return {
-                        id: Date.now() + setIndex + (index * 100),
+                        id: crypto.randomUUID(),
                         setNumber: setIndex + 1,
                         reps: historicalSet?.reps || defaultReps,
                         weight: historicalSet?.weight || defaultWeight,
@@ -331,7 +345,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         await queueWorkoutOperation('set_complete', session.id!, { setId, reps, weight });
     }, [activeSession]);
 
-    const addExtraSet = useCallback((exerciseIndex: number) => {
+    const addExtraSet = useCallback(async (exerciseIndex: number) => {
         if (!activeSession) return;
 
         const updatedExercises = activeSession.exercises.map((ex, idx) => {
@@ -355,11 +369,11 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             };
         });
 
-        db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
+        await db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
         setActiveSession({ ...activeSession, exercises: updatedExercises });
     }, [activeSession]);
 
-    const removeExtraSet = useCallback((exerciseIndex: number) => {
+    const removeExtraSet = useCallback(async (exerciseIndex: number) => {
         if (!activeSession) return;
 
         const exercise = activeSession.exercises[exerciseIndex];
@@ -376,11 +390,11 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             };
         });
 
-        db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
+        await db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
         setActiveSession({ ...activeSession, exercises: updatedExercises });
     }, [activeSession]);
 
-    const updatePersonalNote = useCallback((exerciseIndex: number, note: string) => {
+    const updatePersonalNote = useCallback(async (exerciseIndex: number, note: string) => {
         if (!activeSession) return;
 
         const updatedExercises = activeSession.exercises.map((ex, idx) => {
@@ -388,7 +402,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             return { ...ex, personalNote: note };
         });
 
-        db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
+        await db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
         setActiveSession({ ...activeSession, exercises: updatedExercises });
 
         // Trigger sync
@@ -524,7 +538,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         setSelectedExerciseIndex(index);
     }, []);
 
-    const value: WorkoutContextType = {
+    const value: WorkoutContextType = useMemo(() => ({
         activeSession,
         currentExerciseIndex,
         currentExercise,
@@ -557,7 +571,40 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         coachMessages,
         setCoachMessages,
         clearCoachMessages
-    };
+    }), [
+        activeSession,
+        currentExerciseIndex,
+        currentExercise,
+        progress,
+        isWorkoutComplete,
+        isRestTimerActive,
+        restTimeLeft,
+        isRestTimerMinimized,
+        startWorkout,
+        completeSet,
+        addExtraSet,
+        removeExtraSet,
+        updatePersonalNote,
+        nextExercise,
+        previousExercise,
+        skipRest,
+        endWorkout,
+        abandonWorkout,
+        clearActiveSession,
+        setMinimizedRest,
+        adjustRestTime,
+        showSuccess,
+        completedStats,
+        clearSuccess,
+        activeView,
+        selectedExerciseIndex,
+        setWorkoutView,
+        isCoachOpen,
+        setIsCoachOpen,
+        coachMessages,
+        setCoachMessages,
+        clearCoachMessages
+    ]);
 
     return (
         <WorkoutContext.Provider value={value}>

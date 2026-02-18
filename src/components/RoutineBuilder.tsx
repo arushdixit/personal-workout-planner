@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { createRoutineOptimistic, updateRoutineOptimistic } from '@/lib/routineCache';
-import { type Routine, type RoutineExercise } from '@/lib/db';
+import { type LocalRoutine, type RoutineExercise } from '@/lib/db';
 import { db, Exercise, MUSCLE_GROUPS, EQUIPMENT_TYPES } from '@/lib/db';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,7 +15,7 @@ import ExerciseDetail from './ExerciseDetail';
 import ExerciseWizard from './ExerciseWizard';
 
 interface RoutineBuilderProps {
-    routine?: Routine;
+    routine?: LocalRoutine;
     onCancel: () => void;
     onComplete: () => void;
     supabaseUserId: string;
@@ -165,7 +165,7 @@ const RoutineBuilder = ({
 
         setSaving(true);
         try {
-            const routineData: Omit<Routine, 'id' | 'createdAt' | 'updatedAt'> = {
+            const routineData: Omit<LocalRoutine, 'id' | 'createdAt' | 'updatedAt'> = {
                 userId: supabaseUserId,
                 localUserId: localUserId,
                 name: name.trim(),

@@ -50,36 +50,50 @@ export async function createWorkoutSession(params: CreateSessionParams) {
         throw error;
     }
 
-    // Insert exercises and sets
-    for (const ex of params.exercises) {
-        const { data: exerciseData, error: exError } = await supabase
-            .from('session_exercises')
-            .insert({
+    if (params.exercises.length === 0) return data;
+
+    // Bulk-insert all exercises in one round-trip
+    const { data: exerciseRows, error: exError } = await supabase
+        .from('session_exercises')
+        .insert(
+            params.exercises.map(ex => ({
                 session_id: data.id,
                 exercise_id: ex.exercise_id,
                 exercise_name: ex.exercise_name,
                 exercise_order: ex.order,
-            })
-            .select()
-            .single();
+            }))
+        )
+        .select();
 
-        if (exError) {
-            console.error('Error creating session exercise:', exError);
-            throw exError;
-        }
+    if (exError) {
+        console.error('Error creating session exercises:', exError);
+        throw exError;
+    }
 
+    // Build a map from order → server exercise ID for set insertion
+    const orderToId = new Map<number, number>();
+    for (const row of exerciseRows || []) {
+        orderToId.set(row.exercise_order, row.id);
+    }
+
+    // Collect all sets across all exercises and bulk-insert in one round-trip
+    const allSets = params.exercises.flatMap(ex => {
+        const exerciseId = orderToId.get(ex.order);
+        if (!exerciseId) return [];
+        return ex.sets.map(set => ({
+            session_exercise_id: exerciseId,
+            set_number: set.set_number,
+            reps: set.reps,
+            weight: set.weight,
+            unit: set.unit,
+            completed: false,
+        }));
+    });
+
+    if (allSets.length > 0) {
         const { error: setsError } = await supabase
             .from('session_sets')
-            .insert(
-                ex.sets.map(set => ({
-                    session_exercise_id: exerciseData.id,
-                    set_number: set.set_number,
-                    reps: set.reps,
-                    weight: set.weight,
-                    unit: set.unit,
-                    completed: false,
-                }))
-            );
+            .insert(allSets);
 
         if (setsError) {
             console.error('Error creating session sets:', setsError);
@@ -166,7 +180,15 @@ export async function addSessionSet(
     }
 }
 
-export async function completeWorkout(sessionId: number, endTime: string) {
+/**
+ * Finalize a workout session (complete or abandon).
+ * Merged from the former completeWorkout + abandonWorkout to eliminate duplication.
+ */
+export async function finalizeWorkout(
+    sessionId: number,
+    endTime: string,
+    status: 'completed' | 'abandoned'
+) {
     const { data: sessionData, error: fetchError } = await supabase
         .from('workout_sessions')
         .select('start_time')
@@ -179,8 +201,8 @@ export async function completeWorkout(sessionId: number, endTime: string) {
     }
 
     if (!sessionData) {
-        console.warn('Session not found on server, skipping completion:', sessionId);
-        return; // Gracefully handle missing session
+        console.warn(`Session not found on server, skipping ${status}:`, sessionId);
+        return;
     }
 
     const duration = Math.floor(
@@ -189,53 +211,23 @@ export async function completeWorkout(sessionId: number, endTime: string) {
 
     const { error } = await supabase
         .from('workout_sessions')
-        .update({
-            status: 'completed',
-            end_time: endTime,
-            duration_seconds: duration,
-        })
+        .update({ status, end_time: endTime, duration_seconds: duration })
         .eq('id', sessionId);
 
     if (error) {
-        console.error('Error completing workout:', error);
+        console.error(`Error ${status} workout:`, error);
         throw error;
     }
 }
 
+/** @deprecated Use finalizeWorkout instead */
+export async function completeWorkout(sessionId: number, endTime: string) {
+    return finalizeWorkout(sessionId, endTime, 'completed');
+}
+
+/** @deprecated Use finalizeWorkout instead */
 export async function abandonWorkout(sessionId: number, endTime: string) {
-    const { data: sessionData, error: fetchError } = await supabase
-        .from('workout_sessions')
-        .select('start_time')
-        .eq('id', sessionId)
-        .maybeSingle();
-
-    if (fetchError) {
-        console.error('Error fetching session:', fetchError);
-        throw fetchError;
-    }
-
-    if (!sessionData) {
-        console.warn('Session not found on server, skipping abandonment:', sessionId);
-        return; // Gracefully handle missing session
-    }
-
-    const duration = Math.floor(
-        (new Date(endTime).getTime() - new Date(sessionData.start_time).getTime()) / 1000
-    );
-
-    const { error } = await supabase
-        .from('workout_sessions')
-        .update({
-            status: 'abandoned',
-            end_time: endTime,
-            duration_seconds: duration,
-        })
-        .eq('id', sessionId);
-
-    if (error) {
-        console.error('Error abandoning workout:', error);
-        throw error;
-    }
+    return finalizeWorkout(sessionId, endTime, 'abandoned');
 }
 
 export async function fetchWorkoutSessions(
@@ -279,44 +271,26 @@ export async function fetchAllWorkoutSessionsWithDetails(userId: string) {
 }
 
 export async function fetchWorkoutSessionDetails(sessionId: number) {
-    const { data: session, error: sessionError } = await supabase
+    // Single nested query instead of N+1 (one query per exercise)
+    const { data, error } = await supabase
         .from('workout_sessions')
-        .select('*')
+        .select(`
+            *,
+            session_exercises (
+                *,
+                session_sets (*)
+            )
+        `)
         .eq('id', sessionId)
+        .order('exercise_order', { referencedTable: 'session_exercises', ascending: true })
         .single();
 
-    if (sessionError) {
-        console.error('Error fetching session:', sessionError);
-        throw sessionError;
+    if (error) {
+        console.error('Error fetching session details:', error);
+        throw error;
     }
 
-    const { data: exercises, error: exercisesError } = await supabase
-        .from('session_exercises')
-        .select('*')
-        .eq('session_id', sessionId)
-        .order('exercise_order', { ascending: true });
-
-    if (exercisesError) {
-        console.error('Error fetching session exercises:', exercisesError);
-        throw exercisesError;
-    }
-
-    for (const exercise of exercises || []) {
-        const { data: sets, error: setsError } = await supabase
-            .from('session_sets')
-            .select('*')
-            .eq('session_exercise_id', exercise.id)
-            .order('set_number', { ascending: true });
-
-        if (setsError) {
-            console.error('Error fetching session sets:', setsError);
-            throw setsError;
-        }
-
-        exercise.sets = sets || [];
-    }
-
-    return { ...session, exercises };
+    return data;
 }
 
 export async function updateWorkoutSession(

@@ -3,13 +3,13 @@ import { Plus, Dumbbell } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { db, Routine } from '@/lib/db';
+import { db, LocalRoutine } from '@/lib/db';
 import { useUser } from '@/context/UserContext';
 
 interface RoutineSelectorModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onSelect: (routine: Routine) => void;
+    onSelect: (routine: LocalRoutine) => void;
     onCreateNew: () => void;
 }
 
@@ -20,7 +20,7 @@ const RoutineSelectorModal = ({
     onCreateNew
 }: RoutineSelectorModalProps) => {
     const { currentUser } = useUser();
-    const [routines, setRoutines] = useState<Routine[]>([]);
+    const [routines, setRoutines] = useState<LocalRoutine[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -32,7 +32,7 @@ const RoutineSelectorModal = ({
             }
 
             try {
-                let userRoutines: Routine[] = [];
+                let userRoutines: LocalRoutine[] = [];
 
                 // Use supabaseUserId as primary lookup since it's stable across DB cleanups
                 if (currentUser.supabaseUserId) {

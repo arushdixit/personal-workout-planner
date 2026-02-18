@@ -17,51 +17,53 @@ export async function pullWorkoutSessions(supabaseUserId: string, localUserId: n
         console.log('[WorkoutSync] Pulling workout sessions from remote...');
         const remoteSessions = await fetchAllWorkoutSessionsWithDetails(supabaseUserId);
 
+        // Load all existing remote IDs in one query to avoid N individual lookups
+        const existingRemoteIds = new Set(
+            (await db.workout_sessions.where('remoteId').anyOf(
+                remoteSessions.map(s => s.id)
+            ).toArray()).map(s => s.remoteId)
+        );
+
+        const newSessions: any[] = [];
         for (const remoteSession of remoteSessions) {
-            // Check if this session already exists locally by remoteId
-            const existingLocally = await db.workout_sessions
-                .where('remoteId')
-                .equals(remoteSession.id)
-                .first();
+            if (existingRemoteIds.has(remoteSession.id)) continue;
 
-            if (!existingLocally) {
-                console.log(`[WorkoutSync] Importing remote session: ${remoteSession.id} (${remoteSession.date})`);
-
-                // Map Supabase structure to local WorkoutSession interface
-                const newSession: any = {
-                    remoteId: remoteSession.id,
-                    userId: localUserId,
-                    supabaseUserId: supabaseUserId,
-                    routineId: remoteSession.routine_id,
-                    routineName: remoteSession.routine_name,
-                    date: remoteSession.date,
-                    startTime: remoteSession.start_time,
-                    endTime: remoteSession.end_time || undefined,
-                    duration: remoteSession.duration_seconds || undefined,
-                    status: remoteSession.status as any,
-                    syncedAt: new Date().toISOString(),
-                    exercises: remoteSession.session_exercises.map((ex: any) => ({
-                        exerciseId: ex.exercise_id,
-                        exerciseName: ex.exercise_name,
-                        order: ex.exercise_order,
-                        personalNote: ex.personal_note || undefined,
-                        restSeconds: ex.rest_seconds || 90, // Default if missing
-                        sets: ex.session_sets.map((set: any) => ({
-                            id: set.id,
-                            setNumber: set.set_number,
-                            reps: set.reps,
-                            weight: set.weight,
-                            unit: set.unit || 'kg',
-                            completed: set.completed,
-                            completedAt: set.completed_at || undefined,
-                        })),
+            console.log(`[WorkoutSync] Importing remote session: ${remoteSession.id} (${remoteSession.date})`);
+            newSessions.push({
+                remoteId: remoteSession.id,
+                userId: localUserId,
+                supabaseUserId: supabaseUserId,
+                routineId: remoteSession.routine_id,
+                routineName: remoteSession.routine_name,
+                date: remoteSession.date,
+                startTime: remoteSession.start_time,
+                endTime: remoteSession.end_time || undefined,
+                duration: remoteSession.duration_seconds || undefined,
+                status: remoteSession.status as any,
+                syncedAt: new Date().toISOString(),
+                exercises: remoteSession.session_exercises.map((ex: any) => ({
+                    exerciseId: ex.exercise_id,
+                    exerciseName: ex.exercise_name,
+                    order: ex.exercise_order,
+                    personalNote: ex.personal_note || undefined,
+                    restSeconds: ex.rest_seconds || 90,
+                    sets: ex.session_sets.map((set: any) => ({
+                        id: set.id,
+                        setNumber: set.set_number,
+                        reps: set.reps,
+                        weight: set.weight,
+                        unit: set.unit || 'kg',
+                        completed: set.completed,
+                        completedAt: set.completed_at || undefined,
                     })),
-                };
-
-                await db.workout_sessions.add(newSession);
-            }
+                })),
+            });
         }
-        console.log('[WorkoutSync] Completed pulling workout sessions');
+
+        if (newSessions.length > 0) {
+            await db.workout_sessions.bulkAdd(newSessions);
+        }
+        console.log(`[WorkoutSync] Completed pulling workout sessions (${newSessions.length} new)`);
     } catch (error) {
         console.error('[WorkoutSync] Failed to pull workout sessions:', error);
     }
@@ -243,15 +245,15 @@ async function processAbandonSession(operation: QueuedOperation, session: Workou
 }
 
 async function processSetComplete(operation: QueuedOperation, session: WorkoutSession): Promise<void> {
-    if (!session.id) {
-        console.warn('[WorkoutSync] Session has no remote ID');
-        await removeOperation(operation.id!);
-        return;
+    if (!session.remoteId) {
+        console.warn('[WorkoutSync] Session not yet synced to remote, will retry');
+        throw new Error('Session not yet synced to server');
     }
 
     const setData = operation.data as { setId?: number; reps?: number; weight?: number };
     if (!setData.setId) {
         console.warn('[WorkoutSync] No set ID in operation');
+        await removeOperation(operation.id!);
         return;
     }
 
@@ -272,15 +274,15 @@ async function processSetComplete(operation: QueuedOperation, session: WorkoutSe
 }
 
 async function processSetUpdate(operation: QueuedOperation, session: WorkoutSession): Promise<void> {
-    if (!session.id) {
-        console.warn('[WorkoutSync] Session has no remote ID');
-        await removeOperation(operation.id!);
-        return;
+    if (!session.remoteId) {
+        console.warn('[WorkoutSync] Session not yet synced to remote, will retry');
+        throw new Error('Session not yet synced to server');
     }
 
     const setData = operation.data as { setId?: number; updates?: Record<string, unknown> };
     if (!setData.setId || !setData.updates) {
         console.warn('[WorkoutSync] Missing set data in operation');
+        await removeOperation(operation.id!);
         return;
     }
 
@@ -296,10 +298,9 @@ async function processSetUpdate(operation: QueuedOperation, session: WorkoutSess
 }
 
 async function processAddSet(operation: QueuedOperation, session: WorkoutSession): Promise<void> {
-    if (!session.id) {
-        console.warn('[WorkoutSync] Session has no remote ID');
-        await removeOperation(operation.id!);
-        return;
+    if (!session.remoteId) {
+        console.warn('[WorkoutSync] Session not yet synced to server — deferring add set');
+        throw new Error('Session not yet synced to server');
     }
 
     const setData = operation.data as { sessionExerciseId?: number; setNumber?: number; unit?: 'kg' | 'lbs' };
@@ -351,16 +352,21 @@ export async function queueWorkoutOperation(
     if (!session) return;
 
     const syncType: SyncType = type === 'create' ? 'create' : 'update';
+    const entityType: EntityType = (type === 'set_complete' || type === 'set_update' || type === 'add_set')
+        ? 'workout_set'
+        : 'workout_session';
 
+    // IMPORTANT: Do NOT store the full session object in the queue — it causes massive IndexedDB bloat
+    // (one full copy of all exercises+sets per set completion). The session is always re-fetched
+    // from the DB at processing time via processWorkoutOperation.
     await addToSyncQueue(
         syncType,
-        type === 'set_complete' || type === 'set_update' || type === 'add_set' ? 'workout_set' as EntityType : 'workout_session' as EntityType,
+        entityType,
         String(sessionId),
-        { session, workoutOpType: type, ...data }
+        { workoutOpType: type, ...data }
     );
 
     // Trigger sync in background immediately
-    // Use a short timeout to ensure the operation is committed and don't block the caller
     setTimeout(() => {
         processWorkoutSyncQueue().catch(err => console.error('[WorkoutSync] Background sync failed:', err));
     }, 0);

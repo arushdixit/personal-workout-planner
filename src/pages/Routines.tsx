@@ -22,9 +22,8 @@ import {
     refreshRoutines,
     getCacheStatus,
 } from '@/lib/routineCache';
-import { type Routine as SupabaseRoutine } from '@/lib/supabaseClient';
+import type { LocalRoutine } from '@/lib/db';
 import { triggerImmediateSync } from '@/lib/syncManager';
-import type { Routine } from '@/lib/db';
 import RoutineBuilder from '@/components/RoutineBuilder';
 import { cn } from '@/lib/utils';
 
@@ -38,11 +37,11 @@ interface RoutinesProps {
 
 const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine, onOpenBuilder, onCloseEditor }: RoutinesProps) => {
     const { currentUser } = useUser();
-    const [routines, setRoutines] = useState<Routine[]>([]);
+    const [routines, setRoutines] = useState<LocalRoutine[]>([]);
     const [loading, setLoading] = useState(true);
     const [showBuilder, setShowBuilder] = useState(showBuilderOnLoad);
-    const [editingRoutine, setEditingRoutine] = useState<Routine | undefined>();
-    const [deleteTarget, setDeleteTarget] = useState<Routine | null>(null);
+    const [editingRoutine, setEditingRoutine] = useState<LocalRoutine | undefined>();
+    const [deleteTarget, setDeleteTarget] = useState<LocalRoutine | null>(null);
     const [supabaseUserId, setSupabaseUserId] = useState<string>('');
     const [cacheState, setCacheState] = useState<CacheStatusState>('fresh');
     const [lastSynced, setLastSynced] = useState<string>('');
@@ -52,10 +51,6 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
     useEffect(() => {
         loadRoutines();
         triggerImmediateSync();
-
-        return () => {
-            triggerImmediateSync();
-        };
     }, [currentUser?.id]);
 
     // Sync builder state with URL parameter
@@ -160,7 +155,7 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
         }
     };
 
-    const handleEdit = (routine: Routine) => {
+    const handleEdit = (routine: LocalRoutine) => {
         setEditingRoutine(routine);
         setShowBuilder(true);
         if (onViewRoutine && routine.id) {
@@ -186,7 +181,7 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
         }
     };
 
-    const handleDuplicate = async (routine: Routine) => {
+    const handleDuplicate = async (routine: LocalRoutine) => {
         if (!routine.id || !currentUser?.id) return;
 
         try {
@@ -217,7 +212,7 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
         }
     };
 
-    const calculateEstimatedTime = (routine: Routine): number => {
+    const calculateEstimatedTime = (routine: LocalRoutine): number => {
         return routine.exercises.reduce((total, ex) => {
             const workTime = ex.sets * 30;
             const restTime = ex.sets * ex.restSeconds;

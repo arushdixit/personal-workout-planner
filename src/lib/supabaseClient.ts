@@ -21,7 +21,7 @@ export interface RoutineExercise {
     notes?: string;
 }
 
-export interface Routine {
+export interface RemoteRoutine {
     id?: string;
     user_id: string;
     local_user_id: number;
@@ -31,6 +31,9 @@ export interface Routine {
     created_at?: string;
     updated_at?: string;
 }
+
+/** @deprecated Use RemoteRoutine instead */
+export type Routine = RemoteRoutine;
 
 export interface UserExercise {
     id?: string;
@@ -98,7 +101,7 @@ export async function getSupabaseUserId(): Promise<string | null> {
 /**
  * Fetch all routines for a user
  */
-export async function fetchRoutines(userId: string): Promise<Routine[]> {
+export async function fetchRoutines(userId: string): Promise<RemoteRoutine[]> {
     const { data: routinesData, error: routinesError } = await supabase
         .from('routines')
         .select('*')
@@ -110,23 +113,25 @@ export async function fetchRoutines(userId: string): Promise<Routine[]> {
         throw routinesError;
     }
 
-    if (!routinesData) return [];
+    if (!routinesData || routinesData.length === 0) return [];
 
-    // Fetch exercises for each routine
-    const routines: Routine[] = [];
-    for (const routine of routinesData) {
-        const { data: exercisesData, error: exercisesError } = await supabase
-            .from('routine_exercises')
-            .select('*')
-            .eq('routine_id', routine.id)
-            .order('order', { ascending: true });
+    // Fetch ALL exercises for ALL routines in a single query (eliminates N+1)
+    const routineIds = routinesData.map(r => r.id);
+    const { data: allExercisesData, error: exercisesError } = await supabase
+        .from('routine_exercises')
+        .select('*')
+        .in('routine_id', routineIds)
+        .order('order', { ascending: true });
 
-        if (exercisesError) {
-            console.error('Error fetching routine exercises:', exercisesError);
-            continue;
-        }
+    if (exercisesError) {
+        console.error('Error fetching routine exercises:', exercisesError);
+        // Don't throw — return routines with empty exercises rather than failing entirely
+    }
 
-        const exercises: RoutineExercise[] = (exercisesData || []).map(ex => ({
+    // Group exercises by routine_id in memory
+    const exercisesByRoutineId = new Map<string, RoutineExercise[]>();
+    for (const ex of (allExercisesData || [])) {
+        const mapped: RoutineExercise = {
             exerciseId: ex.exercise_id,
             exerciseName: ex.exercise_name,
             sets: ex.sets,
@@ -134,27 +139,29 @@ export async function fetchRoutines(userId: string): Promise<Routine[]> {
             restSeconds: ex.rest_seconds,
             order: ex.order,
             notes: ex.notes,
-        }));
-
-        routines.push({
-            id: routine.id,
-            user_id: routine.user_id,
-            local_user_id: routine.local_user_id,
-            name: routine.name,
-            description: routine.description,
-            exercises,
-            created_at: routine.created_at,
-            updated_at: routine.updated_at,
-        });
+        };
+        if (!exercisesByRoutineId.has(ex.routine_id)) {
+            exercisesByRoutineId.set(ex.routine_id, []);
+        }
+        exercisesByRoutineId.get(ex.routine_id)!.push(mapped);
     }
 
-    return routines;
+    return routinesData.map(routine => ({
+        id: routine.id,
+        user_id: routine.user_id,
+        local_user_id: routine.local_user_id,
+        name: routine.name,
+        description: routine.description,
+        exercises: exercisesByRoutineId.get(routine.id) || [],
+        created_at: routine.created_at,
+        updated_at: routine.updated_at,
+    }));
 }
 
 /**
  * Create a new routine
  */
-export async function createRoutine(routine: Omit<Routine, 'id' | 'created_at' | 'updated_at'>): Promise<Routine> {
+export async function createRoutine(routine: Omit<RemoteRoutine, 'id' | 'created_at' | 'updated_at'>): Promise<RemoteRoutine> {
     // Insert routine
     const { data: routineData, error: routineError } = await supabase
         .from('routines')
@@ -205,17 +212,20 @@ export async function createRoutine(routine: Omit<Routine, 'id' | 'created_at' |
 
 /**
  * Update an existing routine
+ * Uses upsert instead of delete+reinsert to prevent data loss if the insert fails.
  */
-export async function updateRoutine(routine: Routine): Promise<Routine> {
+export async function updateRoutine(routine: RemoteRoutine): Promise<RemoteRoutine> {
     if (!routine.id) throw new Error('Routine ID is required for update');
 
-    // Update routine metadata
+    const updatedAt = new Date().toISOString();
+
+    // 1. Update routine metadata
     const { error: routineError } = await supabase
         .from('routines')
         .update({
             name: routine.name,
             description: routine.description,
-            updated_at: new Date().toISOString(),
+            updated_at: updatedAt,
         })
         .eq('id', routine.id);
 
@@ -224,20 +234,9 @@ export async function updateRoutine(routine: Routine): Promise<Routine> {
         throw routineError;
     }
 
-    // Delete existing exercises
-    const { error: deleteError } = await supabase
-        .from('routine_exercises')
-        .delete()
-        .eq('routine_id', routine.id);
-
-    if (deleteError) {
-        console.error('Error deleting routine exercises:', deleteError);
-        throw deleteError;
-    }
-
-    // Insert updated exercises
+    // 2. Upsert current exercises (insert new, update existing by order)
     if (routine.exercises.length > 0) {
-        const exercisesToInsert = routine.exercises.map(ex => ({
+        const exercisesToUpsert = routine.exercises.map(ex => ({
             routine_id: routine.id,
             exercise_id: ex.exerciseId,
             exercise_name: ex.exerciseName,
@@ -248,19 +247,32 @@ export async function updateRoutine(routine: Routine): Promise<Routine> {
             notes: ex.notes,
         }));
 
-        const { error: exercisesError } = await supabase
+        const { error: upsertError } = await supabase
             .from('routine_exercises')
-            .insert(exercisesToInsert);
+            .upsert(exercisesToUpsert, { onConflict: 'routine_id,order' });
 
-        if (exercisesError) {
-            console.error('Error updating routine exercises:', exercisesError);
-            throw exercisesError;
+        if (upsertError) {
+            console.error('Error upserting routine exercises:', upsertError);
+            throw upsertError;
         }
+    }
+
+    // 3. Delete exercises that were removed (orders no longer present)
+    const currentOrders = routine.exercises.map(ex => ex.order);
+    const { error: deleteError } = await supabase
+        .from('routine_exercises')
+        .delete()
+        .eq('routine_id', routine.id)
+        .not('order', 'in', `(${currentOrders.join(',')})`);
+
+    if (deleteError) {
+        // Non-fatal: stale exercises remain but won't cause data loss
+        console.warn('Error removing stale routine exercises (non-fatal):', deleteError);
     }
 
     return {
         ...routine,
-        updated_at: new Date().toISOString(),
+        updated_at: updatedAt,
     };
 }
 
@@ -283,7 +295,7 @@ export async function deleteRoutine(routineId: string): Promise<void> {
 /**
  * Duplicate a routine
  */
-export async function duplicateRoutine(routineId: string, userId: string, localUserId: number): Promise<Routine> {
+export async function duplicateRoutine(routineId: string, userId: string, localUserId: number): Promise<RemoteRoutine> {
     // Fetch the original routine
     const routines = await fetchRoutines(userId);
     const original = routines.find(r => r.id === routineId);
@@ -293,7 +305,7 @@ export async function duplicateRoutine(routineId: string, userId: string, localU
     }
 
     // Create a copy with a new name
-    const copy: Omit<Routine, 'id' | 'created_at' | 'updated_at'> = {
+    const copy: Omit<RemoteRoutine, 'id' | 'created_at' | 'updated_at'> = {
         user_id: userId,
         local_user_id: localUserId,
         name: `${original.name} (Copy)`,

@@ -89,7 +89,13 @@ export function canRetryImmediately(operation: QueuedOperation): boolean {
     if (operation.status === 'failed' || operation.attempts >= MAX_RETRY_ATTEMPTS) {
         return false;
     }
-    return !operation.lastAttempt;
+    // First attempt — always eligible
+    if (!operation.lastAttempt) {
+        return true;
+    }
+    // Subsequent attempts — check if enough time has passed
+    const timeSinceLastAttempt = Date.now() - new Date(operation.lastAttempt).getTime();
+    return timeSinceLastAttempt >= RETRY_DELAY_MS;
 }
 
 export async function clearFailedOperations(): Promise<number> {

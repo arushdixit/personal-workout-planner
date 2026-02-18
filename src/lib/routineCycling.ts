@@ -1,7 +1,7 @@
-import { db, Routine } from './db';
+import { db, LocalRoutine } from './db';
 
 export interface RoutineCyclingResult {
-    routine: Routine | null;
+    routine: LocalRoutine | null;
     reason: 'no_routines' | 'first_routine' | 'cycle_next' | 'manual_select';
 }
 
@@ -13,7 +13,7 @@ export async function determineTodaysRoutine(
 ): Promise<RoutineCyclingResult> {
     // Get all routines for this user
     // Use supabaseUserId as primary lookup since it's stable across DB cleanups
-    let routines: Routine[] = [];
+    let routines: LocalRoutine[] = [];
 
     if (supabaseUserId) {
         routines = await db.routines
@@ -89,9 +89,9 @@ export async function getRoutinesForSplit(
     localUserId: number,
     supabaseUserId: string | undefined,
     activeSplit: string
-): Promise<Routine[]> {
+): Promise<LocalRoutine[]> {
     // Use supabaseUserId as primary lookup since it's stable across DB cleanups
-    let routines: Routine[] = [];
+    let routines: LocalRoutine[] = [];
 
     if (supabaseUserId) {
         routines = await db.routines
@@ -114,7 +114,7 @@ export async function getRoutinesForSplit(
     return routines;
 }
 
-export function calculateWorkoutDuration(routine: Routine): number {
+export function calculateWorkoutDuration(routine: LocalRoutine): number {
     let totalSets = 0;
     let totalRestSeconds = 90; // Default rest
 
