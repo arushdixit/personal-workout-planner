@@ -4,8 +4,9 @@ import {
     createRoutine as createRoutineRemote,
     updateRoutine as updateRoutineRemote,
     deleteRoutine as deleteRoutineRemote,
+    RemoteRoutine,
 } from './supabaseClient';
-import { addToSyncQueue, getPendingCount } from './syncQueue';
+import { addToSyncQueue, getPendingCount, getPendingDeleteIds } from './syncQueue';
 
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
@@ -85,22 +86,59 @@ async function fetchAndSyncRoutines(userId: string): Promise<LocalRoutine[]> {
     const remoteRoutines = await fetchRoutinesRemote(userId);
     console.log(`[Cache] Fetched ${remoteRoutines.length} routines from remote`);
 
+    return await reconcileLocalRoutines(remoteRoutines);
+}
+
+/**
+ * Reconciles local routines with remote data.
+ * - Deletes local routines that are missing from remote (and not pending sync).
+ * - Updates/Adds remote routines while respecting local pending deletions.
+ */
+async function reconcileLocalRoutines(remoteRoutines: RemoteRoutine[]): Promise<LocalRoutine[]> {
     const syncedAt = new Date().toISOString();
-    const mappedRoutines: LocalRoutine[] = remoteRoutines.map(routine => ({
-        id: routine.id,
-        userId: routine.user_id,
-        localUserId: routine.local_user_id,
-        name: routine.name,
-        description: routine.description,
-        exercises: routine.exercises,
-        createdAt: routine.created_at || syncedAt,
-        updatedAt: routine.updated_at || syncedAt,
-        syncedAt,
-    }));
+    const pendingDeletes = await getPendingDeleteIds('routine');
+    const remoteIds = new Set(remoteRoutines.map(r => r.id));
 
-    await db.routines.bulkPut(mappedRoutines);
+    // 1. Map remote routines to local format, excluding those pending deletion locally
+    const mappedRoutines: LocalRoutine[] = remoteRoutines
+        .filter(r => !pendingDeletes.has(r.id!))
+        .map(routine => ({
+            id: routine.id,
+            userId: routine.user_id,
+            localUserId: routine.local_user_id,
+            name: routine.name,
+            description: routine.description,
+            exercises: routine.exercises,
+            createdAt: routine.created_at || syncedAt,
+            updatedAt: routine.updated_at || syncedAt,
+            syncedAt,
+        }));
 
-    return mappedRoutines;
+    // 2. Identify local routines that were deleted on remote
+    // These are local routines that have been synced before, are NOT in the remote list,
+    // and are NOT currently pending a local deletion
+    const localRoutines = await db.routines.toArray();
+    const idsToRemove = localRoutines
+        .filter(r =>
+            r.syncedAt &&
+            !remoteIds.has(r.id!) &&
+            !pendingDeletes.has(r.id!)
+        )
+        .map(r => r.id!);
+
+    await db.transaction('rw', db.routines, async () => {
+        if (idsToRemove.length > 0) {
+            console.log(`[Cache] Found ${idsToRemove.length} routines missing from remote, removing locally`);
+            await db.routines.bulkDelete(idsToRemove);
+        }
+        if (mappedRoutines.length > 0) {
+            await db.routines.bulkPut(mappedRoutines);
+        }
+    });
+
+    // Return the combined view: mapped remote ones + local-only ones that haven't synced yet
+    const localOnly = localRoutines.filter(r => !r.syncedAt && !pendingDeletes.has(r.id!));
+    return [...mappedRoutines, ...localOnly];
 }
 
 export async function createRoutineOptimistic(
@@ -289,21 +327,7 @@ export async function refreshRoutines(userId: string): Promise<LocalRoutine[]> {
 
     try {
         const remoteRoutines = await fetchRoutinesRemote(userId);
-        const syncedAt = new Date().toISOString();
-        const mappedRoutines: LocalRoutine[] = remoteRoutines.map(routine => ({
-            id: routine.id,
-            userId: routine.user_id,
-            localUserId: routine.local_user_id,
-            name: routine.name,
-            description: routine.description,
-            exercises: routine.exercises,
-            createdAt: routine.created_at || syncedAt,
-            updatedAt: routine.updated_at || syncedAt,
-            syncedAt,
-        }));
-
-        await db.routines.bulkPut(mappedRoutines);
-        return mappedRoutines;
+        return await reconcileLocalRoutines(remoteRoutines);
     } catch (error) {
         console.error('[Cache] Force refresh failed:', error);
         throw error;

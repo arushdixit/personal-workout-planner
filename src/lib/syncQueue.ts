@@ -90,3 +90,17 @@ export async function clearFailedOperations(): Promise<number> {
         .equals('failed')
         .delete();
 }
+
+/**
+ * Returns a set of entity IDs that are currently queued for deletion.
+ * Useful for filtering incoming sync data to avoid "resurrecting" deleted items.
+ */
+export async function getPendingDeleteIds(entityType: EntityType): Promise<Set<string>> {
+    const operations = await db.syncQueue
+        .where('entityType')
+        .equals(entityType)
+        .and(op => op.type === 'delete')
+        .toArray();
+
+    return new Set(operations.map(op => op.entityId));
+}
