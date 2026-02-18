@@ -181,7 +181,16 @@ export function calculateMuscleGroupVolume(
 
     sessions.forEach(session => {
         session.exercises.forEach(ex => {
-            const exercise = exercisesMap.get(ex.exerciseId);
+            // Try lookup by ID first, then by Name (case-insensitive) as fallback
+            let exercise = exercisesMap.get(ex.exerciseId);
+            if (!exercise && ex.exerciseName) {
+                // Secondary fallback: case-insensitive name lookup
+                const nameLower = ex.exerciseName.toLowerCase();
+                // Since exercisesMap is Map<number, Exercise>, we need to find by name
+                // In Progress.tsx, exerciseMap is built with both IDs and lowercased Names
+                exercise = (exercisesMap as any).get(nameLower);
+            }
+
             if (!exercise) return;
 
             const volume = calculateVolume(ex.sets.filter(s => s.completed));

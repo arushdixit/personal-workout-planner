@@ -24,6 +24,7 @@ import RoutineSelectorModal from '@/components/RoutineSelectorModal';
 import RoutineBuilder from '@/components/RoutineBuilder';
 import { cn } from '@/lib/utils';
 import { useUser } from '@/context/UserContext';
+import { useLiveQuery } from 'dexie-react-hooks';
 
 interface LibraryProps {
     selectedExerciseId?: string | null;
@@ -33,15 +34,22 @@ interface LibraryProps {
 
 const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: LibraryProps) => {
     const { currentUser } = useUser();
-    const [exercises, setExercises] = useState<Exercise[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState('');
-    const [filterMuscle, setFilterMuscle] = useState<string>('all');
-    const [filterEquipment, setFilterEquipment] = useState<string>('all');
-    const [view, setView] = useState<'my' | 'global'>('global');
-    const [showWizard, setShowWizard] = useState(false);
     const [editingExercise, setEditingExercise] = useState<Exercise | undefined>();
     const [viewingExercise, setViewingExercise] = useState<Exercise | undefined>();
+
+    // Restore state variables
+    const [search, setSearch] = useState('');
+    const [view, setView] = useState<'my' | 'global'>('global');
+    const [filterMuscle, setFilterMuscle] = useState<string>('all');
+    const [filterEquipment, setFilterEquipment] = useState<string>('all');
+    const [showWizard, setShowWizard] = useState(false);
+
+    // Use useLiveQuery for high-performance reactive data fetching
+    const exercises = useLiveQuery(
+        () => db.exercises.toArray(),
+        [],
+        [] as Exercise[]
+    );
 
     // Handle exercise selection from URL params
     useEffect(() => {
@@ -78,23 +86,6 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
     // NEW: Routine selector state
     const [showRoutineSelector, setShowRoutineSelector] = useState(false);
     const [selectedExerciseForAdd, setSelectedExerciseForAdd] = useState<Exercise | null>(null);
-
-    const loadExercises = async () => {
-        setLoading(true);
-        try {
-            // Data is imported on app mount in Index.tsx
-            const all = await db.exercises.toArray();
-            setExercises(all);
-        } catch (err) {
-            console.error('Failed to load exercises:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        loadExercises();
-    }, []);
 
     const filteredExercises = useMemo(() => {
         return exercises.filter(ex => {
@@ -160,7 +151,6 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
         try {
             await db.exercises.delete(deleteTarget.id);
             setDeleteTarget(null);
-            loadExercises();
         } catch (err) {
             console.error('Failed to delete exercise:', err);
         }
@@ -170,7 +160,6 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
         setShowWizard(false);
         const editedExerciseId = editingExercise?.id;
         setEditingExercise(undefined);
-        await loadExercises();
 
         // If we were viewing an exercise, refresh it with updated data
         if (editedExerciseId && viewingExercise?.id === editedExerciseId) {
@@ -194,7 +183,6 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
         // Mark the exercise as in library
         if (selectedExerciseForAdd?.id) {
             db.exercises.update(selectedExerciseForAdd.id, { inLibrary: true });
-            loadExercises();
         }
     };
 
@@ -208,14 +196,17 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
         try {
             await db.exercises.update(ex.id, { inLibrary: false });
             toast.success(`${ex.name} removed from your exercises`);
-            loadExercises();
         } catch (err) {
             console.error('Failed to remove exercise:', err);
         }
     };
 
 
-    if (loading) {
+    // Loading state is handled by the fact that useLiveQuery returns an empty array initially
+    // or we can use a simpler check if we really want a spinner
+    const isInitialLoad = exercises.length === 0 && !search;
+
+    if (isInitialLoad) {
         return (
             <div className="min-h-[100dvh] bg-background flex items-center justify-center">
                 <div className="w-8 h-8 gradient-red rounded-full animate-pulse-glow" />
@@ -542,7 +533,6 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
                     setShowWizard(false);
                     const editedExerciseId = editingExercise?.id;
                     setEditingExercise(undefined);
-                    await loadExercises();
                     // If we were viewing an exercise, refresh it with updated data
                     if (editedExerciseId && viewingExercise?.id === editedExerciseId) {
                         const updated = await db.exercises.get(editedExerciseId);
@@ -608,7 +598,6 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
                     if (selectedExerciseForAdd?.id) {
                         db.exercises.update(selectedExerciseForAdd.id, { inLibrary: true });
                     }
-                    loadExercises();
                     setShowRoutineSelector(false);
                     setSelectedExerciseForAdd(null);
                 }}

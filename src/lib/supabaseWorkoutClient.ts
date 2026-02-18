@@ -86,7 +86,8 @@ export async function createWorkoutSession(params: CreateSessionParams) {
             reps: set.reps,
             weight: set.weight,
             unit: set.unit,
-            completed: false,
+            completed: (set as any).completed || false,
+            completed_at: (set as any).completed_at || null,
         }));
     });
 

@@ -54,6 +54,15 @@ export async function pullWorkoutSessions(supabaseUserId: string, localUserId: n
         let updateCount = 0;
         let createCount = 0;
 
+        // Create a lookup map for exercise names to local IDs for robust ID resolution
+        const allLocalExercises = await db.exercises.toArray();
+        const nameToIdMap = new Map<string, number>();
+        allLocalExercises.forEach(ex => {
+            if (ex.id !== undefined) {
+                nameToIdMap.set(ex.name.toLowerCase(), ex.id);
+            }
+        });
+
         for (const remoteSession of remoteSessions) {
             // Priority matching: 1. Remote ID, 2. Composite key
             const compositeKey = `${remoteSession.date}_${remoteSession.start_time}_${remoteSession.routine_id}`;
@@ -89,8 +98,13 @@ export async function pullWorkoutSessions(supabaseUserId: string, localUserId: n
                     };
                 });
 
+                // Resolve exercise ID: Try name-based lookup first if IDs might have changed
+                // ex.exercise_id from server was the local ID AT THE TIME OF CREATION
+                // if it's a global exercise, it's safer to resolve by name
+                const resolvedExerciseId = nameToIdMap.get((ex.exercise_name || '').toLowerCase()) || ex.exercise_id;
+
                 return {
-                    exerciseId: ex.exercise_id,
+                    exerciseId: resolvedExerciseId,
                     exerciseName: ex.exercise_name,
                     order: ex.exercise_order,
                     personalNote: ex.personal_note || undefined,
@@ -253,6 +267,8 @@ async function processCreateSession(operation: QueuedOperation, session: Workout
                     reps: set.reps,
                     weight: set.weight,
                     unit: set.unit,
+                    completed: set.completed,
+                    completed_at: set.completedAt,
                 })),
             })),
         });
