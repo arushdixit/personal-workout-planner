@@ -3,6 +3,7 @@ import { SkipForward, Minus, Plus, Minimize2, Maximize2, Timer } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { createPortal } from "react-dom";
 import { useWorkout } from "@/context/WorkoutContext";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { cn } from "@/lib/utils";
 
 const RestTimer = () => {
@@ -14,6 +15,7 @@ const RestTimer = () => {
     adjustRestTime,
     skipRest
   } = useWorkout();
+  const isMobile = useIsMobile();
 
   if (!isRestTimerActive || isRestTimerActive && isRestTimerMinimized) return null;
 
@@ -24,11 +26,11 @@ const RestTimer = () => {
   const progress = (restTimeLeft / 90) * 100;
 
   const content = (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-in fade-in duration-300 transform-gpu" style={{ willChange: 'backdrop-filter' }}>
       <div className="bg-background/95 border border-white/10 rounded-[2.5rem] p-8 max-w-sm w-full mx-4 shadow-2xl relative overflow-hidden group">
         {/* Background Decorative Rings */}
-        <div className="absolute -right-12 -top-12 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute -left-12 -bottom-12 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute -right-12 -top-12 w-32 h-32 bg-primary/5 rounded-full blur-3xl transform-gpu" style={{ transform: 'translateZ(0)' }} />
+        <div className="absolute -left-12 -bottom-12 w-32 h-32 bg-primary/5 rounded-full blur-3xl transform-gpu" style={{ transform: 'translateZ(0)' }} />
 
         <div className="text-center relative">
           <div className="flex items-center justify-between mb-6">

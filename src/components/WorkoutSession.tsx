@@ -10,6 +10,7 @@ import WorkoutTimer from './WorkoutTimer';
 import RestTimer from './RestTimer';
 import { useWorkout } from '@/context/WorkoutContext';
 import { useUser } from '@/context/UserContext';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { db, Exercise } from '@/lib/db';
 import { getLastExerciseNote } from '@/lib/workoutSession';
 import { cn } from '@/lib/utils';
@@ -40,6 +41,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
         setWorkoutView,
     } = useWorkout();
     const { currentUser } = useUser();
+    const isMobile = useIsMobile();
 
     // Local UI state
     const [showEndDialog, setShowEndDialog] = useState(false);
@@ -89,7 +91,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     if (showSuccess) {
         return (
             <div className="fixed inset-0 z-[200] bg-background flex flex-col items-center justify-center p-6 overflow-hidden">
-                {/* Dynamic Background Effects */}
+                {/* Dynamic Background Effects - GPU Accelerated */}
                 <div className="absolute inset-0 -z-10 bg-black">
                     <motion.div
                         animate={{
@@ -97,7 +99,8 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                             opacity: [0.15, 0.3, 0.15]
                         }}
                         transition={{ duration: 4, repeat: Infinity }}
-                        className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/40 rounded-full blur-[120px]"
+                        style={{ willChange: 'transform, opacity, filter' }}
+                        className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/40 rounded-full blur-[120px] transform-gpu"
                     />
                     <motion.div
                         animate={{
@@ -105,7 +108,8 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                             opacity: [0.1, 0.2, 0.1]
                         }}
                         transition={{ duration: 6, repeat: Infinity, delay: 1 }}
-                        className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-rose-500/30 rounded-full blur-[100px]"
+                        style={{ willChange: 'transform, opacity, filter' }}
+                        className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-rose-500/30 rounded-full blur-[100px] transform-gpu"
                     />
                 </div>
 
@@ -123,8 +127,8 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                             transition={{ type: "spring", delay: 0.2 }}
                             className="relative inline-block"
                         >
-                            <div className="absolute inset-0 bg-primary/60 rounded-[2.5rem] blur-3xl animate-pulse" />
-                            <div className="relative w-32 h-32 bg-gradient-to-br from-primary via-rose-500 to-orange-500 rounded-[2.5rem] flex items-center justify-center shadow-[0_20px_60px_rgba(239,68,68,0.6)] border border-white/20">
+                            <div className="absolute inset-0 bg-primary/60 rounded-[2.5rem] blur-3xl animate-pulse transform-gpu" style={{ transform: 'translateZ(0)' }} />
+                            <div className="relative w-32 h-32 bg-gradient-to-br from-primary via-rose-500 to-orange-500 rounded-[2.5rem] flex items-center justify-center shadow-[0_20px_60px_rgba(239,68,68,0.6)] border border-white/20 transform-gpu" style={{ transform: 'translateZ(0)' }}>
                                 <Trophy className="w-16 h-16 text-white" />
                                 <motion.div
                                     animate={{ opacity: [0, 1, 0], scale: [0.8, 1.5, 0.8] }}
