@@ -282,11 +282,10 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        {routines.map((routine, index) => (
+                        {routines.map((routine) => (
                             <Card
                                 key={routine.id}
-                                className="glass border-white/10 animate-slide-up hover:border-primary/50 transition-all duration-300 group cursor-pointer"
-                                style={{ animationDelay: `${index * 0.05}s` }}
+                                className="glass border-white/10 hover:border-primary/50 transition-all duration-300 group cursor-pointer"
                                 onClick={() => handleEdit(routine)}
                             >
                                 <CardContent className="p-4">

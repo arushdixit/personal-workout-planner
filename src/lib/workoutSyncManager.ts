@@ -14,22 +14,97 @@ let isProcessing = false;
 
 export async function pullWorkoutSessions(supabaseUserId: string, localUserId: number): Promise<void> {
     try {
-        console.log('[WorkoutSync] Pulling workout sessions from remote...');
+        console.log(`[WorkoutSync] Pulling sessions for user ${supabaseUserId} (Local: ${localUserId})...`);
         const remoteSessions = await fetchAllWorkoutSessionsWithDetails(supabaseUserId);
 
-        // Load all existing remote IDs in one query to avoid N individual lookups
-        const existingRemoteIds = new Set(
-            (await db.workout_sessions.where('remoteId').anyOf(
-                remoteSessions.map(s => s.id)
-            ).toArray()).map(s => s.remoteId)
+        // Load all existing local sessions for this user to map remoteId -> localId
+        const localSessions = await db.workout_sessions
+            .where('supabaseUserId')
+            .equals(supabaseUserId)
+            .toArray();
+
+        // Create lookup maps for robust matching
+        const remoteToLocalIdMap = new Map<number, number>();
+        const compositeToLocalIdMap = new Map<string, number>();
+
+        localSessions.forEach(s => {
+            if (s.id === undefined) return;
+
+            // Map by remoteId if available (using != null to catch both null and undefined)
+            if (s.remoteId != null) {
+                remoteToLocalIdMap.set(s.remoteId, s.id);
+            }
+
+            // Also map by a unique composite key (date + startTime + routineId)
+            // this helps match sessions that were just created locally and don't have a remoteId yet
+            const key = `${s.date}_${s.startTime}_${s.routineId}`;
+            compositeToLocalIdMap.set(key, s.id);
+        });
+
+        // Load pending sync operations to avoid overwriting items with unsynced local changes
+        const pendingOps = await getPendingOperations();
+        const pendingLocalIds = new Set(
+            pendingOps
+                .filter(op => op.entityType === 'workout_session' || op.entityType === 'workout_set')
+                .map(op => Number(op.entityId))
         );
 
-        const newSessions: any[] = [];
-        for (const remoteSession of remoteSessions) {
-            if (existingRemoteIds.has(remoteSession.id)) continue;
+        const sessionsToUpsert: any[] = [];
+        let skippedCount = 0;
+        let updateCount = 0;
+        let createCount = 0;
 
-            console.log(`[WorkoutSync] Importing remote session: ${remoteSession.id} (${remoteSession.date})`);
-            newSessions.push({
+        for (const remoteSession of remoteSessions) {
+            // Priority matching: 1. Remote ID, 2. Composite key
+            const compositeKey = `${remoteSession.date}_${remoteSession.start_time}_${remoteSession.routine_id}`;
+            const localId = remoteToLocalIdMap.get(remoteSession.id) || compositeToLocalIdMap.get(compositeKey);
+
+            // If we have a local record and it has pending changes, skip updating it from remote
+            if (localId && pendingLocalIds.has(localId)) {
+                console.log(`[WorkoutSync] Skipping update for session ${remoteSession.id} (local ID ${localId} has pending changes)`);
+                skippedCount++;
+                continue;
+            }
+
+            if (localId) updateCount++; else createCount++;
+
+            const sessionExercises = remoteSession.session_exercises || [];
+            let totalSetsInSession = 0;
+            let completedSetsInSession = 0;
+
+            const mappedExercises = sessionExercises.map((ex: any) => {
+                const sets = ex.session_sets || [];
+                const mappedSets = sets.map((s: any) => {
+                    const isCompleted = !!s.completed;
+                    if (isCompleted) completedSetsInSession++;
+                    totalSetsInSession++;
+                    return {
+                        id: s.id,
+                        setNumber: s.set_number,
+                        reps: Number(s.reps) || 0,
+                        weight: Number(s.weight) || 0,
+                        unit: s.unit || 'kg',
+                        completed: isCompleted,
+                        completedAt: s.completed_at || undefined,
+                    };
+                });
+
+                return {
+                    exerciseId: ex.exercise_id,
+                    exerciseName: ex.exercise_name,
+                    order: ex.exercise_order,
+                    personalNote: ex.personal_note || undefined,
+                    restSeconds: ex.rest_seconds || 90,
+                    sets: mappedSets,
+                };
+            });
+
+            if (mappedExercises.length > 0) {
+                console.log(`[WorkoutSync] Session ${remoteSession.id}: ${mappedExercises.length} exercises, ${totalSetsInSession} sets (${completedSetsInSession} completed)`);
+            }
+
+            sessionsToUpsert.push({
+                ...(localId ? { id: localId } : {}),
                 remoteId: remoteSession.id,
                 userId: localUserId,
                 supabaseUserId: supabaseUserId,
@@ -39,31 +114,31 @@ export async function pullWorkoutSessions(supabaseUserId: string, localUserId: n
                 startTime: remoteSession.start_time,
                 endTime: remoteSession.end_time || undefined,
                 duration: remoteSession.duration_seconds || undefined,
-                status: remoteSession.status as any,
+                status: (remoteSession.status as any) || 'completed',
                 syncedAt: new Date().toISOString(),
-                exercises: remoteSession.session_exercises.map((ex: any) => ({
-                    exerciseId: ex.exercise_id,
-                    exerciseName: ex.exercise_name,
-                    order: ex.exercise_order,
-                    personalNote: ex.personal_note || undefined,
-                    restSeconds: ex.rest_seconds || 90,
-                    sets: ex.session_sets.map((set: any) => ({
-                        id: set.id,
-                        setNumber: set.set_number,
-                        reps: set.reps,
-                        weight: set.weight,
-                        unit: set.unit || 'kg',
-                        completed: set.completed,
-                        completedAt: set.completed_at || undefined,
-                    })),
-                })),
+                exercises: mappedExercises,
             });
         }
 
-        if (newSessions.length > 0) {
-            await db.workout_sessions.bulkAdd(newSessions);
+        if (sessionsToUpsert.length > 0) {
+            await db.workout_sessions.bulkPut(sessionsToUpsert);
         }
-        console.log(`[WorkoutSync] Completed pulling workout sessions (${newSessions.length} new)`);
+
+        // Clean up: Delete local sessions that have a remoteId but are no longer on remote
+        // (unless they have pending changes)
+        const remoteIdsOnServer = new Set(remoteSessions.map(s => s.id));
+        const sessionsToDelete = localSessions.filter(s =>
+            s.remoteId != null &&
+            !remoteIdsOnServer.has(s.remoteId) &&
+            !pendingLocalIds.has(s.id!)
+        );
+
+        if (sessionsToDelete.length > 0) {
+            console.log(`[WorkoutSync] Deleting ${sessionsToDelete.length} stale sessions removed from remote`);
+            await db.workout_sessions.bulkDelete(sessionsToDelete.map(s => s.id!));
+        }
+
+        console.log(`[WorkoutSync] Sync summary: ${createCount} new, ${updateCount} updated, ${sessionsToDelete.length} deleted, ${skippedCount} skipped`);
     } catch (error) {
         console.error('[WorkoutSync] Failed to pull workout sessions:', error);
     }

@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Dumbbell, Calendar, LineChart, TrendingUp, Loader2 } from 'lucide-react';
+import { LayoutDashboard, Dumbbell, Calendar, LineChart, TrendingUp, Loader2, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import { useUser } from '@/context/UserContext';
 import { db, WorkoutSession, Exercise } from '@/lib/db';
 import {
@@ -10,7 +12,10 @@ import {
     groupSessionsByDate,
     filterByTimeRange,
     findPersonalRecords,
+    calculateVolume,
+    calculate1RM,
     TimeRange,
+    ExerciseProgressData,
 } from '@/lib/progressUtils';
 import ProgressOverview from '@/components/ProgressOverview';
 import ExerciseProgressChart from '@/components/ExerciseProgressChart';
@@ -34,6 +39,58 @@ const Progress = () => {
     const [timeRange, setTimeRange] = useState<TimeRange>('30d');
     const [userProfiles, setUserProfiles] = useState<any[]>([]);
     const [activeTab, setActiveTab] = useState<'overview' | 'exercises' | 'calendar' | 'analysis'>('overview');
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const handleRefresh = async () => {
+        if (!currentUser?.supabaseUserId) return;
+        setIsRefreshing(true);
+        try {
+            console.log('[Progress] Refreshing data...');
+            await pullWorkoutSessions(currentUser.supabaseUserId, currentUser.id!);
+
+            // Reload all data to ensure consistency
+            const allSessions = await db.workout_sessions
+                .where('supabaseUserId')
+                .equals(currentUser.supabaseUserId)
+                .toArray();
+
+            console.log(`[Progress] Found ${allSessions.length} total sessions after refresh`);
+            const completed = allSessions.filter(s => s.status === 'completed');
+            console.log(`[Progress] ${completed.length} sessions are marked 'completed'`);
+
+            setSessions(completed);
+
+            const exerciseIds = new Set<number>();
+            const exerciseNames = new Set<string>();
+            completed.forEach(session => {
+                session.exercises.forEach(ex => {
+                    exerciseIds.add(ex.exerciseId);
+                    if (ex.exerciseName) exerciseNames.add(ex.exerciseName.toLowerCase());
+                });
+            });
+
+            const exerciseList = await db.exercises
+                .filter(ex =>
+                    (ex.id !== undefined && exerciseIds.has(ex.id)) ||
+                    (ex.name && exerciseNames.has(ex.name.toLowerCase()))
+                )
+                .toArray();
+
+            console.log(`[Progress] Loaded ${exerciseList.length} matching exercises`);
+            setExercises(exerciseList);
+
+            const profiles = await db.users.toArray();
+            console.log(`[Progress] Loaded ${profiles.length} user profiles`);
+            setUserProfiles(profiles);
+
+            toast.success('Progress updated from remote');
+        } catch (error) {
+            console.error('Error refreshing progress:', error);
+            toast.error('Failed to refresh progress');
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
 
     // Load data
     useEffect(() => {
@@ -42,30 +99,51 @@ const Progress = () => {
 
             setIsLoading(true);
             try {
+                console.log('[Progress] Initial data load...');
                 // Proactively pull latest sessions from Supabase
                 await pullWorkoutSessions(currentUser.supabaseUserId, currentUser.id!);
 
-                // Load all completed workout sessions
+                // Load all workout sessions to check statuses
                 const allSessions = await db.workout_sessions
                     .where('supabaseUserId')
                     .equals(currentUser.supabaseUserId)
-                    .and(s => s.status === 'completed')
                     .toArray();
 
-                setSessions(allSessions);
+                console.log(`[Progress] Total sessions in DB: ${allSessions.length}`);
+                const completedSessions = allSessions.filter(s => s.status === 'completed');
+                console.log(`[Progress] Completed sessions: ${completedSessions.length}`);
 
-                // Get unique exercise IDs from sessions
+                if (completedSessions.length > 0) {
+                    const first = completedSessions[0];
+                    console.log('[Progress] Sample session structure:', {
+                        id: first.id,
+                        routine: first.routineName,
+                        exerciseCount: first.exercises.length,
+                        firstExSets: first.exercises[0]?.sets
+                    });
+                }
+
+                setSessions(completedSessions);
+
+                // Get unique exercise IDs and Names from sessions for robust loading
                 const exerciseIds = new Set<number>();
-                allSessions.forEach(session => {
-                    session.exercises.forEach(ex => exerciseIds.add(ex.exerciseId));
+                const exerciseNames = new Set<string>();
+                completedSessions.forEach(session => {
+                    session.exercises.forEach(ex => {
+                        exerciseIds.add(ex.exerciseId);
+                        if (ex.exerciseName) exerciseNames.add(ex.exerciseName.toLowerCase());
+                    });
                 });
 
-                // Load exercise details
+                // Load all exercises that match either the IDs or Names used in sessions
                 const exerciseList = await db.exercises
-                    .where('id')
-                    .anyOf([...exerciseIds])
+                    .filter(ex =>
+                        (ex.id !== undefined && exerciseIds.has(ex.id)) ||
+                        (ex.name && exerciseNames.has(ex.name.toLowerCase()))
+                    )
                     .toArray();
 
+                console.log(`[Progress] Exercise library match count: ${exerciseList.length}`);
                 setExercises(exerciseList);
 
                 // Load user profiles for body metrics
@@ -97,15 +175,54 @@ const Progress = () => {
 
     const exerciseHistory = useMemo(() => {
         if (!selectedExerciseId) return [];
-        return getExerciseHistory(filteredSessions, selectedExerciseId);
-    }, [filteredSessions, selectedExerciseId]);
+
+        // Find the exercise name locally for secondary lookup
+        const selectedEx = exercises.find(ex => ex.id === selectedExerciseId);
+        const selectedName = selectedEx?.name?.toLowerCase();
+
+        // Manual filtering instead of just getExerciseHistory(filteredSessions, selectedExerciseId)
+        // to support name-based matching
+        const history: ExerciseProgressData[] = [];
+        filteredSessions
+            .sort((a, b) => a.date.localeCompare(b.date))
+            .forEach(session => {
+                session.exercises.forEach(ex => {
+                    const matchesId = ex.exerciseId === selectedExerciseId;
+                    const matchesName = selectedName && ex.exerciseName?.toLowerCase() === selectedName;
+
+                    if (matchesId || matchesName) {
+                        const completedSets = ex.sets.filter(s => s.completed);
+                        if (completedSets.length === 0) return;
+
+                        const maxWeight = Math.max(...completedSets.map(s => s.weight));
+                        const totalVolume = calculateVolume(completedSets);
+                        const estimated1RM = Math.max(...completedSets.map(s => calculate1RM(s.weight, s.reps)));
+
+                        history.push({
+                            date: session.date,
+                            maxWeight,
+                            totalVolume,
+                            estimated1RM,
+                            sets: completedSets,
+                            sessionId: session.id,
+                        });
+                    }
+                });
+            });
+        return history;
+    }, [filteredSessions, selectedExerciseId, exercises]);
 
     const calendarData = useMemo(() => {
         return groupSessionsByDate(sessions);
     }, [sessions]);
 
     const muscleStats = useMemo(() => {
-        const exerciseMap = new Map(exercises.map(ex => [ex.id!, ex]));
+        // Create a map that handles both ID and Name lookups
+        const exerciseMap = new Map<any, Exercise>();
+        exercises.forEach(ex => {
+            if (ex.id) exerciseMap.set(ex.id, ex);
+            if (ex.name) exerciseMap.set(ex.name.toLowerCase(), ex);
+        });
         return calculateMuscleGroupVolume(filteredSessions, exerciseMap);
     }, [filteredSessions, exercises]);
 
@@ -116,14 +233,25 @@ const Progress = () => {
 
     // Get exercises that have been performed
     const exercisesWithData = useMemo(() => {
+        console.log(`[Progress] Calculating exercisesWithData for ${sessions.length} sessions`);
         const exerciseIds = new Set<number>();
+        const exerciseNames = new Set<string>();
         sessions.forEach(session => {
-            session.exercises.forEach(ex => exerciseIds.add(ex.exerciseId));
+            session.exercises.forEach(ex => {
+                exerciseIds.add(ex.exerciseId);
+                if (ex.exerciseName) exerciseNames.add(ex.exerciseName.toLowerCase());
+            });
         });
 
-        return exercises
-            .filter(ex => exerciseIds.has(ex.id!))
+        const filtered = exercises
+            .filter(ex =>
+                (ex.id !== undefined && exerciseIds.has(ex.id)) ||
+                (ex.name && exerciseNames.has(ex.name.toLowerCase()))
+            )
             .sort((a, b) => a.name.localeCompare(b.name));
+
+        console.log(`[Progress] Found ${filtered.length} exercises with performace data`);
+        return filtered;
     }, [sessions, exercises]);
 
     const selectedExercise = exercises.find(ex => ex.id === selectedExerciseId);
@@ -167,8 +295,22 @@ const Progress = () => {
     return (
         <div className="min-h-screen bg-background pb-24">
             <div className="max-w-4xl mx-auto space-y-6">
-
-
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <TrendingUp className="w-8 h-8 text-primary" />
+                        <h1 className="text-3xl font-black tracking-tight">Progress</h1>
+                    </div>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleRefresh}
+                        disabled={isRefreshing}
+                        className="text-muted-foreground hover:text-white"
+                    >
+                        <RefreshCw className={cn("w-4 h-4 mr-2", isRefreshing && "animate-spin")} />
+                        {isRefreshing ? 'Syncing...' : 'Sync'}
+                    </Button>
+                </div>
 
                 {/* Tab Navigation - Added sliding "magic pill" animation */}
                 <div className="relative flex gap-1 bg-white/5 p-1 rounded-2xl border border-white/5">
