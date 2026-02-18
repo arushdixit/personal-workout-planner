@@ -32,8 +32,6 @@ export interface RemoteRoutine {
     updated_at?: string;
 }
 
-/** @deprecated Use RemoteRoutine instead */
-export type Routine = RemoteRoutine;
 
 export interface UserExercise {
     id?: string;

@@ -87,10 +87,8 @@ export async function getLastCompletedRoutine(
 
 export async function getRoutinesForSplit(
     localUserId: number,
-    supabaseUserId: string | undefined,
-    activeSplit: string
+    supabaseUserId: string | undefined
 ): Promise<LocalRoutine[]> {
-    // Use supabaseUserId as primary lookup since it's stable across DB cleanups
     let routines: LocalRoutine[] = [];
 
     if (supabaseUserId) {
@@ -100,7 +98,6 @@ export async function getRoutinesForSplit(
             .toArray();
     }
 
-    // Fallback to localUserId if no supabaseUserId or no routines found
     if (routines.length === 0 && localUserId) {
         routines = await db.routines
             .where('localUserId')
@@ -108,9 +105,6 @@ export async function getRoutinesForSplit(
             .toArray();
     }
 
-    // Filter routines that match the active split
-    // This assumes routines have a way to identify their split type
-    // If not, we return all routines for now
     return routines;
 }
 

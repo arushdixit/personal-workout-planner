@@ -4,10 +4,8 @@ import {
     createRoutine as createRoutineRemote,
     updateRoutine as updateRoutineRemote,
     deleteRoutine as deleteRoutineRemote,
-    duplicateRoutine as duplicateRoutineRemote
 } from './supabaseClient';
 import { addToSyncQueue, getPendingCount } from './syncQueue';
-import { triggerImmediateSync } from './syncManager';
 
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
@@ -155,7 +153,7 @@ export async function createRoutineOptimistic(
         return { localId: remoteRoutine.id, routine: finalRoutine };
     } catch (error) {
         console.error('[Cache] Failed to create routine remotely, queuing for sync:', error);
-        await addToSyncQueue('create', 'routine', tempId, { ...newRoutine, userId, localUserId } as unknown as Record<string, unknown>);
+        await addToSyncQueue('create', 'routine', tempId, { ...newRoutine, userId, localUserId });
         return { localId: tempId, routine: newRoutine };
     }
 }
@@ -168,21 +166,21 @@ export async function createRoutine(routine: Omit<LocalRoutine, 'id' | 'createdA
         description: routine.description,
         exercises: routine.exercises,
     });
-    console.log('[Cache] Created routine on remote:', remoteRoutine.id);
-
-    await db.routines.put({
+    const now = new Date().toISOString();
+    const saved: LocalRoutine = {
         id: remoteRoutine.id,
         userId: remoteRoutine.user_id,
         localUserId: remoteRoutine.local_user_id,
         name: remoteRoutine.name,
         description: remoteRoutine.description,
         exercises: remoteRoutine.exercises,
-        createdAt: remoteRoutine.created_at || new Date().toISOString(),
-        updatedAt: remoteRoutine.updated_at || new Date().toISOString(),
-        syncedAt: new Date().toISOString(),
-    });
+        createdAt: remoteRoutine.created_at || now,
+        updatedAt: remoteRoutine.updated_at || now,
+        syncedAt: now,
+    };
 
-    return { ...remoteRoutine, userId: remoteRoutine.user_id, localUserId: remoteRoutine.local_user_id, createdAt: remoteRoutine.created_at || new Date().toISOString(), updatedAt: remoteRoutine.updated_at || new Date().toISOString() } as LocalRoutine;
+    await db.routines.put(saved);
+    return saved;
 }
 
 export async function updateRoutineOptimistic(routine: LocalRoutine): Promise<LocalRoutine> {
@@ -210,7 +208,7 @@ export async function updateRoutineOptimistic(routine: LocalRoutine): Promise<Lo
     } catch (error) {
         console.error('[Cache] Failed to update routine remotely, queuing for sync:', error);
         const { syncedAt: _discard, ...routineForSync } = updatedRoutine;
-        await addToSyncQueue('update', 'routine', routine.id!, routineForSync as unknown as Record<string, unknown>);
+        await addToSyncQueue('update', 'routine', routine.id!, routineForSync);
         return updatedRoutine;
     }
 }
@@ -228,9 +226,8 @@ export async function updateRoutine(routine: LocalRoutine): Promise<LocalRoutine
         created_at: routine.createdAt,
         updated_at: routine.updatedAt,
     });
-    console.log('[Cache] Updated routine on remote:', routine.id);
 
-    await db.routines.put({
+    const saved: LocalRoutine = {
         id: remoteRoutine.id,
         userId: remoteRoutine.user_id,
         localUserId: remoteRoutine.local_user_id,
@@ -240,9 +237,10 @@ export async function updateRoutine(routine: LocalRoutine): Promise<LocalRoutine
         createdAt: remoteRoutine.created_at || routine.createdAt,
         updatedAt: remoteRoutine.updated_at || routine.updatedAt,
         syncedAt: new Date().toISOString(),
-    });
+    };
 
-    return { ...remoteRoutine, userId: remoteRoutine.user_id, localUserId: remoteRoutine.local_user_id, createdAt: remoteRoutine.created_at || routine.createdAt, updatedAt: remoteRoutine.updated_at || routine.updatedAt } as LocalRoutine;
+    await db.routines.put(saved);
+    return saved;
 }
 
 export async function deleteRoutineOptimistic(routineId: string): Promise<void> {
@@ -262,7 +260,7 @@ export async function deleteRoutineOptimistic(routineId: string): Promise<void> 
         console.log('[Cache] Deleted routine from remote:', routineId);
     } catch (error) {
         console.error('[Cache] Failed to delete routine remotely, queuing for sync:', error);
-        await addToSyncQueue('delete', 'routine', routineId, { ...routine } as unknown as Record<string, unknown>);
+        await addToSyncQueue('delete', 'routine', routineId, { ...routine });
     }
 }
 
@@ -292,21 +290,6 @@ export async function refreshRoutines(userId: string): Promise<LocalRoutine[]> {
     try {
         const remoteRoutines = await fetchRoutinesRemote(userId);
         const syncedAt = new Date().toISOString();
-
-        await db.routines.bulkPut(
-            remoteRoutines.map(routine => ({
-                id: routine.id,
-                userId: routine.user_id,
-                localUserId: routine.local_user_id,
-                name: routine.name,
-                description: routine.description,
-                exercises: routine.exercises,
-                createdAt: routine.created_at || syncedAt,
-                updatedAt: routine.updated_at || syncedAt,
-                syncedAt,
-            }))
-        );
-
         const mappedRoutines: LocalRoutine[] = remoteRoutines.map(routine => ({
             id: routine.id,
             userId: routine.user_id,
@@ -318,6 +301,8 @@ export async function refreshRoutines(userId: string): Promise<LocalRoutine[]> {
             updatedAt: routine.updated_at || syncedAt,
             syncedAt,
         }));
+
+        await db.routines.bulkPut(mappedRoutines);
         return mappedRoutines;
     } catch (error) {
         console.error('[Cache] Force refresh failed:', error);

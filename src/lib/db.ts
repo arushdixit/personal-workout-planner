@@ -128,8 +128,6 @@ export interface LocalRoutine {
     syncedAt?: string; // Last successful sync timestamp
 }
 
-/** @deprecated Use LocalRoutine instead */
-export type Routine = LocalRoutine;
 
 export interface SyncOperation {
     id?: number;
@@ -183,7 +181,7 @@ const db = new Dexie('ProLiftsDB') as Dexie & {
     users: EntityTable<UserProfile, 'id'>;
     exercises: EntityTable<Exercise, 'id'>;
     workouts: EntityTable<Workout, 'id'>;
-    routines: EntityTable<Routine, 'id'>;
+    routines: EntityTable<LocalRoutine, 'id'>;
     workout_sessions: EntityTable<WorkoutSession, 'id'>;
     syncQueue: EntityTable<SyncOperation, 'id'>;
 };

@@ -14,7 +14,7 @@ export async function addToSyncQueue(
     type: SyncType,
     entityType: EntityType,
     entityId: string,
-    data: Record<string, unknown>
+    data: unknown
 ): Promise<number> {
     const id = await db.syncQueue.add({
         type,
@@ -69,20 +69,6 @@ export async function updateOperationStatus(
 
 export async function removeOperation(operationId: number): Promise<void> {
     await db.syncQueue.delete(operationId);
-}
-
-export function shouldRetry(operation: QueuedOperation): boolean {
-    if (operation.status === 'failed') {
-        return false;
-    }
-    if (operation.attempts >= MAX_RETRY_ATTEMPTS) {
-        return false;
-    }
-    if (operation.lastAttempt) {
-        const timeSinceLastAttempt = Date.now() - new Date(operation.lastAttempt).getTime();
-        return timeSinceLastAttempt > RETRY_DELAY_MS;
-    }
-    return true;
 }
 
 export function canRetryImmediately(operation: QueuedOperation): boolean {
