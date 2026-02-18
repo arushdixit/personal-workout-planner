@@ -166,8 +166,8 @@ const Progress = () => {
 
     // Calculate stats
     const overviewStats = useMemo(() => {
-        return getOverviewStats(sessions);
-    }, [sessions]);
+        return getOverviewStats(sessions, currentUser?.unitPreference || 'kg');
+    }, [sessions, currentUser?.unitPreference]);
 
     const filteredSessions = useMemo(() => {
         return filterByTimeRange(sessions, timeRange);
@@ -194,8 +194,14 @@ const Progress = () => {
                         const completedSets = ex.sets.filter(s => s.completed);
                         if (completedSets.length === 0) return;
 
-                        const maxWeight = Math.max(...completedSets.map(s => s.weight));
-                        const totalVolume = calculateVolume(completedSets);
+                        const maxWeight = Math.max(...completedSets.map(s => {
+                            let w = s.weight;
+                            const targetUnit = currentUser?.unitPreference || 'kg';
+                            if (s.unit === 'lbs' && targetUnit === 'kg') w *= 0.453592;
+                            else if (s.unit === 'kg' && targetUnit === 'lbs') w /= 0.453592;
+                            return w;
+                        }));
+                        const totalVolume = calculateVolume(completedSets, currentUser?.unitPreference || 'kg');
                         const estimated1RM = Math.max(...completedSets.map(s => calculate1RM(s.weight, s.reps)));
 
                         history.push({
@@ -213,8 +219,8 @@ const Progress = () => {
     }, [filteredSessions, selectedExerciseId, exercises]);
 
     const calendarData = useMemo(() => {
-        return groupSessionsByDate(sessions);
-    }, [sessions]);
+        return groupSessionsByDate(sessions, currentUser?.unitPreference || 'kg');
+    }, [sessions, currentUser?.unitPreference]);
 
     const muscleStats = useMemo(() => {
         // Create a map that handles both ID and Name lookups
@@ -223,8 +229,8 @@ const Progress = () => {
             if (ex.id) exerciseMap.set(ex.id, ex);
             if (ex.name) exerciseMap.set(ex.name.toLowerCase(), ex);
         });
-        return calculateMuscleGroupVolume(filteredSessions, exerciseMap);
-    }, [filteredSessions, exercises]);
+        return calculateMuscleGroupVolume(filteredSessions, exerciseMap, currentUser?.unitPreference || 'kg');
+    }, [filteredSessions, exercises, currentUser?.unitPreference]);
 
     const personalRecords = useMemo(() => {
         if (!selectedExerciseId) return { maxWeight: null, max1RM: null, maxVolume: null };

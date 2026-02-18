@@ -46,12 +46,21 @@ export function calculate1RM(weight: number, reps: number): number {
 
 /**
  * Calculate total volume for a set of workout sets
- * Volume = sum(reps * weight)
+ * Volume = sum(reps * weight), normalized to target unit
  */
-export function calculateVolume(sets: WorkoutSet[]): number {
+export function calculateVolume(sets: WorkoutSet[], targetUnit: 'kg' | 'lbs' = 'kg'): number {
     return sets.reduce((sum, set) => {
         if (set.completed) {
-            return sum + (set.reps * set.weight);
+            let weight = set.weight;
+
+            // Normalize to target unit
+            if (set.unit === 'lbs' && targetUnit === 'kg') {
+                weight = weight * 0.453592;
+            } else if (set.unit === 'kg' && targetUnit === 'lbs') {
+                weight = weight / 0.453592;
+            }
+
+            return sum + (set.reps * weight);
         }
         return sum;
     }, 0);
@@ -135,7 +144,8 @@ function calculateLongestStreak(sortedSessions: WorkoutSession[]): number {
  */
 export function getExerciseHistory(
     sessions: WorkoutSession[],
-    exerciseId: number
+    exerciseId: number,
+    targetUnit: 'kg' | 'lbs' = 'kg'
 ): ExerciseProgressData[] {
     const history: ExerciseProgressData[] = [];
 
@@ -147,8 +157,13 @@ export function getExerciseHistory(
                     const completedSets = ex.sets.filter(s => s.completed);
                     if (completedSets.length === 0) return;
 
-                    const maxWeight = Math.max(...completedSets.map(s => s.weight));
-                    const totalVolume = calculateVolume(completedSets);
+                    const maxWeight = Math.max(...completedSets.map(s => {
+                        let w = s.weight;
+                        if (s.unit === 'lbs' && targetUnit === 'kg') w *= 0.453592;
+                        else if (s.unit === 'kg' && targetUnit === 'lbs') w /= 0.453592;
+                        return w;
+                    }));
+                    const totalVolume = calculateVolume(completedSets, targetUnit);
 
                     // Calculate best 1RM from this session
                     const estimated1RM = Math.max(
@@ -175,7 +190,8 @@ export function getExerciseHistory(
  */
 export function calculateMuscleGroupVolume(
     sessions: WorkoutSession[],
-    exercisesMap: Map<number, Exercise>
+    exercisesMap: Map<number, Exercise>,
+    targetUnit: 'kg' | 'lbs' = 'kg'
 ): MuscleGroupStats[] {
     const muscleStats = new Map<string, MuscleGroupStats>();
 
@@ -193,7 +209,7 @@ export function calculateMuscleGroupVolume(
 
             if (!exercise) return;
 
-            const volume = calculateVolume(ex.sets.filter(s => s.completed));
+            const volume = calculateVolume(ex.sets.filter(s => s.completed), targetUnit);
             const completedSets = ex.sets.filter(s => s.completed).length;
 
             // Primary muscles get full volume
@@ -225,13 +241,13 @@ export function calculateMuscleGroupVolume(
 }
 
 /**
- * Calculate total volume across all sessions
+ * Calculate total volume across all sessions in a specific target unit
  */
-export function calculateTotalVolume(sessions: WorkoutSession[]): number {
+export function calculateTotalVolume(sessions: WorkoutSession[], targetUnit: 'kg' | 'lbs' = 'kg'): number {
     return sessions
         .reduce((total, session) => {
             const sessionVolume = session.exercises.reduce((exTotal, ex) => {
-                return exTotal + calculateVolume(ex.sets);
+                return exTotal + calculateVolume(ex.sets, targetUnit);
             }, 0);
             return total + sessionVolume;
         }, 0);
@@ -240,7 +256,7 @@ export function calculateTotalVolume(sessions: WorkoutSession[]): number {
 /**
  * Get overview statistics
  */
-export function getOverviewStats(sessions: WorkoutSession[]): OverviewStats {
+export function getOverviewStats(sessions: WorkoutSession[], targetUnit: 'kg' | 'lbs' = 'kg'): OverviewStats {
     const completedSessions = sessions;
 
     // Calculate week boundaries
@@ -277,7 +293,7 @@ export function getOverviewStats(sessions: WorkoutSession[]): OverviewStats {
 
     return {
         totalWorkouts: completedSessions.length,
-        totalVolume: calculateTotalVolume(completedSessions),
+        totalVolume: Math.round(calculateTotalVolume(completedSessions, targetUnit)),
         totalSets,
         averageDuration,
         thisWeekWorkouts,
@@ -332,7 +348,7 @@ export interface CalendarData {
     routines: string[];
 }
 
-export function groupSessionsByDate(sessions: WorkoutSession[]): CalendarData[] {
+export function groupSessionsByDate(sessions: WorkoutSession[], targetUnit: 'kg' | 'lbs' = 'kg'): CalendarData[] {
     const grouped = new Map<string, CalendarData>();
 
     sessions
@@ -340,7 +356,7 @@ export function groupSessionsByDate(sessions: WorkoutSession[]): CalendarData[] 
         .forEach(session => {
             const existing = grouped.get(session.date);
             const volume = session.exercises.reduce((sum, ex) =>
-                sum + calculateVolume(ex.sets), 0
+                sum + calculateVolume(ex.sets, targetUnit), 0
             );
 
             if (existing) {

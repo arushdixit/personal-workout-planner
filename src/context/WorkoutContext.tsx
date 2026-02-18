@@ -124,6 +124,22 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
                     .first();
 
                 if (session) {
+                    // AUTO-ABANDON logic: Check if session is older than 2 hours
+                    const startTime = new Date(session.startTime).getTime();
+                    const now = Date.now();
+                    const twoHoursInMs = 2 * 60 * 60 * 1000;
+
+                    if (now - startTime > twoHoursInMs) {
+                        console.log('[WorkoutContext] Auto-abandoning stale session:', session.id);
+                        await db.workout_sessions.update(session.id!, {
+                            status: 'abandoned',
+                            endTime: new Date().toISOString(),
+                        });
+                        await queueWorkoutOperation('abandon', session.id!);
+                        setActiveSession(null);
+                        return;
+                    }
+
                     setActiveSession(session);
 
                     // Recover saved UI state if it exists for this session
@@ -342,7 +358,13 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             setIsRestTimerMinimized(false);
         }
 
-        await queueWorkoutOperation('set_complete', session.id!, { setId, reps, weight });
+        await queueWorkoutOperation('set_complete', session.id!, {
+            setId,
+            reps,
+            weight,
+            exerciseOrder: exercise.order,
+            setNumber: set?.setNumber
+        });
     }, [activeSession]);
 
     const addExtraSet = useCallback(async (exerciseIndex: number) => {
@@ -371,6 +393,15 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         await db.workout_sessions.update(activeSession.id!, { exercises: updatedExercises });
         setActiveSession({ ...activeSession, exercises: updatedExercises });
+
+        // Trigger sync
+        const exercise = updatedExercises[exerciseIndex];
+        const lastSet = exercise.sets[exercise.sets.length - 1];
+        queueWorkoutOperation('add_set', activeSession.id!, {
+            exerciseOrder: exercise.order,
+            setNumber: lastSet.setNumber,
+            unit: lastSet.unit
+        }).catch(err => console.error('[WorkoutContext] Failed to queue set add sync:', err));
     }, [activeSession]);
 
     const removeExtraSet = useCallback(async (exerciseIndex: number) => {

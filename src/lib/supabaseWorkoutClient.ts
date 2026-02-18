@@ -102,7 +102,9 @@ export async function createWorkoutSession(params: CreateSessionParams) {
         }
     }
 
-    return data;
+    // Proactively fetch the full session with all server-assigned IDs
+    // so the client can map local UUIDs to remote BigInts
+    return fetchWorkoutSessionDetails(data.id);
 }
 
 export async function updateSessionExercise(

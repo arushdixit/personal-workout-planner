@@ -9,6 +9,7 @@ import {
     fetchAllWorkoutSessionsWithDetails,
 } from './supabaseWorkoutClient';
 import { addToSyncQueue, updateOperationStatus, removeOperation, getPendingOperations, type QueuedOperation, type SyncType, type EntityType } from './syncQueue';
+import { supabase } from './supabaseClient';
 
 let isProcessing = false;
 
@@ -69,7 +70,9 @@ export async function pullWorkoutSessions(supabaseUserId: string, localUserId: n
             const localId = remoteToLocalIdMap.get(remoteSession.id) || compositeToLocalIdMap.get(compositeKey);
 
             // If we have a local record and it has pending changes, skip updating it from remote
-            if (localId && pendingLocalIds.has(localId)) {
+            // EXCEPT if the remote session is already 'completed' — in that case, the server
+            // is the source of truth for historical stats, and we want to pull the repair.
+            if (localId && pendingLocalIds.has(localId) && remoteSession.status !== 'completed') {
                 console.log(`[WorkoutSync] Skipping update for session ${remoteSession.id} (local ID ${localId} has pending changes)`);
                 skippedCount++;
                 continue;
@@ -84,7 +87,14 @@ export async function pullWorkoutSessions(supabaseUserId: string, localUserId: n
             const mappedExercises = sessionExercises.map((ex: any) => {
                 const sets = ex.session_sets || [];
                 const mappedSets = sets.map((s: any) => {
-                    const isCompleted = !!s.completed;
+                    // REPAIR HEURISTIC: If the session is completed on the server but the set is 
+                    // not marked 'completed', we treat it as completed if it has data. 
+                    // This fixes sessions broken by the previous sync ID mismatch bug.
+                    let isCompleted = !!s.completed;
+                    if (!isCompleted && remoteSession.status === 'completed' && (Number(s.reps) > 0 || Number(s.weight) > 0)) {
+                        isCompleted = true;
+                    }
+
                     if (isCompleted) completedSetsInSession++;
                     totalSetsInSession++;
                     return {
@@ -94,7 +104,7 @@ export async function pullWorkoutSessions(supabaseUserId: string, localUserId: n
                         weight: Number(s.weight) || 0,
                         unit: s.unit || 'kg',
                         completed: isCompleted,
-                        completedAt: s.completed_at || undefined,
+                        completedAt: s.completed_at || (isCompleted ? remoteSession.end_time : undefined),
                     };
                 });
 
@@ -273,14 +283,35 @@ async function processCreateSession(operation: QueuedOperation, session: Workout
             })),
         });
 
-        // Store the remote ID separately from the local ID
+        // remoteSession now contains the full session with server-assigned IDs
+        // Map local temporary IDs (UUIDs) to remote BigInt IDs
+        const updatedExercises = session.exercises.map(localEx => {
+            const remoteEx = remoteSession.session_exercises.find((re: any) => re.exercise_order === localEx.order);
+            if (!remoteEx) return localEx;
+
+            const updatedSets = localEx.sets.map(localSet => {
+                const remoteSet = remoteEx.session_sets.find((rs: any) => rs.set_number === localSet.setNumber);
+                return {
+                    ...localSet,
+                    id: remoteSet ? remoteSet.id : localSet.id
+                };
+            });
+
+            return {
+                ...localEx,
+                sets: updatedSets
+            };
+        });
+
+        // Store the remote ID and updated nested structure with mapped IDs
         await db.workout_sessions.update(Number(operation.entityId), {
             remoteId: remoteSession.id,
             syncedAt: new Date().toISOString(),
+            exercises: updatedExercises
         });
 
         await removeOperation(operation.id!);
-        console.log('[WorkoutSync] Successfully synced created session. Local ID:', operation.entityId, 'Remote ID:', remoteSession.id);
+        console.log('[WorkoutSync] Successfully synced created session and mapped IDs. Local ID:', operation.entityId, 'Remote ID:', remoteSession.id);
     } catch (error) {
         console.error('[WorkoutSync] Failed to create session remotely:', error);
         throw error;
@@ -341,15 +372,29 @@ async function processSetComplete(operation: QueuedOperation, session: WorkoutSe
         throw new Error('Session not yet synced to server');
     }
 
-    const setData = operation.data as { setId?: number; reps?: number; weight?: number };
-    if (!setData.setId) {
-        console.warn('[WorkoutSync] No set ID in operation');
-        await removeOperation(operation.id!);
-        return;
+    const setData = operation.data as { setId?: number | string; reps?: number; weight?: number; exerciseOrder?: number; setNumber?: number };
+
+    // Resolve the real server-side set ID
+    let finalSetId: number | null = typeof setData.setId === 'number' ? setData.setId : null;
+
+    // If ID is a UUID/string or missing, find it by traversing the latest session structure
+    if (!finalSetId && setData.exerciseOrder !== undefined && setData.setNumber !== undefined) {
+        const exercise = session.exercises.find(ex => ex.order === setData.exerciseOrder);
+        const set = exercise?.sets.find(s => s.setNumber === setData.setNumber);
+        if (typeof set?.id === 'number') {
+            finalSetId = set.id;
+        }
+    }
+
+    if (!finalSetId) {
+        console.warn('[WorkoutSync] Could not resolve numeric set ID for sync', setData);
+        // If we can't find it, the session might have just been created and IDs not yet mapped
+        // Throwing error to trigger a retry
+        throw new Error('Set ID not yet mapped to remote');
     }
 
     try {
-        await updateRemoteSet(setData.setId, {
+        await updateRemoteSet(finalSetId, {
             reps: setData.reps || 0,
             weight: setData.weight || 0,
             completed: true,
@@ -357,7 +402,7 @@ async function processSetComplete(operation: QueuedOperation, session: WorkoutSe
         });
 
         await removeOperation(operation.id!);
-        console.log('[WorkoutSync] Successfully synced set complete');
+        console.log('[WorkoutSync] Successfully synced set complete for set ID:', finalSetId);
     } catch (error) {
         console.error('[WorkoutSync] Failed to complete set remotely:', error);
         throw error;
@@ -370,18 +415,29 @@ async function processSetUpdate(operation: QueuedOperation, session: WorkoutSess
         throw new Error('Session not yet synced to server');
     }
 
-    const setData = operation.data as { setId?: number; updates?: Record<string, unknown> };
-    if (!setData.setId || !setData.updates) {
-        console.warn('[WorkoutSync] Missing set data in operation');
-        await removeOperation(operation.id!);
-        return;
+    const setData = operation.data as { setId?: number | string; updates?: Record<string, unknown>; exerciseOrder?: number; setNumber?: number };
+
+    // Resolve the real server-side set ID
+    let finalSetId: number | null = typeof setData.setId === 'number' ? setData.setId : null;
+
+    if (!finalSetId && setData.exerciseOrder !== undefined && setData.setNumber !== undefined) {
+        const exercise = session.exercises.find(ex => ex.order === setData.exerciseOrder);
+        const set = exercise?.sets.find(s => s.setNumber === setData.setNumber);
+        if (typeof set?.id === 'number') {
+            finalSetId = set.id;
+        }
+    }
+
+    if (!finalSetId || !setData.updates) {
+        console.warn('[WorkoutSync] Missing or unresolvable set data in operation', setData);
+        throw new Error('Set ID not yet mapped to remote');
     }
 
     try {
-        await updateRemoteSet(setData.setId, setData.updates);
+        await updateRemoteSet(finalSetId, setData.updates);
 
         await removeOperation(operation.id!);
-        console.log('[WorkoutSync] Successfully synced set update');
+        console.log('[WorkoutSync] Successfully synced set update for set ID:', finalSetId);
     } catch (error) {
         console.error('[WorkoutSync] Failed to update set remotely:', error);
         throw error;
@@ -394,17 +450,57 @@ async function processAddSet(operation: QueuedOperation, session: WorkoutSession
         throw new Error('Session not yet synced to server');
     }
 
-    const setData = operation.data as { sessionExerciseId?: number; setNumber?: number; unit?: 'kg' | 'lbs' };
-    if (!setData.sessionExerciseId || !setData.setNumber) {
+    const setData = operation.data as { sessionExerciseId?: number | string; setNumber?: number; unit?: 'kg' | 'lbs'; exerciseOrder?: number };
+
+    // Resolve the real server-side session_exercise ID
+    let finalExerciseId: number | null = typeof setData.sessionExerciseId === 'number' ? setData.sessionExerciseId : null;
+
+    if (!finalExerciseId && setData.exerciseOrder !== undefined) {
+        // Fallback: Use the exercise order to find the remote ID from the latest session structure
+        const exercise = session.exercises.find(ex => ex.order === setData.exerciseOrder);
+        // Note: The exercise structure itself doesn't store session_exercise_id in Dexie yet,
+        // but it's often the exerciseId if they were mapped correctly, 
+        // OR we can just use the remoteSession returned from create.
+        // Actually, let's just make it simpler: the exerciseId in session.exercises 
+        // SHOULD have been mapped to the server-side session_exercise_id if we update properly.
+
+        // Wait, in processCreateSession I updated:
+        // updatedSets.id = remoteSet.id
+        // But what about session_exercise.id? 
+        // I should probably store that too.
+    }
+
+    if (!finalExerciseId && setData.exerciseOrder !== undefined) {
+        // Since we don't store session_exercise_id explicitly in dexie yet (we should have),
+        // we'll try to find it from the server or assume if the sets are mapped, the exercise is too.
+        // Actually, let's just trust exerciseOrder for now if we can't find ID.
+        // We'll update processCreateSession to also map exercise IDs.
+    }
+
+    if (!setData.exerciseOrder && !finalExerciseId) {
         console.warn('[WorkoutSync] Missing add set data');
         return;
     }
 
     try {
-        await addRemoteSet(setData.sessionExerciseId, setData.setNumber, setData.unit || 'kg');
+        // If we still don't have a numeric ID, we need to fetch it from the server
+        if (!finalExerciseId && setData.exerciseOrder !== undefined) {
+            const { data: remoteSession } = await supabase
+                .from('workout_sessions')
+                .select('id, session_exercises(id, exercise_order)')
+                .eq('id', session.remoteId)
+                .single();
+
+            const remoteEx = remoteSession?.session_exercises.find((re: any) => re.exercise_order === setData.exerciseOrder);
+            if (remoteEx) finalExerciseId = remoteEx.id;
+        }
+
+        if (!finalExerciseId) throw new Error('Could not resolve exercise ID for add_set');
+
+        await addRemoteSet(finalExerciseId, setData.setNumber!, setData.unit || 'kg');
 
         await removeOperation(operation.id!);
-        console.log('[WorkoutSync] Successfully synced add set');
+        console.log('[WorkoutSync] Successfully synced add set for exercise ID:', finalExerciseId);
     } catch (error) {
         console.error('[WorkoutSync] Failed to add set remotely:', error);
         throw error;
