@@ -34,6 +34,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const lastSyncedUserId = React.useRef<string | null>(null);
 
     const refreshUsers = async (supabaseUserId?: string) => {
         if (!currentUser) setLoading(true);
@@ -69,7 +70,23 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 return;
             }
 
+            if (event === 'SIGNED_OUT') {
+                lastSyncedUserId.current = null;
+                setCurrentUser(null);
+                setAllUsers([]);
+                setLoading(false);
+                return;
+            }
+
             if (user) {
+                // Guard: Prevent duplicate sync for the same user within the same session
+                if (lastSyncedUserId.current === user.id) {
+                    console.log('[Auth] Duplicate user ID detected, skipping sync logic');
+                    setLoading(false);
+                    return;
+                }
+
+                lastSyncedUserId.current = user.id;
                 setLoading(true);
                 // Start pulling exercises immediately as it only needs supabase userId
                 pullUserExercises(user.id).catch(console.error);
