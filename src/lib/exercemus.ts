@@ -98,10 +98,12 @@ export async function importExercemusData() {
                 await db.exercises.where('source').equals('exercemus').delete();
             }
 
-            console.log('Loading enriched-exercemus-data.json...');
-            // Dynamic import to keep main bundle small
-            const module = await import('./enriched-exercemus-data.json');
-            const data = module.default || module;
+            console.log('Fetching /data/enriched-exercises.json...');
+            const response = await fetch('/data/enriched-exercises.json');
+            if (!response.ok) {
+                throw new Error(`Failed to fetch exercises: ${response.status} ${response.statusText}`);
+            }
+            const data = await response.json();
 
             console.log(`JSON loaded successfully, keys: ${Object.keys(data).join(', ')}`);
             if (data.exercises) {

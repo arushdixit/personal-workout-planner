@@ -71,14 +71,16 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
             if (user) {
                 setLoading(true);
+                // Start pulling exercises immediately as it only needs supabase userId
+                pullUserExercises(user.id).catch(console.error);
+
                 try {
                     const users = await db.users.where('supabaseUserId').equals(user.id).toArray();
                     console.log('[Auth] Found profiles:', users.length, users);
                     setAllUsers(users);
                     if (users.length > 0) {
                         setCurrentUser(users[0]);
-                        // Exercise and workout data is imported on app mount in Index.tsx
-                        pullUserExercises(user.id).catch(console.error);
+                        // Workout data still needs local user ID
                         pullWorkoutSessions(user.id, users[0].id!).catch(console.error);
                     } else {
                         console.log('[Auth] No local profile found, checking user metadata');

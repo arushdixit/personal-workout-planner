@@ -1,19 +1,20 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
-import Library from '@/pages/Library';
-import Routines from '@/pages/Routines';
 import TodayPage from '@/pages/Today';
-import Progress from '@/pages/Progress';
 import WorkoutSession from '@/components/WorkoutSession';
 import WorkoutCountdown from '@/components/WorkoutCountdown';
-import Profile from '@/components/Profile';
 import { MinimizedRestTimer } from '@/components/RestTimer';
 import GlobalAICoach from '@/components/GlobalAICoach';
-import { UserCircle } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
 import { cn } from '@/lib/utils';
+
+// Lazy load non-critical tabs
+const Library = lazy(() => import('@/pages/Library'));
+const Routines = lazy(() => import('@/pages/Routines'));
+const Progress = lazy(() => import('@/pages/Progress'));
+const Profile = lazy(() => import('@/components/Profile'));
 
 const Index = () => {
   const { currentUser, allUsers, switchUser, logout } = useUser();
@@ -144,65 +145,70 @@ const Index = () => {
             onNavigateToRoutines={handleNavigateToRoutines}
           />
         )}
-
-        {activeTab === 'library' && (
-          <Library
-            selectedExerciseId={exerciseId}
-            onOpenExercise={(id: number) => {
-              const currentParams = new URLSearchParams(searchParams.toString());
-              currentParams.set('tab', 'library');
-              currentParams.set('exerciseId', id.toString());
-              setSearchParams(currentParams);
-            }}
-            onCloseExercise={() => {
-              const currentParams = new URLSearchParams(searchParams.toString());
-              const returnTab = currentParams.get('returnTab');
-              currentParams.delete('exerciseId');
-              currentParams.delete('returnTab');
-
-              // Use requestAnimationFrame to defer navigation slightly
-              // This allows the modal close animation to start before tab changes
-              requestAnimationFrame(() => {
-                // Immediately update activeTab to prevent flickering
-                if (returnTab) {
-                  setActiveTab(returnTab);
-                  currentParams.set('tab', returnTab);
-                } else {
-                  // If no returnTab, stay on library but close the detail
-                  currentParams.set('tab', 'library');
-                }
-
-                setSearchParams(currentParams);
-              });
-            }}
-          />
-        )}
-
-        {activeTab === 'routines' && (
-          <Routines
-            showBuilderOnLoad={showBuilder}
-            selectedRoutineId={searchParams.get('routineId')}
-            onViewRoutine={handleViewRoutine}
-            onOpenBuilder={handleNavigateToRoutines}
-            onCloseEditor={handleCloseRoutineEditor}
-          />
-        )}
-
-        {activeTab === 'progress' && <Progress />}
-
-        {activeTab === 'workout' && workoutId && (
-          <div className="min-h-[100dvh] flex flex-col">
-            <WorkoutSession
-              key="active-workout-session"
-              routineId={workoutId}
-              onClose={handleCloseWorkout}
-            />
+        <Suspense fallback={
+          <div className="flex-1 flex items-center justify-center min-h-[40vh]">
+            <div className="w-8 h-8 gradient-red rounded-full animate-pulse-glow" />
           </div>
-        )}
+        }>
+          {activeTab === 'library' && (
+            <Library
+              selectedExerciseId={exerciseId}
+              onOpenExercise={(id: number) => {
+                const currentParams = new URLSearchParams(searchParams.toString());
+                currentParams.set('tab', 'library');
+                currentParams.set('exerciseId', id.toString());
+                setSearchParams(currentParams);
+              }}
+              onCloseExercise={() => {
+                const currentParams = new URLSearchParams(searchParams.toString());
+                const returnTab = currentParams.get('returnTab');
+                currentParams.delete('exerciseId');
+                currentParams.delete('returnTab');
 
-        {activeTab === 'profile' && (
-          <Profile currentUser={currentUser} />
-        )}
+                // Use requestAnimationFrame to defer navigation slightly
+                // This allows the modal close animation to start before tab changes
+                requestAnimationFrame(() => {
+                  // Immediately update activeTab to prevent flickering
+                  if (returnTab) {
+                    setActiveTab(returnTab);
+                    currentParams.set('tab', returnTab);
+                  } else {
+                    // If no returnTab, stay on library but close the detail
+                    currentParams.set('tab', 'library');
+                  }
+
+                  setSearchParams(currentParams);
+                });
+              }}
+            />
+          )}
+
+          {activeTab === 'routines' && (
+            <Routines
+              showBuilderOnLoad={showBuilder}
+              selectedRoutineId={searchParams.get('routineId')}
+              onViewRoutine={handleViewRoutine}
+              onOpenBuilder={handleNavigateToRoutines}
+              onCloseEditor={handleCloseRoutineEditor}
+            />
+          )}
+
+          {activeTab === 'progress' && <Progress />}
+
+          {activeTab === 'workout' && workoutId && (
+            <div className="min-h-[100dvh] flex flex-col">
+              <WorkoutSession
+                key="active-workout-session"
+                routineId={workoutId}
+                onClose={handleCloseWorkout}
+              />
+            </div>
+          )}
+
+          {activeTab === 'profile' && (
+            <Profile currentUser={currentUser} />
+          )}
+        </Suspense>
       </main>
       {activeTab !== 'workout' && (
         <div className="relative flex-shrink-0 border-t border-white/10 bg-background/80 backdrop-blur-xl z-[60]">

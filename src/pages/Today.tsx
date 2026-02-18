@@ -84,20 +84,40 @@ const TodayPage = (props: TodayPageProps) => {
             return;
         }
 
-        if (currentUser.supabaseUserId) {
-            await fetchRoutines(currentUser.supabaseUserId);
+        try {
+            // First, get the current local routines to show something quickly
+            const initialResult = await determineTodaysRoutine(
+                currentUser.id,
+                currentUser.supabaseUserId,
+                currentUser.activeSplit || 'PPL',
+                currentUser.lastCompletedRoutineId
+            );
+
+            if (initialResult.routine) {
+                setTodaysRoutine(initialResult.routine);
+                setIsLoading(false);
+            }
+
+            // Then, fetch from remote to ensure we have the latest (in background)
+            if (currentUser.supabaseUserId) {
+                await fetchRoutines(currentUser.supabaseUserId);
+
+                // Re-determine if we fetched new data
+                const finalResult = await determineTodaysRoutine(
+                    currentUser.id,
+                    currentUser.supabaseUserId,
+                    currentUser.activeSplit || 'PPL',
+                    currentUser.lastCompletedRoutineId
+                );
+
+                setTodaysRoutine(finalResult.routine);
+            }
+        } catch (error) {
+            console.error('[Today] Error loading routine:', error);
+        } finally {
+            setManuallySelectedRoutine(false);
+            setIsLoading(false);
         }
-
-        const result = await determineTodaysRoutine(
-            currentUser.id,
-            currentUser.supabaseUserId,
-            currentUser.activeSplit || 'PPL',
-            currentUser.lastCompletedRoutineId
-        );
-
-        setTodaysRoutine(result.routine);
-        setManuallySelectedRoutine(false); // Reset manual selection flag
-        setIsLoading(false);
     };
 
     const handleStartWorkout = useCallback(async () => {
