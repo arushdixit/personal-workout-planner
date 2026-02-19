@@ -14,9 +14,17 @@ import { supabase } from './supabaseClient';
 let isProcessing = false;
 
 export async function pullWorkoutSessions(supabaseUserId: string, localUserId: number): Promise<void> {
+    const STORAGE_KEY = `lastWorkoutSyncAt_${supabaseUserId}`;
     try {
-        console.log(`[WorkoutSync] Pulling sessions for user ${supabaseUserId} (Local: ${localUserId})...`);
-        const remoteSessions = await fetchAllWorkoutSessionsWithDetails(supabaseUserId);
+        // Read the timestamp of the last successful pull for incremental sync
+        const lastSyncedAt = localStorage.getItem(STORAGE_KEY) ?? undefined;
+        console.log(`[WorkoutSync] Pulling sessions for user ${supabaseUserId} (Local: ${localUserId})${lastSyncedAt ? ` since ${lastSyncedAt}` : ' (full pull)'}...`);
+
+        // Only fetch sessions that changed since the last sync; falls back to full pull on first run
+        const remoteSessions = await fetchAllWorkoutSessionsWithDetails(supabaseUserId, lastSyncedAt);
+
+        // Record the sync time before processing so we don't miss updates that arrive mid-sync
+        const syncTimestamp = new Date().toISOString();
 
         // Load all existing local sessions for this user to map remoteId -> localId
         const localSessions = await db.workout_sessions
@@ -139,7 +147,6 @@ export async function pullWorkoutSessions(supabaseUserId: string, localUserId: n
                 endTime: remoteSession.end_time || undefined,
                 duration: remoteSession.duration_seconds || undefined,
                 status: (remoteSession.status as any) || 'completed',
-                syncedAt: new Date().toISOString(),
                 exercises: mappedExercises,
             });
         }
@@ -148,23 +155,29 @@ export async function pullWorkoutSessions(supabaseUserId: string, localUserId: n
             await db.workout_sessions.bulkPut(sessionsToUpsert);
         }
 
-        // Clean up: Delete local sessions that have a remoteId but are no longer on remote
-        // (unless they have pending changes)
-        const remoteIdsOnServer = new Set(remoteSessions.map(s => s.id));
-        const sessionsToDelete = localSessions.filter(s =>
-            s.remoteId != null &&
-            !remoteIdsOnServer.has(s.remoteId) &&
-            !pendingLocalIds.has(s.id!)
-        );
+        // Only do deletion cleanup on a full pull (no since filter) to avoid falsely removing
+        // sessions that simply weren't returned because they predate the sync window
+        if (!lastSyncedAt) {
+            const remoteIdsOnServer = new Set(remoteSessions.map(s => s.id));
+            const sessionsToDelete = localSessions.filter(s =>
+                s.remoteId != null &&
+                !remoteIdsOnServer.has(s.remoteId) &&
+                !pendingLocalIds.has(s.id!)
+            );
 
-        if (sessionsToDelete.length > 0) {
-            console.log(`[WorkoutSync] Deleting ${sessionsToDelete.length} stale sessions removed from remote`);
-            await db.workout_sessions.bulkDelete(sessionsToDelete.map(s => s.id!));
+            if (sessionsToDelete.length > 0) {
+                console.log(`[WorkoutSync] Deleting ${sessionsToDelete.length} stale sessions removed from remote`);
+                await db.workout_sessions.bulkDelete(sessionsToDelete.map(s => s.id!));
+            }
         }
 
-        console.log(`[WorkoutSync] Sync summary: ${createCount} new, ${updateCount} updated, ${sessionsToDelete.length} deleted, ${skippedCount} skipped`);
+        console.log(`[WorkoutSync] Sync summary: ${createCount} new, ${updateCount} updated, 0 deleted, ${skippedCount} skipped`);
+
+        // Persist the sync timestamp so future pulls are incremental
+        localStorage.setItem(STORAGE_KEY, syncTimestamp);
     } catch (error) {
         console.error('[WorkoutSync] Failed to pull workout sessions:', error);
+        // Don't update lastSyncedAt on failure so the next pull retries the same window
     }
 }
 

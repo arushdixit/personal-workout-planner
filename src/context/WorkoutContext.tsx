@@ -310,17 +310,20 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         const now = new Date().toISOString();
         const today = now.split('T')[0];
 
-        const allCompletedSessions = await db.workout_sessions
+        // Only fetch the most recent sessions — enough to find last performance per exercise,
+        // without loading the entire history into memory (which grows forever)
+        const recentSessions = await db.workout_sessions
             .where('userId')
             .equals(userId)
-            .and(s => s.status === 'completed')
+            .reverse()
+            .filter(s => s.status === 'completed')
+            .limit(15)
             .toArray();
 
         const exercises = await Promise.all(routine.exercises.map(async (ex, index) => {
-            // Filter in memory — avoids N separate full-table scans
-            const relevantSessions = allCompletedSessions
-                .filter(s => s.exercises.some(e => e.exerciseId === ex.exerciseId))
-                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+            // Filter in memory — recentSessions is already newest-first from .reverse()
+            const relevantSessions = recentSessions
+                .filter(s => s.exercises.some(e => e.exerciseId === ex.exerciseId));
 
             const lastPerformance = relevantSessions.length > 0
                 ? relevantSessions[0].exercises

@@ -252,8 +252,8 @@ export async function fetchWorkoutSessions(
     return data || [];
 }
 
-export async function fetchAllWorkoutSessionsWithDetails(userId: string) {
-    const { data, error } = await supabase
+export async function fetchAllWorkoutSessionsWithDetails(userId: string, since?: string) {
+    let query = supabase
         .from('workout_sessions')
         .select(`
             *,
@@ -264,6 +264,12 @@ export async function fetchAllWorkoutSessionsWithDetails(userId: string) {
         `)
         .eq('user_id', userId)
         .order('date', { ascending: false });
+
+    if (since) {
+        query = query.gt('updated_at', since);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
         console.error('Error fetching all workout sessions with details:', error);
