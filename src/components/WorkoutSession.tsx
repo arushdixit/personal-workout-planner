@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { CheckCircle2, ChevronRight, Dumbbell, ChevronLeft, Timer, Trophy, Star, ArrowRight, Activity, Flame, Medal, Target, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -87,10 +87,47 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
         onClose();
     }, [clearSuccess, onClose]);
 
+    // Intercept hardware back button / iOS swipe-back gesture
+    // This prevents accidentally exiting the workout.
+    // We use refs to read the latest values inside the stable popstate handler
+    // so the effect only mounts/unmounts once (not on every view change).
+    const activeViewRef = useRef(activeView);
+    const progressCompletedRef = useRef(progress.completed);
+    useEffect(() => { activeViewRef.current = activeView; }, [activeView]);
+    useEffect(() => { progressCompletedRef.current = progress.completed; }, [progress.completed]);
+
+    useEffect(() => {
+        // Push a sentinel entry so popstate fires when the user presses back
+        window.history.pushState({ workoutActive: true }, '');
+
+        const handlePopState = () => {
+            // Re-push so the guard stays in place for the next back press
+            window.history.pushState({ workoutActive: true }, '');
+
+            if (activeViewRef.current === 'detail') {
+                // Back from exercise detail → go to exercise list
+                setWorkoutView('list');
+            } else {
+                // Back from exercise list → show end-workout confirmation
+                setEndDialogType(progressCompletedRef.current > 0 ? 'abandon' : 'complete');
+                setShowEndDialog(true);
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+            // Remove our sentinel history entry on unmount
+            window.history.go(-1);
+        };
+        // Empty deps: this guard is installed once for the lifetime of the workout session
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     // If showing success, render the high-energy victory screen as a top-level override
     if (showSuccess) {
         return (
-            <div className="fixed inset-0 z-[200] bg-background flex flex-col items-center justify-center p-6 overflow-hidden">
+            <div className="fixed inset-0 z-[200] bg-background flex flex-col items-center justify-center overflow-y-auto">
                 {/* Dynamic Background Effects - GPU Accelerated */}
                 <div className="absolute inset-0 -z-10 bg-black">
                     <motion.div
@@ -117,7 +154,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                     initial={{ scale: 0.8, y: 40, opacity: 0 }}
                     animate={{ scale: 1, y: 0, opacity: 1 }}
                     transition={{ type: "spring", damping: 20, stiffness: 120 }}
-                    className="relative w-full max-w-lg space-y-12 text-center"
+                    className="relative w-full max-w-lg space-y-8 text-center px-6 py-10 min-h-0"
                 >
                     {/* Hero Section */}
                     <div className="space-y-6">
@@ -140,12 +177,12 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                             </div>
                         </motion.div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <motion.h2
                                 initial={{ opacity: 0, scale: 0.5 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.4, type: "spring" }}
-                                className="text-6xl font-black tracking-tighter bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent italic"
+                                className="text-5xl sm:text-6xl font-black tracking-tighter bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent italic"
                             >
                                 VICTORY!
                             </motion.h2>
@@ -165,7 +202,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6 }}
-                        className="grid grid-cols-2 gap-4"
+                        className="grid grid-cols-2 gap-3"
                     >
                         <div className="glass-card p-6 bg-white/[0.04] border-white/10 space-y-4 hover:bg-white/[0.08] transition-all">
                             <div className="w-12 h-12 rounded-2xl bg-orange-500/30 flex items-center justify-center mx-auto text-orange-400 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
@@ -209,7 +246,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.8 }}
-                        className="pt-6"
+                        className="pt-4"
                     >
                         <Button
                             variant="gradient"

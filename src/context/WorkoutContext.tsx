@@ -1,9 +1,36 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode, useMemo } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode, useMemo, useRef } from 'react';
 import { db, WorkoutSession, WorkoutSessionExercise, WorkoutSet, LocalRoutine } from '@/lib/db';
 import { updateLastCompletedRoutine } from '@/lib/routineCycling';
 import { useUser } from './UserContext';
 import { queueWorkoutOperation } from '@/lib/workoutSyncManager';
 import { v4 as uuidv4 } from 'uuid';
+
+/** Play a short double-beep using the Web Audio API */
+function playRestCompleteSound() {
+    try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const playBeep = (startTime: number) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 880; // A5 note
+            gain.gain.setValueAtTime(0.6, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.4);
+            osc.start(startTime);
+            osc.stop(startTime + 0.4);
+        };
+        playBeep(ctx.currentTime);
+        playBeep(ctx.currentTime + 0.5);
+        // Close context after sound finishes
+        setTimeout(() => ctx.close(), 1200);
+    } catch (e) {
+        // Silently fail if audio is not available
+    }
+}
 
 interface WorkoutContextType {
     // State
@@ -165,22 +192,72 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         loadActiveSession();
     }, []);
 
-    // Rest Timer Logic
-    useEffect(() => {
-        let timer: NodeJS.Timeout;
-        if (isRestTimerActive && restTimeLeft > 0) {
-            timer = setInterval(() => {
-                setRestTimeLeft(prev => {
-                    if (prev <= 1) {
-                        setIsRestTimerActive(false);
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
+    // Timestamp-based rest timer — accurate even after screen lock
+    const timerEndAtRef = useRef<number | null>(null);
+    const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+
+    /** Acquire Wake Lock to prevent screen sleeping during rest */
+    const acquireWakeLock = useCallback(async () => {
+        if (!('wakeLock' in navigator)) return;
+        try {
+            wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
+        } catch (_) {
+            // Wake lock not granted — silently ignore (e.g. document not visible)
         }
-        return () => clearInterval(timer);
-    }, [isRestTimerActive, restTimeLeft]);
+    }, []);
+
+    const releaseWakeLock = useCallback(() => {
+        if (wakeLockRef.current) {
+            wakeLockRef.current.release().catch(() => { });
+            wakeLockRef.current = null;
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!isRestTimerActive) {
+            timerEndAtRef.current = null;
+            releaseWakeLock();
+            return;
+        }
+
+        // Set the absolute end timestamp when timer first becomes active
+        if (timerEndAtRef.current === null) {
+            timerEndAtRef.current = Date.now() + restTimeLeft * 1000;
+        }
+
+        acquireWakeLock();
+
+        const tick = () => {
+            const remaining = Math.max(0, Math.round((timerEndAtRef.current! - Date.now()) / 1000));
+            setRestTimeLeft(remaining);
+            if (remaining <= 0) {
+                setIsRestTimerActive(false);
+                timerEndAtRef.current = null;
+                releaseWakeLock();
+                playRestCompleteSound();
+            }
+        };
+
+        // Tick every 250ms for smooth display
+        const interval = setInterval(tick, 250);
+
+        // Resync immediately when screen is unlocked / app comes back to foreground
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible' && timerEndAtRef.current !== null) {
+                tick();
+                // Re-acquire wake lock if lost (e.g. brief screen-off)
+                if (!wakeLockRef.current) acquireWakeLock();
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+        // We intentionally only re-run when isRestTimerActive changes, not on every restTimeLeft tick
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isRestTimerActive]);
 
     // Persist UI state change
     useEffect(() => {
@@ -310,12 +387,13 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         unit: 'kg' | 'lbs'
     ) => {
         if (!activeSession) return;
+        // Always read from DB to get the most up-to-date state (avoids stale closure on first call)
         const session = await db.workout_sessions.get(activeSession.id!);
         if (!session) return;
 
         const exercise = session.exercises[exerciseIndex];
         const set = exercise.sets.find(s => s.id === setId);
-        const wasAlreadyCompleted = set?.completed;
+        const wasAlreadyCompleted = set?.completed === true;
 
         const updatedExercises = session.exercises.map((ex, idx) => {
             if (idx !== exerciseIndex) return ex;
@@ -335,12 +413,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
                     }
                     // Carry forward values to subsequent incomplete sets
                     if (!s.completed && s.setNumber > (set?.setNumber || 0)) {
-                        return {
-                            ...s,
-                            weight,
-                            reps,
-                            unit
-                        };
+                        return { ...s, weight, reps, unit };
                     }
                     return s;
                 })
@@ -348,11 +421,15 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         });
 
         await db.workout_sessions.update(session.id!, { exercises: updatedExercises });
-        setActiveSession({ ...session, exercises: updatedExercises });
+        // Use functional update form to guarantee we merge into the latest React state,
+        // not the potentially-stale `session` snapshot from the beginning of this call.
+        setActiveSession(prev => prev ? { ...prev, exercises: updatedExercises } : prev);
 
         // Only trigger rest timer if it's the first time logging this set
         if (!wasAlreadyCompleted) {
             const restSeconds = exercise.restSeconds || 90;
+            // Reset the end-time reference so the new timer gets a fresh anchor
+            timerEndAtRef.current = Date.now() + restSeconds * 1000;
             setRestTimeLeft(restSeconds);
             setIsRestTimerActive(true);
             setIsRestTimerMinimized(false);
@@ -458,15 +535,21 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     }, [currentExerciseIndex]);
 
     const skipRest = useCallback(() => {
+        timerEndAtRef.current = null;
         setIsRestTimerActive(false);
         setRestTimeLeft(0);
-    }, []);
+        releaseWakeLock();
+    }, [releaseWakeLock]);
 
     const setMinimizedRest = useCallback((minimized: boolean) => {
         setIsRestTimerMinimized(minimized);
     }, []);
 
     const adjustRestTime = useCallback((delta: number) => {
+        // Shift the absolute end timestamp so the timestamp-based timer stays in sync
+        if (timerEndAtRef.current !== null) {
+            timerEndAtRef.current = timerEndAtRef.current + delta * 1000;
+        }
         setRestTimeLeft(prev => Math.max(0, prev + delta));
     }, []);
 
@@ -533,8 +616,10 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         setActiveSession(null);
         setCurrentExerciseIndex(0);
+        timerEndAtRef.current = null;
         setIsRestTimerActive(false);
-    }, [activeSession, progress, refreshUsers]);
+        releaseWakeLock();
+    }, [activeSession, progress, refreshUsers, releaseWakeLock]);
 
     const clearSuccess = useCallback(() => {
         setShowSuccess(false);
@@ -555,8 +640,10 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         setActiveSession(null);
         setCurrentExerciseIndex(0);
+        timerEndAtRef.current = null;
         setIsRestTimerActive(false);
-    }, [activeSession]);
+        releaseWakeLock();
+    }, [activeSession, releaseWakeLock]);
 
     const clearActiveSession = useCallback(async () => {
         if (activeSession?.id) {
