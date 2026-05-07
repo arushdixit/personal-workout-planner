@@ -125,13 +125,21 @@ async function processCreateRoutine(operation: QueuedOperation): Promise<void> {
             exercises: routineData.exercises,
         });
 
-        await db.routines.update(operation.entityId, {
-            id: remoteRoutine.id,
-            syncedAt: new Date().toISOString(),
+        // Atomic swap: delete temp record and insert real one to change the PK
+        await db.transaction('rw', db.routines, async () => {
+            const existing = await db.routines.get(operation.entityId);
+            if (existing) {
+                await db.routines.delete(operation.entityId);
+                await db.routines.add({
+                    ...existing,
+                    id: remoteRoutine.id,
+                    syncedAt: new Date().toISOString(),
+                });
+            }
         });
 
         await removeOperation(operation.id);
-        console.log('[SyncManager] Successfully synced created routine:', remoteRoutine.id);
+        console.log('[SyncManager] Successfully synced created routine and transformed ID:', remoteRoutine.id);
     } catch (error) {
         console.error('[SyncManager] Failed to create routine remotely:', error);
         throw error;
@@ -140,6 +148,13 @@ async function processCreateRoutine(operation: QueuedOperation): Promise<void> {
 
 async function processUpdateRoutine(operation: QueuedOperation): Promise<void> {
     if (!operation.id) return;
+
+    // If the entityId is a temp ID, we MUST wait for the 'create' operation to finish
+    // and transform the ID. The 'create' op will handle the first syncedAt.
+    if (operation.entityId.startsWith('temp-')) {
+        console.log('[SyncManager] Skipping update for temp routine, waiting for ID transformation:', operation.entityId);
+        return;
+    }
 
     const localRoutine = await db.routines.get(operation.entityId);
     if (!localRoutine) {

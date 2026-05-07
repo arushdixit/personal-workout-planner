@@ -7,6 +7,7 @@ import {
     RemoteRoutine,
 } from './supabaseClient';
 import { addToSyncQueue, getPendingCount, getPendingDeleteIds } from './syncQueue';
+import { triggerImmediateSync } from './syncManager';
 
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
@@ -192,6 +193,7 @@ export async function createRoutineOptimistic(
     } catch (error) {
         console.error('[Cache] Failed to create routine remotely, queuing for sync:', error);
         await addToSyncQueue('create', 'routine', tempId, { ...newRoutine, userId, localUserId });
+        triggerImmediateSync();
         return { localId: tempId, routine: newRoutine };
     }
 }
@@ -247,6 +249,7 @@ export async function updateRoutineOptimistic(routine: LocalRoutine): Promise<Lo
         console.error('[Cache] Failed to update routine remotely, queuing for sync:', error);
         const { syncedAt: _discard, ...routineForSync } = updatedRoutine;
         await addToSyncQueue('update', 'routine', routine.id!, routineForSync);
+        triggerImmediateSync();
         return updatedRoutine;
     }
 }
@@ -299,6 +302,7 @@ export async function deleteRoutineOptimistic(routineId: string): Promise<void> 
     } catch (error) {
         console.error('[Cache] Failed to delete routine remotely, queuing for sync:', error);
         await addToSyncQueue('delete', 'routine', routineId, { ...routine });
+        triggerImmediateSync();
     }
 }
 

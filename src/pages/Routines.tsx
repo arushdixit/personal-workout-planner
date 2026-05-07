@@ -199,6 +199,7 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
         setShowBuilder(false);
         setEditingRoutine(undefined);
         loadRoutines();
+        triggerImmediateSync();
         if (onCloseEditor) {
             onCloseEditor();
         }
