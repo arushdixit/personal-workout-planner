@@ -210,7 +210,7 @@ export async function createRoutine(routine: Omit<RemoteRoutine, 'id' | 'created
 
 /**
  * Update an existing routine
- * Uses upsert instead of delete+reinsert to prevent data loss if the insert fails.
+ * Uses delete+reinsert for exercises to avoid complex constraint conflicts and handle ordering reliably.
  */
 export async function updateRoutine(routine: RemoteRoutine): Promise<RemoteRoutine> {
     if (!routine.id) throw new Error('Routine ID is required for update');
@@ -232,9 +232,21 @@ export async function updateRoutine(routine: RemoteRoutine): Promise<RemoteRouti
         throw routineError;
     }
 
-    // 2. Upsert current exercises (insert new, update existing by order)
+    // 2. Delete all existing exercises first to avoid order conflicts and simplify the update
+    // This is safer than upsert when reordering or removing items
+    const { error: deleteError } = await supabase
+        .from('routine_exercises')
+        .delete()
+        .eq('routine_id', routine.id);
+
+    if (deleteError) {
+        console.error('Error clearing old routine exercises:', deleteError);
+        throw deleteError;
+    }
+
+    // 3. Insert current exercises
     if (routine.exercises.length > 0) {
-        const exercisesToUpsert = routine.exercises.map(ex => ({
+        const exercisesToInsert = routine.exercises.map(ex => ({
             routine_id: routine.id,
             exercise_id: ex.exerciseId,
             exercise_name: ex.exerciseName,
@@ -245,27 +257,14 @@ export async function updateRoutine(routine: RemoteRoutine): Promise<RemoteRouti
             notes: ex.notes,
         }));
 
-        const { error: upsertError } = await supabase
+        const { error: insertError } = await supabase
             .from('routine_exercises')
-            .upsert(exercisesToUpsert, { onConflict: 'routine_id,order' });
+            .insert(exercisesToInsert);
 
-        if (upsertError) {
-            console.error('Error upserting routine exercises:', upsertError);
-            throw upsertError;
+        if (insertError) {
+            console.error('Error inserting routine exercises:', insertError);
+            throw insertError;
         }
-    }
-
-    // 3. Delete exercises that were removed (orders no longer present)
-    const currentOrders = routine.exercises.map(ex => ex.order);
-    const { error: deleteError } = await supabase
-        .from('routine_exercises')
-        .delete()
-        .eq('routine_id', routine.id)
-        .not('order', 'in', `(${currentOrders.join(',')})`);
-
-    if (deleteError) {
-        // Non-fatal: stale exercises remain but won't cause data loss
-        console.warn('Error removing stale routine exercises (non-fatal):', deleteError);
     }
 
     return {
