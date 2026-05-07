@@ -579,18 +579,22 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
                     // Standardize everything to KG for the summary
                     const weightInKg = set.unit === 'lbs' ? weight * 0.453592 : weight;
 
-                    totalVolumeKg += weightInKg * reps;
-                    completedSetsCount++;
-                    exCompleted = true;
+                    // Only add if it's a valid number to prevent NaN stats
+                    const setVolume = weightInKg * reps;
+                    if (!isNaN(setVolume)) {
+                        totalVolumeKg += setVolume;
+                        completedSetsCount++;
+                        exCompleted = true;
+                    }
                 }
             });
             if (exCompleted) exerciseCount++;
         });
 
-        const finalVolume = Math.round(totalVolumeKg);
+        const finalVolume = Math.round(totalVolumeKg) || 0;
 
         setCompletedStats({
-            duration,
+            duration: duration || 0,
             completedSets: completedSetsCount,
             totalSets: progress.total,
             volume: finalVolume,
@@ -617,11 +621,15 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
             console.error('[Workout] Error finishing workout:', err);
         }
 
-        setActiveSession(null);
-        setCurrentExerciseIndex(0);
-        timerEndAtRef.current = null;
-        setIsRestTimerActive(false);
-        releaseWakeLock();
+        // Delay clearing the active session slightly to allow UI components 
+        // to finish their current render cycle and transition to the success screen
+        setTimeout(() => {
+            setActiveSession(null);
+            setCurrentExerciseIndex(0);
+            timerEndAtRef.current = null;
+            setIsRestTimerActive(false);
+            releaseWakeLock();
+        }, 0);
     }, [activeSession, progress, refreshUsers, releaseWakeLock]);
 
     const clearSuccess = useCallback(() => {

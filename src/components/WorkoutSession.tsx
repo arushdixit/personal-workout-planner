@@ -83,9 +83,20 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     };
 
     const handleClose = useCallback(() => {
-        clearSuccess();
         onClose();
+        // Clear success state after onClose to prevent flickering back to the session UI
+        setTimeout(() => {
+            clearSuccess();
+        }, 100);
     }, [clearSuccess, onClose]);
+
+    // Safety: If activeSession is lost and we're not showing success, close the view
+    // This prevents being stuck on a blank screen if state is cleared unexpectedly.
+    useEffect(() => {
+        if (!activeSession && !showSuccess) {
+            onClose();
+        }
+    }, [activeSession, showSuccess, onClose]);
 
     // Intercept hardware back button / iOS swipe-back gesture
     // This prevents accidentally exiting the workout.
@@ -125,7 +136,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     }, []);
 
     // If showing success, render the high-energy victory screen as a top-level override
-    if (showSuccess) {
+    if (showSuccess && completedStats) {
         return (
             <div className="fixed inset-0 z-[200] bg-background flex flex-col items-center justify-center overflow-y-auto">
                 {/* Dynamic Background Effects - GPU Accelerated */}
@@ -209,7 +220,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                 <Flame className="w-7 h-7" />
                             </div>
                             <div className="space-y-1">
-                                <p className="text-4xl font-black text-white tabular-nums">{completedStats?.volume.toLocaleString()}</p>
+                                <p className="text-4xl font-black text-white tabular-nums">{(completedStats?.volume || 0).toLocaleString()}</p>
                                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Total Kg Moved</p>
                             </div>
                         </div>
