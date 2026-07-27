@@ -6,24 +6,61 @@ import { useWorkout } from "@/context/WorkoutContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { cn } from "@/lib/utils";
 
-const RestTimer = () => {
-  const {
-    isRestTimerActive,
-    restTimeLeft,
-    isRestTimerMinimized,
-    setMinimizedRest,
-    adjustRestTime,
-    skipRest
-  } = useWorkout();
-  const isMobile = useIsMobile();
+interface RestTimerProps {
+  duration?: number;
+  onComplete?: () => void;
+  onSkip?: () => void;
+}
 
-  if (!isRestTimerActive || isRestTimerActive && isRestTimerMinimized) return null;
+const RestTimer = ({ duration: propDuration, onComplete: propOnComplete, onSkip: propOnSkip }: RestTimerProps = {}) => {
+  let isRestTimerActive = false;
+  let restTimeLeft = 0;
+  let isRestTimerMinimized = false;
+  let setMinimizedRest = (_min: boolean) => {};
+  let adjustRestTime = (_delta: number) => {};
+  let skipRest = () => {};
 
-  const minutes = Math.floor(restTimeLeft / 60);
-  const seconds = restTimeLeft % 60;
+  try {
+    const workoutCtx = useWorkout();
+    isRestTimerActive = workoutCtx.isRestTimerActive;
+    restTimeLeft = workoutCtx.restTimeLeft;
+    isRestTimerMinimized = workoutCtx.isRestTimerMinimized;
+    setMinimizedRest = workoutCtx.setMinimizedRest;
+    adjustRestTime = workoutCtx.adjustRestTime;
+    skipRest = workoutCtx.skipRest;
+  } catch (_) {
+    // Component rendered outside WorkoutProvider (e.g. standalone test)
+  }
 
-  // Progress calculation - default 90s if not otherwise specified
-  const progress = (restTimeLeft / 90) * 100;
+  const [localTimeLeft, setLocalTimeLeft] = useState(propDuration || 0);
+
+  useEffect(() => {
+    if (propDuration !== undefined) {
+      setLocalTimeLeft(propDuration);
+      if (propDuration <= 0) return;
+
+      const interval = setInterval(() => {
+        setLocalTimeLeft(prev => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            propOnComplete?.();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [propDuration, propOnComplete]);
+
+  const activeTimeLeft = propDuration !== undefined ? localTimeLeft : restTimeLeft;
+  const active = propDuration !== undefined ? true : (isRestTimerActive && !isRestTimerMinimized);
+
+  if (!active) return null;
+
+  const minutes = Math.floor(activeTimeLeft / 60);
+  const seconds = activeTimeLeft % 60;
+  const progress = (activeTimeLeft / (propDuration || 90)) * 100;
 
   const content = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-in fade-in duration-300 transform-gpu" style={{ willChange: 'backdrop-filter' }}>
@@ -48,7 +85,7 @@ const RestTimer = () => {
 
           <div className="relative w-56 h-56 mx-auto mb-8">
             {/* Background circle */}
-            <svg className="w-full h-full -rotate-90">
+            <svg role="img" aria-label="Rest Timer Progress" className="w-full h-full -rotate-90">
               <circle
                 cx="112"
                 cy="112"
@@ -90,7 +127,13 @@ const RestTimer = () => {
             <Button
               variant="glass"
               size="lg"
-              onClick={() => adjustRestTime(-10)}
+              onClick={() => {
+                if (propDuration !== undefined) {
+                  setLocalTimeLeft(prev => Math.max(0, prev - 10));
+                } else {
+                  adjustRestTime(-10);
+                }
+              }}
               className="flex-1 h-14 bg-white/5 border-white/5 font-bold rounded-2xl"
             >
               <Minus className="w-4 h-4 mr-1" />
@@ -99,7 +142,13 @@ const RestTimer = () => {
             <Button
               variant="gradient"
               size="lg"
-              onClick={skipRest}
+              onClick={() => {
+                if (propDuration !== undefined) {
+                  propOnSkip?.();
+                } else {
+                  skipRest();
+                }
+              }}
               className="flex-[1.5] h-14 font-black text-lg shadow-xl shadow-primary/20 rounded-2xl"
             >
               <SkipForward className="w-5 h-5 mr-2" />
@@ -108,7 +157,13 @@ const RestTimer = () => {
             <Button
               variant="glass"
               size="lg"
-              onClick={() => adjustRestTime(10)}
+              onClick={() => {
+                if (propDuration !== undefined) {
+                  setLocalTimeLeft(prev => prev + 10);
+                } else {
+                  adjustRestTime(10);
+                }
+              }}
               className="flex-1 h-14 bg-white/5 border-white/5 font-bold rounded-2xl"
             >
               <Plus className="w-4 h-4 mr-1" />

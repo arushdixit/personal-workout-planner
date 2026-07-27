@@ -395,16 +395,30 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         if (!session) return;
 
         const exercise = session.exercises[exerciseIndex];
-        const set = exercise.sets.find(s => s.id === setId);
-        const wasAlreadyCompleted = set?.completed === true;
+        if (!exercise || !exercise.sets || exercise.sets.length === 0) return;
+
+        // Match set by ID (strict or string comparison) OR fallback to first incomplete set / target index
+        let setIndex = exercise.sets.findIndex(s => s.id === setId || String(s.id) === String(setId));
+        if (setIndex === -1) {
+            setIndex = exercise.sets.findIndex(s => !s.completed);
+        }
+        if (setIndex === -1 && exercise.sets.length > 0) {
+            setIndex = 0;
+        }
+
+        const targetSet = exercise.sets[setIndex];
+        if (!targetSet) return;
+
+        const targetSetId = targetSet.id;
+        const wasAlreadyCompleted = targetSet.completed === true;
 
         const updatedExercises = session.exercises.map((ex, idx) => {
             if (idx !== exerciseIndex) return ex;
             return {
                 ...ex,
-                sets: ex.sets.map(s => {
-                    // Update the target set
-                    if (s.id === setId) {
+                sets: ex.sets.map((s, sIdx) => {
+                    // Update the target set by index or ID match
+                    if (sIdx === setIndex || s.id === targetSetId || String(s.id) === String(targetSetId)) {
                         return {
                             ...s,
                             weight,
@@ -415,7 +429,7 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
                         };
                     }
                     // Carry forward values to subsequent incomplete sets
-                    if (!s.completed && s.setNumber > (set?.setNumber || 0)) {
+                    if (!s.completed && s.setNumber > targetSet.setNumber) {
                         return { ...s, weight, reps, unit };
                     }
                     return s;
@@ -439,11 +453,11 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         }
 
         await queueWorkoutOperation('set_complete', session.id!, {
-            setId,
+            setId: targetSetId,
             reps,
             weight,
             exerciseOrder: exercise.order,
-            setNumber: set?.setNumber
+            setNumber: targetSet.setNumber
         });
     }, [activeSession]);
 
@@ -642,12 +656,16 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         const endTime = new Date().toISOString();
 
-        await db.workout_sessions.update(activeSession.id!, {
-            status: 'abandoned',
-            endTime,
-        });
+        try {
+            await db.workout_sessions.update(activeSession.id!, {
+                status: 'abandoned',
+                endTime,
+            });
 
-        await queueWorkoutOperation('abandon', activeSession.id!);
+            await queueWorkoutOperation('abandon', activeSession.id!);
+        } catch (err) {
+            console.error('[Workout] Error abandoning workout:', err);
+        }
 
         setActiveSession(null);
         setCurrentExerciseIndex(0);

@@ -12,6 +12,7 @@ interface SetLoggerProps {
     onAddSet: () => void;
     onRemoveSet?: () => void;
     unit: 'kg' | 'lbs';
+    onUnitChange?: (unit: 'kg' | 'lbs') => void;
     canAddSet?: boolean;
     canRemoveSet?: boolean;
 }
@@ -22,23 +23,33 @@ const SetLogger = ({
     onAddSet,
     onRemoveSet,
     unit,
+    onUnitChange,
     canAddSet = true,
     canRemoveSet = false,
 }: SetLoggerProps) => {
-    const { isRestTimerActive, restTimeLeft } = useWorkout();
+    let isRestTimerActive = false;
+    let restTimeLeft = 0;
+    try {
+        const workoutCtx = useWorkout();
+        isRestTimerActive = workoutCtx.isRestTimerActive;
+        restTimeLeft = workoutCtx.restTimeLeft;
+    } catch (_) {
+        // Component rendered outside WorkoutProvider
+    }
 
     // Local state for input values
-    const [inputValues, setInputValues] = useState<Record<number, { weight: string; reps: string }>>({});
+    const [inputValues, setInputValues] = useState<Record<string | number, { weight: string; reps: string }>>({});
 
-    const handleInputChange = (setId: number, field: 'weight' | 'reps', value: string, currentSet: WorkoutSet) => {
+    const handleInputChange = (setId: number | string, field: 'weight' | 'reps', value: string, currentSet: WorkoutSet) => {
         setInputValues(prev => {
-            const existing = prev[setId] || {
+            const key = String(setId);
+            const existing = prev[key] || prev[setId as any] || {
                 weight: currentSet.weight > 0 ? currentSet.weight.toString() : '',
                 reps: currentSet.reps > 0 ? currentSet.reps.toString() : ''
             };
             return {
                 ...prev,
-                [setId]: {
+                [key]: {
                     ...existing,
                     [field]: value
                 }
@@ -47,10 +58,12 @@ const SetLogger = ({
     };
 
     const handleLogSet = (set: WorkoutSet) => {
-        const values = inputValues[set.id];
-        const weight = values ? parseFloat(values.weight) : set.weight;
-        const reps = values ? parseInt(values.reps, 10) : set.reps;
-        onSetComplete(set.id, weight || 0, reps || 0, unit);
+        const values = inputValues[String(set.id)] || inputValues[set.id as any];
+        const parsedWeight = values && values.weight !== '' ? parseFloat(values.weight) : set.weight;
+        const parsedReps = values && values.reps !== '' ? parseInt(values.reps, 10) : set.reps;
+        const weight = isNaN(parsedWeight) ? (set.weight || 0) : parsedWeight;
+        const reps = isNaN(parsedReps) ? (set.reps || 0) : parsedReps;
+        onSetComplete(set.id as any, weight, reps, unit);
     };
 
     const nextIncompleteSetId = useMemo(() => {
@@ -69,15 +82,39 @@ const SetLogger = ({
                     <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Workout Progress</span>
                     <div className="flex items-center gap-2">
                         <span className="text-xl font-black text-foreground">{completedCount}</span>
-                        <span className="text-muted-foreground text-sm">/ {sets.length} sets</span>
+                        <span className="text-muted-foreground text-sm">/ {sets.length} sets completed</span>
                     </div>
                 </div>
+                {onUnitChange && (
+                    <div className="flex items-center bg-white/5 p-1 rounded-xl border border-white/10">
+                        <button
+                            type="button"
+                            onClick={() => onUnitChange('kg')}
+                            className={cn(
+                                "px-3 py-1 text-xs font-bold rounded-lg transition-colors",
+                                unit === 'kg' ? "bg-primary text-white" : "text-muted-foreground hover:text-foreground"
+                            )}
+                        >
+                            KG
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => onUnitChange('lbs')}
+                            className={cn(
+                                "px-3 py-1 text-xs font-bold rounded-lg transition-colors",
+                                unit === 'lbs' ? "bg-primary text-white" : "text-muted-foreground hover:text-foreground"
+                            )}
+                        >
+                            LBS
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Sets List */}
             <div className="space-y-3">
                 {sets.map((set, index) => {
-                    const isActuallyNext = set.id === nextIncompleteSetId;
+                    const isActuallyNext = set.id === nextIncompleteSetId || String(set.id) === String(nextIncompleteSetId);
                     const isNext = isActuallyNext && !isRestTimerActive;
                     const isResting = isActuallyNext && isRestTimerActive;
                     const isCompleted = set.completed;
@@ -85,9 +122,10 @@ const SetLogger = ({
                     // Allow interaction if it's the next set OR if it's already completed (for editing)
                     const isDisabled = !isActuallyNext && !isCompleted;
 
+                    const setVal = inputValues[String(set.id)] || inputValues[set.id as any];
                     const currentValues = {
-                        weight: inputValues[set.id]?.weight ?? (set.weight > 0 ? set.weight.toString() : ''),
-                        reps: inputValues[set.id]?.reps ?? (set.reps > 0 ? set.reps.toString() : '')
+                        weight: setVal?.weight ?? (set.weight > 0 ? set.weight.toString() : ''),
+                        reps: setVal?.reps ?? (set.reps > 0 ? set.reps.toString() : '')
                     };
 
                     return (
@@ -223,7 +261,7 @@ const SetLogger = ({
                         className="flex-1 h-14 border-dashed border-2 border-white/5 hover:bg-white/5 hover:border-primary/30 rounded-2xl font-black text-muted-foreground hover:text-foreground"
                     >
                         <Plus className="w-5 h-5 mr-2" />
-                        ADD EXTRA SET
+                        ADD SET
                     </Button>
                 )}
                 {canRemoveSet && sets.length > 1 && !sets[sets.length - 1].completed && (

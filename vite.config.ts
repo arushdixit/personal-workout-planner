@@ -7,8 +7,9 @@ import { VitePWA } from "vite-plugin-pwa";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
-    host: "::",
+    host: true,
     port: 10000,
+    allowedHosts: true,
   },
   plugins: [
     react(),
@@ -58,6 +59,7 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
+        navigationPreload: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2,ttf}'],
         runtimeCaching: [
           {

@@ -16,8 +16,6 @@
 
   <link rel="preconnect" href="https://xzzsskkwcririkyzguvz.supabase.co" />
   <link rel="dns-prefetch" href="https://xzzsskkwcririkyzguvz.supabase.co" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
   <link rel="icon" type="image/png" sizes="96x96" href="/favicon.ico" />
   <link rel="shortcut icon" href="/favicon.ico" />
@@ -29,7 +27,32 @@
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <style>
+      #app-shell-loader {
+        min-height: 100dvh;
+        background-color: #0a0a0a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #app-shell-dot {
+        width: 48px;
+        height: 48px;
+        border-radius: 9999px;
+        background: linear-gradient(135deg, hsl(359, 85%, 55%), hsl(6, 100%, 71%));
+        box-shadow: 0 0 40px -5px rgba(239, 35, 60, 0.6);
+        animation: shell-pulse 1.8s ease-in-out infinite;
+      }
+      @keyframes shell-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(0.92); }
+      }
+    </style>
+    <div id="app-shell-loader">
+      <div id="app-shell-dot"></div>
+    </div>
+  </div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

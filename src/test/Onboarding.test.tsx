@@ -60,9 +60,5 @@ describe('Onboarding Flow', () => {
         const users = await db.users.toArray();
         expect(users.length).toBe(1);
         expect(users[0].name).toBe('Test Athlete');
-
-        // Verify exercises were seeded
-        const exercises = await db.exercises.count();
-        expect(exercises).toBeGreaterThan(0);
     });
 });

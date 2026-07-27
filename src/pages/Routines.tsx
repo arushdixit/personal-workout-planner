@@ -25,6 +25,7 @@ import {
 import type { LocalRoutine } from '@/lib/db';
 import { triggerImmediateSync } from '@/lib/syncManager';
 import RoutineBuilder from '@/components/RoutineBuilder';
+import { supabase } from '@/lib/supabaseClient';
 import { cn } from '@/lib/utils';
 
 interface RoutinesProps {
@@ -72,6 +73,10 @@ const Routines = ({ showBuilderOnLoad = false, selectedRoutineId, onViewRoutine,
     useEffect(() => {
         if (currentUser?.supabaseUserId) {
             setSupabaseUserId(currentUser.supabaseUserId);
+        } else {
+            supabase.auth.getUser().then(({ data }) => {
+                if (data.user?.id) setSupabaseUserId(data.user.id);
+            }).catch(console.error);
         }
     }, [currentUser?.supabaseUserId]);
 

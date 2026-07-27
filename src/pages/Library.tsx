@@ -53,19 +53,18 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
 
     // Handle exercise selection from URL params
     useEffect(() => {
-        if (selectedExerciseId && exercises.length > 0) {
-            const exercise = exercises.find(ex => ex.id === parseInt(selectedExerciseId));
-            if (exercise && exercise.id !== viewingExercise?.id) {
-                setViewingExercise(exercise);
-            } else if (!exercise && viewingExercise) {
-                // Clear viewing if exercise not found or ID was removed
-                setViewingExercise(undefined);
-            }
-        } else if (!selectedExerciseId && viewingExercise) {
-            // Clear viewing if exerciseId was removed from URL
+        if (!selectedExerciseId) {
+            if (viewingExercise) setViewingExercise(undefined);
+            return;
+        }
+        if (exercises.length === 0) return; // wait for useLiveQuery to populate
+        const exercise = exercises.find(ex => ex.id === parseInt(selectedExerciseId));
+        if (exercise && exercise.id !== viewingExercise?.id) {
+            setViewingExercise(exercise);
+        } else if (!exercise && viewingExercise) {
             setViewingExercise(undefined);
         }
-    }, [selectedExerciseId, exercises.length]);
+    }, [selectedExerciseId, exercises]);
 
     // Update URL when exercise is selected manually
     const handleExerciseClick = (exercise: Exercise) => {
@@ -95,8 +94,10 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
                 ? (search.trim() !== '' ? true : (ex.source !== 'exercemus' || ex.inLibrary))
                 : (ex.source === 'exercemus');
 
-            const matchesSearch = ex.name.toLowerCase().includes(search.toLowerCase());
-            const matchesMuscle = filterMuscle === 'all' || ex.primaryMuscles.includes(filterMuscle);
+            const name = ex.name || '';
+            const matchesSearch = name.toLowerCase().includes(search.toLowerCase());
+            const primaryMuscles = Array.isArray(ex.primaryMuscles) ? ex.primaryMuscles : [];
+            const matchesMuscle = filterMuscle === 'all' || primaryMuscles.includes(filterMuscle);
             const matchesEquipment = filterEquipment === 'all' || ex.equipment === filterEquipment;
 
             return matchesView && matchesSearch && matchesMuscle && matchesEquipment;
@@ -109,7 +110,7 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
         // For global library, we group them
         const groups: Record<string, Exercise[]> = {};
         filteredExercises.forEach(ex => {
-            const primary = ex.primaryMuscles[0] || 'Other';
+            const primary = (Array.isArray(ex.primaryMuscles) && ex.primaryMuscles[0]) || 'Other';
             if (!groups[primary]) groups[primary] = [];
             groups[primary].push(ex);
         });
@@ -169,6 +170,9 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
     };
 
     const handleAddToMy = async (ex: Exercise) => {
+        if (ex.id) {
+            await db.exercises.update(ex.id, { inLibrary: true });
+        }
         setSelectedExerciseForAdd(ex);
         setShowRoutineSelector(true);
     };
@@ -497,6 +501,7 @@ const Library = ({ selectedExerciseId, onOpenExercise, onCloseExercise }: Librar
                                                             size="icon"
                                                             onClick={() => handleAddToMy(ex)}
                                                             className={cn(ex.inLibrary && "text-green-500")}
+                                                            aria-label={ex.inLibrary ? "Added" : "Add to My Exercises"}
                                                         >
                                                             {ex.inLibrary ? <CheckCircle className="w-4 h-4" /> : <PlusCircle className="w-4 h-4" />}
                                                         </Button>

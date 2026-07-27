@@ -1,13 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Calendar, Clock, Dumbbell, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import WorkoutHero from '@/components/WorkoutHero';
 import WorkoutExerciseCard from '@/components/WorkoutExerciseCard';
-import RoutineSelectorModal from '@/components/RoutineSelectorModal';
-import ExerciseDetail from '@/components/ExerciseDetail';
-import ExerciseWizard from '@/components/ExerciseWizard';
+
+const RoutineSelectorModal = lazy(() => import('@/components/RoutineSelectorModal'));
+const ExerciseDetail = lazy(() => import('@/components/ExerciseDetail'));
+const ExerciseWizard = lazy(() => import('@/components/ExerciseWizard'));
 import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
 import { determineTodaysRoutine, calculateWorkoutDuration } from '@/lib/routineCycling';
@@ -15,19 +16,42 @@ import { fetchRoutines } from '@/lib/routineCache';
 import { db, LocalRoutine, Exercise } from '@/lib/db';
 import { cn } from '@/lib/utils';
 
+const ROUTINE_CACHE_KEY = 'prolifts_cached_routine';
+
+const getCachedRoutine = (): LocalRoutine | null => {
+    try {
+        const saved = localStorage.getItem(ROUTINE_CACHE_KEY);
+        return saved ? JSON.parse(saved) : null;
+    } catch {
+        return null;
+    }
+};
+
+const setCachedRoutine = (routine: LocalRoutine | null) => {
+    try {
+        if (routine) {
+            localStorage.setItem(ROUTINE_CACHE_KEY, JSON.stringify(routine));
+        } else {
+            localStorage.removeItem(ROUTINE_CACHE_KEY);
+        }
+    } catch {}
+};
+
 interface TodayPageProps {
     onStartWorkout: () => void;
-    onViewExercise?: (exerciseId: number) => void;
+    onViewExercise?: (exerciseId: number, fromTab?: string) => void;
+    onViewExerciseInline?: (exercise: Exercise) => void;
     onNavigateToRoutines?: () => void;
 }
 
 const TodayPage = (props: TodayPageProps) => {
-    const { onStartWorkout, onViewExercise, onNavigateToRoutines } = props;
+    const { onStartWorkout, onViewExercise, onViewExerciseInline, onNavigateToRoutines } = props;
     const { currentUser } = useUser();
     const { activeSession, startWorkout } = useWorkout();
 
-    const [todaysRoutine, setTodaysRoutine] = useState<LocalRoutine | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const cachedRoutine = getCachedRoutine();
+    const [todaysRoutine, setTodaysRoutine] = useState<LocalRoutine | null>(cachedRoutine);
+    const [isLoading, setIsLoading] = useState<boolean>(!cachedRoutine);
     const [showRoutineSelector, setShowRoutineSelector] = useState(false);
     const [exerciseDetails, setExerciseDetails] = useState<Record<number, Exercise>>({});
     const [viewingExercise, setViewingExercise] = useState<Exercise | null>(null);
@@ -85,7 +109,7 @@ const TodayPage = (props: TodayPageProps) => {
         }
 
         try {
-            // First, get the current local routines to show something quickly
+            // Query IndexedDB in background — UI is already painted from localStorage cache
             const initialResult = await determineTodaysRoutine(
                 currentUser.id,
                 currentUser.supabaseUserId,
@@ -95,28 +119,32 @@ const TodayPage = (props: TodayPageProps) => {
 
             if (initialResult.routine) {
                 setTodaysRoutine(initialResult.routine);
-                setIsLoading(false);
+                setCachedRoutine(initialResult.routine);
+            } else {
+                setCachedRoutine(null);
             }
+            setIsLoading(false);
 
-            // Then, fetch from remote to ensure we have the latest (in background)
+            // Fetch remote routines in background without blocking
             if (currentUser.supabaseUserId) {
-                await fetchRoutines(currentUser.supabaseUserId);
-
-                // Re-determine if we fetched new data
-                const finalResult = await determineTodaysRoutine(
-                    currentUser.id,
-                    currentUser.supabaseUserId,
-                    currentUser.activeSplit || 'PPL',
-                    currentUser.lastCompletedRoutineId
-                );
-
-                setTodaysRoutine(finalResult.routine);
+                fetchRoutines(currentUser.supabaseUserId).then(async () => {
+                    const finalResult = await determineTodaysRoutine(
+                        currentUser.id,
+                        currentUser.supabaseUserId,
+                        currentUser.activeSplit || 'PPL',
+                        currentUser.lastCompletedRoutineId
+                    );
+                    if (finalResult.routine) {
+                        setTodaysRoutine(finalResult.routine);
+                        setCachedRoutine(finalResult.routine);
+                    }
+                }).catch(console.error);
             }
         } catch (error) {
             console.error('[Today] Error loading routine:', error);
+            setIsLoading(false);
         } finally {
             setManuallySelectedRoutine(false);
-            setIsLoading(false);
         }
     };
 
@@ -129,6 +157,7 @@ const TodayPage = (props: TodayPageProps) => {
 
     const handleRoutineSelect = (routine: LocalRoutine) => {
         setTodaysRoutine(routine);
+        setCachedRoutine(routine);
         setManuallySelectedRoutine(true); // Mark as manually selected
         setShowRoutineSelector(false);
     };
@@ -189,12 +218,12 @@ const TodayPage = (props: TodayPageProps) => {
             <AnimatePresence mode="wait">
                 <motion.div
                     key={todaysRoutine?.id || 'empty-routine'}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={false}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20, scale: 0.98 }}
                     transition={{
-                        duration: 0.4,
-                        ease: [0.23, 1, 0.32, 1] // Custom cubic-bezier for a premium feel
+                        duration: 0.2,
+                        ease: [0.23, 1, 0.32, 1]
                     }}
                     className="space-y-6"
                 >
@@ -251,10 +280,14 @@ const TodayPage = (props: TodayPageProps) => {
                                         exercise={exercise}
                                         exerciseDetail={exerciseDetail}
                                         isNext={index === 0}
-                                        onClick={() => {
-                                            if (exerciseDetail && onViewExercise) {
-                                                // Pass 'today' as the return tab
-                                                (onViewExercise as any)(exerciseDetail.id, 'today');
+                                        onClick={async () => {
+                                            let detail = exerciseDetail;
+                                            if (!detail) {
+                                                detail = await db.exercises.get(exercise.exerciseId)
+                                                    ?? await db.exercises.where('name').equalsIgnoreCase(exercise.exerciseName).first();
+                                            }
+                                            if (detail && onViewExerciseInline) {
+                                                onViewExerciseInline(detail);
                                             }
                                         }}
                                     />
@@ -265,40 +298,28 @@ const TodayPage = (props: TodayPageProps) => {
                 </motion.div>
             </AnimatePresence>
 
-            {/* Routine Selector Modal */}
-            <RoutineSelectorModal
-                open={showRoutineSelector}
-                onOpenChange={setShowRoutineSelector}
-                onSelect={handleRoutineSelect}
-                onCreateNew={handleCreateNewRoutine}
-            />
+            <Suspense fallback={null}>
+                {showRoutineSelector && (
+                    <RoutineSelectorModal
+                        open={showRoutineSelector}
+                        onOpenChange={setShowRoutineSelector}
+                        onSelect={handleRoutineSelect}
+                        onCreateNew={handleCreateNewRoutine}
+                    />
+                )}
 
-            {/* Exercise Detail Modal */}
-            <ExerciseDetail
-                exercise={viewingExercise || ({} as Exercise)}
-                open={!!viewingExercise}
-                onOpenChange={(open) => {
-                    if (!open) setViewingExercise(null);
-                }}
-                onEdit={() => {
-                    if (document.activeElement) {
-                        (document.activeElement as HTMLElement).blur();
-                    }
-                    setEditingExercise(viewingExercise);
-                    setShowWizard(true);
-                }}
-            />
-
-            {/* Exercise Wizard Modal */}
-            <ExerciseWizard
-                exercise={editingExercise}
-                open={showWizard}
-                onOpenChange={(open) => {
-                    setShowWizard(open);
-                    if (!open) setEditingExercise(undefined);
-                }}
-                onComplete={handleWizardComplete}
-            />
+                {showWizard && (
+                    <ExerciseWizard
+                        exercise={editingExercise}
+                        open={showWizard}
+                        onOpenChange={(open) => {
+                            setShowWizard(open);
+                            if (!open) setEditingExercise(undefined);
+                        }}
+                        onComplete={handleWizardComplete}
+                    />
+                )}
+            </Suspense>
         </div>
     );
 };

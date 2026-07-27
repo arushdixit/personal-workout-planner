@@ -136,7 +136,14 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
     }, []);
 
     // If showing success, render the high-energy victory screen as a top-level override
-    if (showSuccess && completedStats) {
+    if (showSuccess) {
+        const stats = completedStats || {
+            duration: 0,
+            completedSets: progress.completed,
+            totalSets: progress.total,
+            volume: 0,
+            exerciseCount: activeSession?.exercises.length || 0,
+        };
         return (
             <div className="fixed inset-0 z-[200] bg-background flex flex-col items-center justify-center overflow-y-auto">
                 {/* Dynamic Background Effects - GPU Accelerated */}
@@ -220,7 +227,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                 <Flame className="w-7 h-7" />
                             </div>
                             <div className="space-y-1">
-                                <p className="text-4xl font-black text-white tabular-nums">{(completedStats?.volume || 0).toLocaleString()}</p>
+                                <p className="text-4xl font-black text-white tabular-nums">{(stats.volume || 0).toLocaleString()}</p>
                                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Total Kg Moved</p>
                             </div>
                         </div>
@@ -229,7 +236,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                 <Activity className="w-7 h-7" />
                             </div>
                             <div className="space-y-1">
-                                <p className="text-4xl font-black text-white tabular-nums">{completedStats?.completedSets}</p>
+                                <p className="text-4xl font-black text-white tabular-nums">{stats.completedSets}</p>
                                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Sets Done</p>
                             </div>
                         </div>
@@ -238,7 +245,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                 <Medal className="w-7 h-7" />
                             </div>
                             <div className="space-y-1">
-                                <p className="text-4xl font-black text-white tabular-nums">{completedStats?.exerciseCount}</p>
+                                <p className="text-4xl font-black text-white tabular-nums">{stats.exerciseCount}</p>
                                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Exercises</p>
                             </div>
                         </div>
@@ -247,7 +254,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                 <Timer className="w-7 h-7" />
                             </div>
                             <div className="space-y-1">
-                                <p className="text-4xl font-black text-white tabular-nums">{Math.floor((completedStats?.duration ?? 0) / 60)}m</p>
+                                <p className="text-4xl font-black text-white tabular-nums">{Math.floor((stats.duration ?? 0) / 60)}m</p>
                                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Duration</p>
                             </div>
                         </div>
@@ -356,13 +363,20 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                             </div>
                         </div>
                     ) : (
-                        selectedExerciseIndex !== null && exerciseDetail && (
+                        selectedExerciseIndex !== null && activeSession?.exercises[selectedExerciseIndex] && (
                             <ExerciseDetail
                                 exercise={{
-                                    ...exerciseDetail,
+                                    ...(exerciseDetail || {
+                                        id: activeSession.exercises[selectedExerciseIndex].exerciseId,
+                                        name: activeSession.exercises[selectedExerciseIndex].exerciseName,
+                                        primaryMuscles: [],
+                                        secondaryMuscles: [],
+                                        equipment: 'Bodyweight',
+                                        source: 'local',
+                                    }),
                                     name: activeSession.exercises[selectedExerciseIndex].exerciseName,
-                                    primaryMuscles: exerciseDetail.primaryMuscles || [],
-                                    secondaryMuscles: exerciseDetail.secondaryMuscles || [],
+                                    primaryMuscles: exerciseDetail?.primaryMuscles || [],
+                                    secondaryMuscles: exerciseDetail?.secondaryMuscles || [],
                                     sets: activeSession.exercises[selectedExerciseIndex].sets,
                                 }}
                                 open={activeView === 'detail'}
@@ -375,8 +389,10 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                 onNoteChange={(note) => handleNoteChange(selectedExerciseIndex, note)}
                                 lastSessionNote={lastSessionNote}
                                 onEdit={() => {
-                                    setEditingExercise(exerciseDetail);
-                                    setShowWizard(true);
+                                    if (exerciseDetail) {
+                                        setEditingExercise(exerciseDetail);
+                                        setShowWizard(true);
+                                    }
                                 }}
                             />
                         )
@@ -396,7 +412,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                                     setEndDialogType('abandon');
                                     setShowEndDialog(true);
                                 } else {
-                                    abandonWorkout().then(onClose);
+                                    abandonWorkout();
                                 }
                             }}
                             className="flex-1 h-14 rounded-2xl font-bold"
@@ -430,7 +446,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                     <div className="space-y-3 mt-4">
                         <Button
                             variant={endDialogType === 'abandon' ? "destructive" : "gradient"}
-                            onClick={endDialogType === 'abandon' ? () => abandonWorkout().then(onClose) : endWorkout}
+                            onClick={endDialogType === 'abandon' ? () => { abandonWorkout(); setShowEndDialog(false); } : endWorkout}
                             className="w-full h-12 rounded-xl font-bold"
                         >
                             {endDialogType === 'abandon' ? 'YES, ABANDON' : 'YES, FINISH'}

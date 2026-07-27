@@ -18,6 +18,7 @@ interface ActiveExerciseProps {
     onUnitChange: (unit: 'kg' | 'lbs') => void;
     personalNote?: string;
     onNoteChange: (note: string) => void;
+    initialTab?: 'sets' | 'tutorial' | 'muscles';
 }
 
 const ActiveExercise = ({
@@ -28,19 +29,14 @@ const ActiveExercise = ({
     onUnitChange,
     personalNote,
     onNoteChange,
+    initialTab = 'sets',
 }: ActiveExerciseProps) => {
     const { currentUser } = useUser();
-    const [showRest, setShowRest] = useState(false);
     const gender = currentUser?.gender || 'male';
-    const [activeTab, setActiveTab] = useState<'sets' | 'tutorial' | 'muscles'>('sets');
-
-    const completedSets = exercise.sets.filter((s) => s.completed).length;
+    const [activeTab, setActiveTab] = useState<'sets' | 'tutorial' | 'muscles'>(initialTab);
 
     const handleSetComplete = (setId: number, weight: number, reps: number, setUnit: 'kg' | 'lbs') => {
         onSetComplete(setId, weight, reps, setUnit);
-        if (completedSets + 1 < exercise.sets.length) {
-            setShowRest(true);
-        }
     };
 
     return (
@@ -168,14 +164,6 @@ const ActiveExercise = ({
                 </Tabs>
             </div>
 
-            {/* Rest timer overlay */}
-            {showRest && (
-                <RestTimer
-                    duration={90}
-                    onComplete={() => setShowRest(false)}
-                    onSkip={() => setShowRest(false)}
-                />
-            )}
         </div>
     );
 };

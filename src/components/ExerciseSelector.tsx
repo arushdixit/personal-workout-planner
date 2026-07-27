@@ -49,8 +49,10 @@ const ExerciseSelector = ({ open, onOpenChange, onSelect }: ExerciseSelectorProp
 
     const filteredExercises = useMemo(() => {
         return exercises.filter(ex => {
-            const matchesSearch = ex.name.toLowerCase().includes(search.toLowerCase());
-            const matchesMuscle = filterMuscle === 'all' || ex.primaryMuscles.includes(filterMuscle);
+            const name = ex.name || '';
+            const matchesSearch = name.toLowerCase().includes(search.toLowerCase());
+            const primaryMuscles = Array.isArray(ex.primaryMuscles) ? ex.primaryMuscles : [];
+            const matchesMuscle = filterMuscle === 'all' || primaryMuscles.includes(filterMuscle);
             const matchesEquipment = filterEquipment === 'all' || ex.equipment === filterEquipment;
             return matchesSearch && matchesMuscle && matchesEquipment;
         });

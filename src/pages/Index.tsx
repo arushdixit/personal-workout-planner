@@ -6,9 +6,11 @@ import WorkoutSession from '@/components/WorkoutSession';
 import WorkoutCountdown from '@/components/WorkoutCountdown';
 import { MinimizedRestTimer } from '@/components/RestTimer';
 import GlobalAICoach from '@/components/GlobalAICoach';
+import ExerciseDetail from '@/components/ExerciseDetail';
 import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
 import { cn } from '@/lib/utils';
+import { Exercise } from '@/lib/db';
 
 // Lazy load non-critical tabs
 const Library = lazy(() => import('@/pages/Library'));
@@ -24,6 +26,7 @@ const Index = () => {
     searchParams.get('tab') || 'today'
   );
   const [showCountdown, setShowCountdown] = useState(false);
+  const [viewingExercise, setViewingExercise] = useState<Exercise | null>(null);
   const workoutId = searchParams.get('workoutId');
   const exerciseId = searchParams.get('exerciseId');
   const showBuilder = searchParams.get('builder') === 'true';
@@ -34,9 +37,19 @@ const Index = () => {
     setActiveTab(tabFromURL);
   }, [searchParams]);
 
-  // Ensure exercise data is present even if user skips Library/Onboarding
+  // Defer background exercise database seeding until main thread is idle
   useEffect(() => {
-    import('@/lib/exercemus').then(m => m.importExercemusData()).catch(console.error);
+    const handleIdle = () => {
+      import('@/lib/exercemus').then(m => m.importExercemusData()).catch(console.error);
+    };
+
+    if ('requestIdleCallback' in window) {
+      const id = (window as any).requestIdleCallback(handleIdle, { timeout: 3000 });
+      return () => (window as any).cancelIdleCallback(id);
+    } else {
+      const timer = setTimeout(handleIdle, 2000);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Update URL when activeTab changes from user interaction
@@ -142,6 +155,7 @@ const Index = () => {
           <TodayPage
             onStartWorkout={handleStartWorkout}
             onViewExercise={handleViewExercise}
+            onViewExerciseInline={setViewingExercise}
             onNavigateToRoutines={handleNavigateToRoutines}
           />
         )}
@@ -218,6 +232,15 @@ const Index = () => {
 
       <MinimizedRestTimer />
       <GlobalAICoach />
+
+      {viewingExercise && (
+        <ExerciseDetail
+          exercise={viewingExercise}
+          open={!!viewingExercise}
+          onOpenChange={(open) => { if (!open) setViewingExercise(null); }}
+          onEdit={() => {}}
+        />
+      )}
 
       {showCountdown && (
         <WorkoutCountdown onComplete={handleCountdownComplete} />

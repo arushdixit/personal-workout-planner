@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BotMessageSquare } from 'lucide-react';
-import AICoachPanel from './AICoachPanel';
 import { useWorkout } from '@/context/WorkoutContext';
 import { db, Exercise } from '@/lib/db';
+
+const AICoachPanel = lazy(() => import('./AICoachPanel'));
 
 const GlobalAICoach = () => {
     const { activeSession, selectedExerciseIndex, showSuccess, isCoachOpen, setIsCoachOpen } = useWorkout();
@@ -78,12 +79,16 @@ const GlobalAICoach = () => {
                 document.body
             )}
 
-            <AICoachPanel
-                open={isCoachOpen}
-                onOpenChange={setIsCoachOpen}
-                sessionInfo={sessionInfo}
-                currentExercise={currentExercise}
-            />
+            {isCoachOpen && (
+                <Suspense fallback={null}>
+                    <AICoachPanel
+                        open={isCoachOpen}
+                        onOpenChange={setIsCoachOpen}
+                        sessionInfo={sessionInfo}
+                        currentExercise={currentExercise}
+                    />
+                </Suspense>
+            )}
         </>
     );
 };

@@ -15,7 +15,7 @@ const WorkoutHero = ({
   onStart,
 }: WorkoutHeroProps) => {
   return (
-    <div className="relative overflow-hidden rounded-3xl gradient-red p-6 glow-red animate-slide-up">
+    <div className="relative overflow-hidden rounded-3xl gradient-red p-6 glow-red">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />

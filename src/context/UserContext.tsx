@@ -27,14 +27,34 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
+const getCachedUser = (): UserProfile | null => {
+    if (typeof window === 'undefined') return null;
+    try {
+        const saved = localStorage.getItem('prolifts_cached_user');
+        return saved ? JSON.parse(saved) : null;
+    } catch {
+        return null;
+    }
+};
+
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+    const cachedUser = getCachedUser();
+    const [currentUser, setCurrentUser] = useState<UserProfile | null>(cachedUser);
     const [supabaseUser, setSupabaseUser] = useState<User | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!cachedUser);
+    const [allUsers, setAllUsers] = useState<UserProfile[]>(cachedUser ? [cachedUser] : []);
+    const [loading, setLoading] = useState<boolean>(!cachedUser);
     const [refreshing, setRefreshing] = useState(false);
     const lastSyncedUserId = React.useRef<string | null>(null);
+
+    const updateCurrentUserState = (user: UserProfile | null) => {
+        setCurrentUser(user);
+        if (user) {
+            localStorage.setItem('prolifts_cached_user', JSON.stringify(user));
+        } else {
+            localStorage.removeItem('prolifts_cached_user');
+        }
+    };
 
     const refreshUsers = async (supabaseUserId?: string) => {
         if (!currentUser) setLoading(true);
@@ -45,10 +65,10 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 : await db.users.toArray();
             setAllUsers(users);
 
-            // Also update currentUser if it's already set to ensure it has latest data (like lastCompletedRoutineId)
+            // Also update currentUser if it's already set to ensure it has latest data
             if (currentUser) {
                 const updated = users.find(u => u.id === currentUser.id);
-                if (updated) setCurrentUser(updated);
+                if (updated) updateCurrentUserState(updated);
             }
         } catch (err) {
             console.error('Failed to load users:', err);
@@ -72,7 +92,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
             if (event === 'SIGNED_OUT') {
                 lastSyncedUserId.current = null;
-                setCurrentUser(null);
+                updateCurrentUserState(null);
                 setAllUsers([]);
                 setLoading(false);
                 return;
@@ -87,7 +107,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 }
 
                 lastSyncedUserId.current = user.id;
-                setLoading(true);
                 // Start pulling exercises immediately as it only needs supabase userId
                 pullUserExercises(user.id).catch(console.error);
 
@@ -96,7 +115,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     console.log('[Auth] Found profiles:', users.length, users);
                     setAllUsers(users);
                     if (users.length > 0) {
-                        setCurrentUser(users[0]);
+                        updateCurrentUserState(users[0]);
                         // Workout data still needs local user ID
                         pullWorkoutSessions(user.id, users[0].id!).catch(console.error);
                     } else {
@@ -116,26 +135,31 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                             };
                             const userId = await db.users.add(restoredProfile);
                             const userProfile = await db.users.get(userId as number);
-                            setCurrentUser(userProfile);
+                            if (userProfile) updateCurrentUserState(userProfile);
                             setAllUsers(userProfile ? [userProfile] : []);
                             // Exercise and workout data is imported on app mount in Index.tsx
                             pullUserExercises(user.id).catch(console.error);
                             pullWorkoutSessions(user.id, userId as number).catch(console.error);
                         } else {
-                            setCurrentUser(null);
+                            updateCurrentUserState(null);
                         }
                     }
                 } catch (err) {
                     console.error('[Auth] Error loading profile:', err);
-                    setCurrentUser(null);
+                    updateCurrentUserState(null);
                 } finally {
                     setLoading(false);
                 }
             } else {
                 console.log('[Auth] No user logged in');
-                setCurrentUser(null);
-                setAllUsers([]);
-                setIsAuthenticated(false);
+                // If we have a cached user, keep showing the app while Supabase resolves
+                // the session (e.g. mid-token-refresh). SIGNED_OUT above handles explicit
+                // logout and refresh-token failure, so this is safe.
+                if (!cachedUser) {
+                    updateCurrentUserState(null);
+                    setAllUsers([]);
+                    setIsAuthenticated(false);
+                }
                 setLoading(false);
             }
         });
@@ -224,7 +248,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         await db.users.update(currentUser.id, finalUpdates);
         const updatedProfile = { ...currentUser, ...finalUpdates };
-        setCurrentUser(updatedProfile);
+        updateCurrentUserState(updatedProfile);
         setAllUsers(prev => prev.map(u => u.id === currentUser.id ? updatedProfile : u));
 
         // Update user metadata in Supabase
@@ -237,7 +261,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const logout = async () => {
         await supabase.auth.signOut();
-        setCurrentUser(null);
+        updateCurrentUserState(null);
         setAllUsers([]);
         setIsAuthenticated(false);
     };
