@@ -1,14 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req: any, res: any) {
+    const host = req.headers['host'] || 'fitness.arushpamouli.com';
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const baseUrl = `${protocol}://${host}`;
+
     // 1. Extract Cloudflare Access Email header
     const cfEmail = req.headers['cf-access-authenticated-user-email'];
 
     if (!cfEmail || typeof cfEmail !== 'string') {
-        return res.status(200).json({
-            authenticated: false,
-            message: 'No Cloudflare Access user header detected.',
-        });
+        // Top-level redirect back to app with error flag if no Cloudflare header present
+        return res.redirect(302, `${baseUrl}/?sso_error=no_header`);
     }
 
     const email = cfEmail.toLowerCase().trim();
@@ -19,9 +21,7 @@ export default async function handler(req: any, res: any) {
 
     if (!supabaseUrl || !supabaseServiceKey) {
         console.error('[CF-Auth Error] Missing SUPABASE_SERVICE_ROLE_KEY or VITE_SUPABASE_URL');
-        return res.status(500).json({
-            error: 'Server configuration missing: SUPABASE_SERVICE_ROLE_KEY environment variable is required.',
-        });
+        return res.redirect(302, `${baseUrl}/?sso_error=missing_config`);
     }
 
     // 3. Initialize Supabase Admin Client
@@ -50,10 +50,8 @@ export default async function handler(req: any, res: any) {
             user = newUser.user;
         }
 
-        // 6. Build target redirect URL back to the frontend domain
-        const host = req.headers['host'] || 'fitness.arushpamouli.com';
-        const protocol = req.headers['x-forwarded-proto'] || 'https';
-        const redirectTo = `${protocol}://${host}/`;
+        // 6. Target redirect URL back to the frontend domain
+        const redirectTo = `${baseUrl}/`;
 
         // 7. Generate magic link session for exact user
         const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
@@ -71,10 +69,10 @@ export default async function handler(req: any, res: any) {
             // 8. Redirect user browser to Supabase session verification link
             return res.redirect(302, actionLink);
         } else {
-            return res.status(500).json({ error: 'Failed to generate session link' });
+            return res.redirect(302, `${baseUrl}/?sso_error=failed_link`);
         }
     } catch (err: any) {
         console.error('[CF-Auth Server Exception]:', err);
-        return res.status(500).json({ error: err.message || 'Authentication pass-through failed' });
+        return res.redirect(302, `${baseUrl}/?sso_error=${encodeURIComponent(err.message || 'server_error')}`);
     }
 }

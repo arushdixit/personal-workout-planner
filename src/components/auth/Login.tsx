@@ -17,33 +17,24 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if user is authenticated via Cloudflare Access headers on page load
-    const checkCloudflareAuth = async () => {
-      try {
-        const response = await fetch('/api/cf-auth');
-        
-        // If serverless endpoint redirected to Supabase magic link
-        if (response.redirected && response.url) {
-          window.location.href = response.url;
-          return;
-        }
+    const searchParams = new URLSearchParams(window.location.search);
+    const hasSsoError = searchParams.has('sso_error');
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const ssoAttempted = sessionStorage.getItem('cf_sso_attempted');
 
-        const data = await response.json().catch(() => null);
-        if (data?.authenticated === false) {
-          // No Cloudflare Access header found (e.g., local dev)
-          setIsCheckingSSO(false);
-        }
-      } catch (err) {
-        console.log('[CF-SSO] Cloudflare SSO check skipped or not present:', err);
-        setIsCheckingSSO(false);
-      }
-    };
+    if (hasSsoError || isLocalhost || ssoAttempted) {
+      setIsCheckingSSO(false);
+      return;
+    }
 
-    checkCloudflareAuth();
+    // Top-level window navigation to /api/cf-auth (prevents CORS errors)
+    sessionStorage.setItem('cf_sso_attempted', 'true');
+    window.location.href = '/api/cf-auth';
   }, []);
 
   const handleCloudflareSSO = () => {
     setIsCheckingSSO(true);
+    sessionStorage.removeItem('cf_sso_attempted');
     window.location.href = '/api/cf-auth';
   };
 
