@@ -111,7 +111,7 @@ export async function importExercemusData() {
             console.log('Checking for Exercemus data...');
 
             // Version of the enriched data - increment this when JSON or custom seeding is updated
-            const DATA_VERSION = 14; 
+            const DATA_VERSION = 15; 
 
             // Function to seed essential exercise variations and migrate existing routine names
             const runEssentialSeedingAndMigration = async () => {
@@ -299,7 +299,7 @@ export async function importExercemusData() {
                         difficulty: 'Beginner',
                         repRange: '10-15',
                         tempo: '2-1-1-0',
-                        tutorialUrl: 'https://www.youtube.com/embed/Iwe6AmxVf7o',
+                        tutorialUrl: 'https://www.youtube.com/embed/taI4XduLpTk',
                         description: 'Constant-tension isolation movement for inner chest squeeze and outer chest stretch.',
                         beginnerFriendlyInstructions: [
                             'Set cable pulleys at chest level and grab both handles.',
@@ -761,7 +761,7 @@ export async function importExercemusData() {
                         difficulty: 'Intermediate',
                         repRange: '10-15',
                         tempo: '2-1-1-0',
-                        tutorialUrl: 'https://www.youtube.com/embed/SEdqd1b0cvg',
+                        tutorialUrl: 'https://www.youtube.com/embed/LM8xhLYDplc',
                         description: 'Highest EMG glute activation compound movement for glute growth and lockout power.',
                         beginnerFriendlyInstructions: [
                             'Sit on floor with upper back against sturdy bench.',
@@ -998,7 +998,7 @@ export async function importExercemusData() {
                         injuryPreventionTips: item.injuryPreventionTips || [],
                         variationOf: [],
                         tutorialUrl: item.tutorialUrl || '',
-                        dataVersion: 14,
+                        dataVersion: DATA_VERSION,
                         inLibrary: existing?.inLibrary || false,
                         personalNotes: existing?.personalNotes || '',
                         createdAt: new Date().toISOString(),
@@ -1251,7 +1251,7 @@ export async function importExercemusData() {
                     primaryMuscles: ['chest'],
                     secondaryMuscles: ['deltoids'],
                     equipment: 'Cable',
-                    tutorialUrl: 'https://www.youtube.com/embed/Iwe6AmxVf7o',
+                    tutorialUrl: 'https://www.youtube.com/embed/taI4XduLpTk',
                     repRange: '10-15',
                     beginnerFriendlyInstructions: [
                         'Set pulleys at chest level. Step forward and hug handles together in wide arc.',
