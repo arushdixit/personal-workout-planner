@@ -100,6 +100,15 @@ async function reconcileLocalRoutines(remoteRoutines: RemoteRoutine[]): Promise<
     const pendingDeletes = await getPendingDeleteIds('routine');
     const remoteIds = new Set(remoteRoutines.map(r => r.id));
 
+    // Build lookup map of exercise name -> local exercise ID to resolve cross-device exercise IDs correctly
+    const allLocalExercises = await db.exercises.toArray();
+    const nameToIdMap = new Map<string, number>();
+    allLocalExercises.forEach(ex => {
+        if (ex.id !== undefined && ex.name) {
+            nameToIdMap.set(ex.name.toLowerCase().trim(), ex.id);
+        }
+    });
+
     // 1. Map remote routines to local format, excluding those pending deletion locally
     const mappedRoutines: LocalRoutine[] = remoteRoutines
         .filter(r => !pendingDeletes.has(r.id!))
@@ -109,7 +118,13 @@ async function reconcileLocalRoutines(remoteRoutines: RemoteRoutine[]): Promise<
             localUserId: routine.local_user_id,
             name: routine.name,
             description: routine.description,
-            exercises: routine.exercises,
+            exercises: routine.exercises.map(ex => {
+                const resolvedId = nameToIdMap.get((ex.exerciseName || '').toLowerCase().trim());
+                return {
+                    ...ex,
+                    exerciseId: resolvedId || ex.exerciseId,
+                };
+            }),
             createdAt: routine.created_at || syncedAt,
             updatedAt: routine.updated_at || syncedAt,
             syncedAt,

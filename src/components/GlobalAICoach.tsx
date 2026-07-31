@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BotMessageSquare } from 'lucide-react';
 import { useWorkout } from '@/context/WorkoutContext';
-import { db, Exercise } from '@/lib/db';
+import { db, Exercise, getExerciseByRef } from '@/lib/db';
 
 const AICoachPanel = lazy(() => import('./AICoachPanel'));
 
@@ -18,10 +18,7 @@ const GlobalAICoach = () => {
                 return;
             }
             const currentEx = activeSession.exercises[selectedExerciseIndex];
-            let exercise = await db.exercises.get(currentEx.exerciseId);
-            if (!exercise && currentEx.exerciseName) {
-                exercise = await db.exercises.where('name').equalsIgnoreCase(currentEx.exerciseName).first();
-            }
+            const exercise = await getExerciseByRef(currentEx.exerciseId, currentEx.exerciseName);
             setExerciseDetail(exercise || null);
         };
         loadExerciseDetail();

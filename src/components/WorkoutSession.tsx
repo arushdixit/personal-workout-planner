@@ -11,7 +11,7 @@ import RestTimer from './RestTimer';
 import { useWorkout } from '@/context/WorkoutContext';
 import { useUser } from '@/context/UserContext';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { db, Exercise } from '@/lib/db';
+import { db, Exercise, getExerciseByRef } from '@/lib/db';
 import { getLastExerciseNote } from '@/lib/workoutSession';
 import { cn } from '@/lib/utils';
 
@@ -55,10 +55,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
         const loadExerciseDetail = async () => {
             if (selectedExerciseIndex === null || !activeSession) return;
             const currentEx = activeSession.exercises[selectedExerciseIndex];
-            let exercise = await db.exercises.get(currentEx.exerciseId);
-            if (!exercise && currentEx.exerciseName) {
-                exercise = await db.exercises.where('name').equalsIgnoreCase(currentEx.exerciseName).first();
-            }
+            const exercise = await getExerciseByRef(currentEx.exerciseId, currentEx.exerciseName);
             setExerciseDetail(exercise || null);
 
             // Load last session note
@@ -471,7 +468,7 @@ const WorkoutSession = ({ routineId, onClose }: WorkoutSessionProps) => {
                     // Refresh current detail
                     if (selectedExerciseIndex !== null && activeSession) {
                         const currentEx = activeSession.exercises[selectedExerciseIndex];
-                        const updated = await db.exercises.get(currentEx.exerciseId);
+                        const updated = await getExerciseByRef(currentEx.exerciseId, currentEx.exerciseName);
                         if (updated) setExerciseDetail(updated);
                     }
                 }}

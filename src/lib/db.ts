@@ -195,4 +195,18 @@ db.version(10).stores({
     syncQueue: '++id, type, entityType, entityId, status, createdAt',
 });
 
+/**
+ * Look up an exercise safely across devices.
+ * Tries exerciseName lookup first to ensure cross-device ID mapping correctness,
+ * falling back to exerciseId.
+ */
+export async function getExerciseByRef(exerciseId: number, exerciseName?: string): Promise<Exercise | undefined> {
+    if (exerciseName && exerciseName.trim()) {
+        const byName = await db.exercises.where('name').equalsIgnoreCase(exerciseName.trim()).first();
+        if (byName) return byName;
+    }
+    return await db.exercises.get(exerciseId);
+}
+
 export { db };
+

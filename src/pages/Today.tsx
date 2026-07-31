@@ -13,7 +13,7 @@ import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
 import { determineTodaysRoutine, calculateWorkoutDuration } from '@/lib/routineCycling';
 import { fetchRoutines } from '@/lib/routineCache';
-import { db, LocalRoutine, Exercise } from '@/lib/db';
+import { db, LocalRoutine, Exercise, getExerciseByRef } from '@/lib/db';
 import { cn } from '@/lib/utils';
 
 const ROUTINE_CACHE_KEY = 'prolifts_cached_routine';
@@ -83,16 +83,11 @@ const TodayPage = (props: TodayPageProps) => {
         const loadExerciseDetails = async () => {
             const details: Record<number, Exercise> = {};
             for (const ex of todaysRoutine.exercises) {
-                // Always look up by exerciseId first
-                let exercise = await db.exercises.get(ex.exerciseId);
-
-                // Fallback to searching by name if ID fails
-                if (!exercise && ex.exerciseName) {
-                    exercise = await db.exercises.where('name').equalsIgnoreCase(ex.exerciseName).first();
-                }
+                // Name lookup first to ensure cross-device ID mapping correctness
+                const exercise = await getExerciseByRef(ex.exerciseId, ex.exerciseName);
 
                 if (exercise && exercise.id) {
-                    // Use the actual exercise ID from the database, not the routine's exerciseId
+                    details[ex.exerciseId] = exercise;
                     details[exercise.id] = exercise;
                 }
             }
@@ -269,22 +264,21 @@ const TodayPage = (props: TodayPageProps) => {
                         <div className="space-y-3">
                             <h3 className="text-lg font-semibold">Today's Exercises</h3>
                             {todaysRoutine.exercises.map((exercise, index) => {
-                                // Find the exercise detail by looking through all details
-                                const exerciseDetail = Object.values(exerciseDetails).find(
+                                // Find the exercise detail by looking through all details by name first
+                                const exerciseDetail = (exercise.exerciseName ? Object.values(exerciseDetails).find(
                                     ex => ex.name.toLowerCase() === exercise.exerciseName.toLowerCase()
-                                ) || exerciseDetails[exercise.exerciseId];
+                                ) : undefined) || exerciseDetails[exercise.exerciseId];
 
                                 return (
                                     <WorkoutExerciseCard
-                                        key={`${todaysRoutine.id}-${exercise.exerciseId}`}
+                                        key={`${todaysRoutine.id}-${exercise.exerciseId}-${index}`}
                                         exercise={exercise}
                                         exerciseDetail={exerciseDetail}
                                         isNext={index === 0}
                                         onClick={async () => {
                                             let detail = exerciseDetail;
                                             if (!detail) {
-                                                detail = await db.exercises.get(exercise.exerciseId)
-                                                    ?? await db.exercises.where('name').equalsIgnoreCase(exercise.exerciseName).first();
+                                                detail = await getExerciseByRef(exercise.exerciseId, exercise.exerciseName);
                                             }
                                             if (detail && onViewExerciseInline) {
                                                 onViewExerciseInline(detail);

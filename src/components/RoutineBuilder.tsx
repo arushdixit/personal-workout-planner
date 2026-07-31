@@ -91,22 +91,28 @@ const RoutineBuilder = ({
         setExercises([...exercises, newExercise]);
     };
 
-    const isExerciseSelected = (exerciseId: number) => {
-        return exercises.some(ex => ex.exerciseId === exerciseId);
+    const isExerciseSelected = (exerciseId: number, exerciseName?: string) => {
+        return exercises.some(ex =>
+            ex.exerciseId === exerciseId ||
+            (exerciseName && ex.exerciseName.toLowerCase().trim() === exerciseName.toLowerCase().trim())
+        );
     };
 
     const handleToggleExercise = (exercise: Exercise) => {
-        if (isExerciseSelected(exercise.id!)) {
+        if (isExerciseSelected(exercise.id!, exercise.name)) {
             // Remove the exercise
-            handleRemoveExerciseByExerciseId(exercise.id!);
+            handleRemoveExerciseByExerciseId(exercise.id!, exercise.name);
         } else {
             // Add the exercise
             handleAddExercise(exercise.id!, exercise.name);
         }
     };
 
-    const handleRemoveExerciseByExerciseId = (exerciseId: number) => {
-        const updated = exercises.filter(ex => ex.exerciseId !== exerciseId);
+    const handleRemoveExerciseByExerciseId = (exerciseId: number, exerciseName?: string) => {
+        const updated = exercises.filter(ex =>
+            ex.exerciseId !== exerciseId &&
+            (!exerciseName || ex.exerciseName.toLowerCase().trim() !== exerciseName.toLowerCase().trim())
+        );
         // Reorder remaining exercises
         const reordered = updated.map((ex, i) => ({ ...ex, order: i }));
         setExercises(reordered);
@@ -360,12 +366,12 @@ const RoutineBuilder = ({
                                                 }}
                                                 className={cn(
                                                     "transition-all",
-                                                    isExerciseSelected(ex.id!)
+                                                    isExerciseSelected(ex.id!, ex.name)
                                                         ? "bg-green-500/20 text-green-400 hover:bg-green-500/30 active:bg-green-500/30"
                                                         : "hover:bg-transparent active:bg-accent"
                                                 )}
                                             >
-                                                {isExerciseSelected(ex.id!) ? (
+                                                {isExerciseSelected(ex.id!, ex.name) ? (
                                                     <>
                                                         <Check className="w-4 h-4 mr-1" /> Added
                                                     </>
