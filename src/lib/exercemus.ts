@@ -111,7 +111,7 @@ export async function importExercemusData() {
             console.log('Checking for Exercemus data...');
 
             // Version of the enriched data - increment this when JSON or custom seeding is updated
-            const DATA_VERSION = 15; 
+            const DATA_VERSION = 16; 
 
             // Function to seed essential exercise variations and migrate existing routine names
             const runEssentialSeedingAndMigration = async () => {
@@ -1046,14 +1046,15 @@ export async function importExercemusData() {
             }
 
             // Capture existing metadata AND IDs to stabilize references
-            const existingMapping = new Map<string, { id: number; inLibrary?: boolean; personalNotes?: string }>();
+            const existingMapping = new Map<string, { id: number; inLibrary?: boolean; personalNotes?: string; tutorialUrl?: string }>();
             const allExisting = await db.exercises.toArray();
             allExisting.forEach(ex => {
                 if (ex.id !== undefined) {
                     existingMapping.set(ex.name.toLowerCase(), {
                         id: ex.id,
                         inLibrary: ex.inLibrary,
-                        personalNotes: ex.personalNotes
+                        personalNotes: ex.personalNotes,
+                        tutorialUrl: ex.tutorialUrl
                     });
                 }
             });
@@ -1100,7 +1101,7 @@ export async function importExercemusData() {
                     commonMistakes: ex.common_mistakes || [],
                     injuryPreventionTips: ex.injury_prevention_tips || [],
                     variationOf: ex.variation_on || ex.variations_on || [],
-                    tutorialUrl: ex.video || '',
+                    tutorialUrl: ex.video || existing?.tutorialUrl || '',
                     dataVersion: DATA_VERSION, // Track which version of data this is
                     inLibrary: existing?.inLibrary || false,
                     personalNotes: existing?.personalNotes || '',
@@ -1402,7 +1403,7 @@ export async function importExercemusData() {
                     commonMistakes: item.commonMistakes || [],
                     injuryPreventionTips: [],
                     variationOf: [],
-                    tutorialUrl: item.tutorialUrl || '',
+                    tutorialUrl: item.tutorialUrl || existing?.tutorialUrl || '',
                     dataVersion: DATA_VERSION,
                     inLibrary: true,
                     personalNotes: existing?.personalNotes || '',

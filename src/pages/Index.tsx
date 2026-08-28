@@ -7,10 +7,11 @@ import WorkoutCountdown from '@/components/WorkoutCountdown';
 import { MinimizedRestTimer } from '@/components/RestTimer';
 import GlobalAICoach from '@/components/GlobalAICoach';
 import ExerciseDetail from '@/components/ExerciseDetail';
+import ExerciseWizard from '@/components/ExerciseWizard';
 import { useUser } from '@/context/UserContext';
 import { useWorkout } from '@/context/WorkoutContext';
 import { cn } from '@/lib/utils';
-import { Exercise } from '@/lib/db';
+import { db, Exercise } from '@/lib/db';
 
 // Lazy load non-critical tabs
 const Library = lazy(() => import('@/pages/Library'));
@@ -27,6 +28,8 @@ const Index = () => {
   );
   const [showCountdown, setShowCountdown] = useState(false);
   const [viewingExercise, setViewingExercise] = useState<Exercise | null>(null);
+  const [editingExercise, setEditingExercise] = useState<Exercise | undefined>();
+  const [showWizard, setShowWizard] = useState(false);
   const workoutId = searchParams.get('workoutId');
   const exerciseId = searchParams.get('exerciseId');
   const showBuilder = searchParams.get('builder') === 'true';
@@ -238,9 +241,29 @@ const Index = () => {
           exercise={viewingExercise}
           open={!!viewingExercise}
           onOpenChange={(open) => { if (!open) setViewingExercise(null); }}
-          onEdit={() => {}}
+          onEdit={() => {
+            setEditingExercise(viewingExercise);
+            setShowWizard(true);
+          }}
         />
       )}
+
+      <ExerciseWizard
+        exercise={editingExercise}
+        open={showWizard}
+        onOpenChange={(open) => {
+          setShowWizard(open);
+          if (!open) setEditingExercise(undefined);
+        }}
+        onComplete={async () => {
+          setShowWizard(false);
+          if (editingExercise?.id) {
+            const updated = await db.exercises.get(editingExercise.id);
+            if (updated) setViewingExercise(updated);
+          }
+          setEditingExercise(undefined);
+        }}
+      />
 
       {showCountdown && (
         <WorkoutCountdown onComplete={handleCountdownComplete} />
